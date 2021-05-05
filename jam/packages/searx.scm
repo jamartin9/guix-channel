@@ -266,3 +266,39 @@
             (sha256
                  (base32 "0m1hm3apcj10i3jf4bjzd26bzdcgp9zmardy6isnh4nk92lamy9k"))
                    ))))
+
+(define-public python-onionbalance
+  (package
+  (name "python-onionbalance")
+  (version "0.2.1")
+  (source
+
+
+    (origin
+      (method url-fetch)
+      (uri (pypi-uri "OnionBalance" version))
+      (sha256
+        (base32
+          "1sikic2jq88bc4z1y49cxik7zzwhqxj52q0w08r48rr4xzyya89l"))))
+  (build-system python-build-system)
+  (propagated-inputs
+    `(("python-cryptography" ,python-cryptography)
+      ("python-future" ,python-future)
+      ("python-pycryptodomex" ,python-pycryptodomex)
+      ("python-pyyaml" ,python-pyyaml-5.4.1)
+      ("python-setproctitle" ,python-setproctitle)
+      ("python-setuptools" ,python-setuptools)
+      ("python-stem" ,python-stem)
+      ;("python-pexpect" ,python-pexpect) ; tests
+      ;("python-mock" ,python-mock) ; tests
+      ;("python-pytest" ,python-pytest) ; tests
+      ;("python-pytest-mock" ,python-pytest-mock) ; tests                                       ;
+      ))
+   (arguments `(#:tests? #f)) ;; TODO: tests to native inputs
+  (home-page
+    "https://github.com/asn-d6/onionbalance")
+  (synopsis
+    "OnionBalance provides load-balancing and redundancy for Tor hidden services by distributing requests to multiple backend Tor instances.")
+  (description
+    "OnionBalance provides load-balancing and redundancy for Tor hidden services by distributing requests to multiple backend Tor instances.")
+  (license license:gpl3)))
