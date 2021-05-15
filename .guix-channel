@@ -2,7 +2,7 @@
   (version 0)
   (dependencies (channel
        ;; third party
-       (name 'nonguix)
+       (name nonguix)
        (url "https://gitlab.com/nonguix/nonguix")
        (introduction
          (make-channel-introduction
