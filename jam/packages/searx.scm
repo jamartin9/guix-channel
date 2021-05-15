@@ -242,7 +242,8 @@
    (build-system python-build-system)
    (arguments `(#:phases (modify-phases %standard-phases (delete 'check))))
    (propagated-inputs
-    `(("python-ipaddress" ,python-ipaddress)
+    `(
+      ;;("python-ipaddress" ,python-ipaddress)
       ("python-setuptools" ,python-setuptools)
       ("python-stem" ,python-stem)))
    (home-page
