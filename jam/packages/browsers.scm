@@ -7,6 +7,8 @@
   #:use-module (gnu packages chromium)
   )
 
+;; TODO use grafts to split packages that avoid recompiling
+
 (define ff-nvda
   (package
    (inherit firefox)

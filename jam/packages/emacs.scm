@@ -8,13 +8,13 @@
   #:use-module ((gnu packages) #:prefix gnu:)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
-  #:use-module (gnu packages autotools)
+  ;#:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages gnome)
-  #:use-module (gnu packages webkit)
-  #:use-module (gnu packages xorg)
+  ;#:use-module (gnu packages gnome)
+  ;#:use-module (gnu packages webkit)
+  ;#:use-module (gnu packages xorg)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
@@ -40,7 +40,6 @@
    (append
     (list (string-append %channel-root "/jam/packages/patches"))
     (gnu:%patch-path))))
-
 
 (define emacs-with-native-comp
   (lambda* (emacs gcc #:optional full-aot)
@@ -83,9 +82,9 @@
                (add-after 'unpack 'patch-driver-options
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "lisp/emacs-lisp/comp.el"
-                     (("\\(defcustom comp-native-driver-options nil")
+                     (("\\(defcustom native-comp-driver-options nil")
                       (format
-                       #f "(defcustom comp-native-driver-options '(~s ~s ~s ~s)"
+                       #f "(defcustom native-comp-driver-options '(~s ~s ~s ~s)"
                        (string-append
                         "-B" (assoc-ref inputs "binutils") "/bin/")
                        (string-append
@@ -103,28 +102,6 @@
            ("libgccjit" ,libgccjit)
            ,@(package-inputs emacs)))))))
 
-(define emacs-with-xwidgets
-  (mlambda (emacs)
-    (package
-      (inherit emacs)
-      (arguments
-       (substitute-keyword-arguments (package-arguments emacs)
-         ((#:configure-flags flags)
-          `(cons* "--with-xwidgets" ,flags))))
-      (inputs
-       `(("glib-networking" ,glib-networking)
-         ("webkitgtk" ,webkitgtk)
-         ,@(package-inputs emacs))))))
-
-(define emacs-with-pgtk
-  (mlambda (emacs)
-    (package
-      (inherit emacs)
-      (arguments
-       (substitute-keyword-arguments (package-arguments emacs)
-         ((#:configure-flags flags)
-          `(cons* "--with-pgtk" ,flags)))))))
-
 (define emacs-from-git
   (lambda* (emacs #:key pkg-name pkg-version pkg-revision git-repo git-commit checksum)
     (package
@@ -140,48 +117,25 @@
                (commit git-commit)))
          (sha256 (base32 checksum))
          (file-name (git-file-name pkg-name pkg-version))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments emacs)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             ;; Fix strip-double-wrap referencing the wrong version.
-             (replace 'strip-double-wrap
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (with-directory-excursion (assoc-ref outputs "out")
-                   (copy-file (string-append "bin/emacs-" ,pkg-version)
-                              "bin/emacs")
-                   #t)))))))
-      (inputs
-       `(("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-         ,@(package-inputs emacs)))
-      (native-search-paths
-       (list (search-path-specification
-              (variable "EMACSLOADPATH")
-              (files
-               (list "share/emacs/site-lisp"
-                     (string-append "share/emacs/" pkg-version "/lisp"))))
-             (search-path-specification
-              (variable "INFOPATH")
-              (files '("share/info"))))))))
+      (outputs
+       '("out" "debug")))))
 
 (define-public emacs-native-comp
   (emacs-from-git
    (emacs-with-native-comp emacs-next gcc-11 'full-aot)
    #:pkg-name "emacs-native-comp"
    #:pkg-version "28.0.50"
-   #:pkg-revision "161"
+   #:pkg-revision "166"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "2feeebe40a198ae1876f86574df9a27ea82ecdd8"
-   #:checksum "0lb6jkc5yxaq65qb20v29801fhijyqf3lxfxkx3gl18hwsmd2cdb"))
+   #:git-commit "5e1a8d5654d97d2631ad67ebb88be4d2eec7d408"
+   #:checksum "04c8s9c192vivlwany9zxl4zxxy7pvkh63d314khv2yslhz0sd08"))
 
 (define-public emacs-pgtk-native-comp
   (emacs-from-git
-   (emacs-with-pgtk
-    (emacs-with-xwidgets
-     (emacs-with-native-comp emacs-next gcc-11 'full-aot)))
+   (emacs-with-native-comp emacs-next-pgtk gcc-11 'full-aot)
    #:pkg-name "emacs-pgtk-native-comp"
    #:pkg-version "28.0.50"
-   #:pkg-revision "183"
+   #:pkg-revision "188"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "66a36f1e5a323aed3d39db1044a1b71373123832"
-   #:checksum "0pblfz3vj6j2z8anrqw6cfshfpgv7d2wgy5a5gckwlxcp7hfnrq2"))
+   #:git-commit "1f82c85bffaaa901dc4626bf47073d1d0fb29d2d"
+   #:checksum "1yl5bbssf0i9a3bgjp7pzg06f9iz2q8z6nf4k6v0fy93zm1p6djg"))
