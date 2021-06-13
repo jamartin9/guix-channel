@@ -7,17 +7,17 @@
   #:use-module (gnu packages chromium)
   )
 
-;; TODO use grafts to split packages that avoid recompiling
-
 (define ff-nvda
   (package
    (inherit firefox)
-   (name "firefox-nvda")))
+   (name "firefox-nvda")
+   (replacement firefox)))
 
 (define chrome-nvda
   (package
    (inherit ungoogled-chromium)
-   (name "ungoogled-chromium-nvda")))
+   (name "ungoogled-chromium-nvda")
+   (replacement ungoogled-chromium)))
 
 (define-public firefox-nvda
   (replace-mesa ff-nvda))
