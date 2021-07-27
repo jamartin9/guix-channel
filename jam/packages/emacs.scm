@@ -8,13 +8,9 @@
   #:use-module ((gnu packages) #:prefix gnu:)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
-  ;#:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages gcc)
-  ;#:use-module (gnu packages gnome)
-  ;#:use-module (gnu packages webkit)
-  ;#:use-module (gnu packages xorg)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
@@ -125,17 +121,17 @@
    (emacs-with-native-comp emacs-next gcc-11 'full-aot)
    #:pkg-name "emacs-native-comp"
    #:pkg-version "28.0.50"
-   #:pkg-revision "190"
+   #:pkg-revision "191"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "fe1b72d21658cf3acfaae3b092bc53a2fe479f0f"
-   #:checksum "0yp9fgll8hkn3b415m6bivr86bzlpyd7r12a9fhzg59lnhp8sbms"))
+   #:git-commit "d2d3fc39295953b4db5bdd7a21d513a87d3d00f0"
+   #:checksum "13w1lnxgf6506rs356kvi94pxvxb2kv099gwyla70mw44jzwyycr"))
 
 (define-public emacs-pgtk-native-comp
   (emacs-from-git
    (emacs-with-native-comp emacs-next-pgtk gcc-11 'full-aot)
    #:pkg-name "emacs-pgtk-native-comp"
    #:pkg-version "28.0.50"
-   #:pkg-revision "190"
+   #:pkg-revision "191"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "b0d688673b0be774c3735eef304f69568bd59bcf"
-   #:checksum "0p1bsjblb6m2agchsazmccrk9jx9n7fr97r472f6rxxhs4q953pb"))
+   #:git-commit "13a9a5e836cbe6e64aadaba40fe1f7eb83320d08"
+   #:checksum "1810hw59cvnnaqz3lr6nkbinrgrjq41x8qg2pjqpzqf035j3b4b9"))
