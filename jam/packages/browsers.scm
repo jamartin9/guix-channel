@@ -10,13 +10,13 @@
 (define ff-nvda
   (package
    (inherit firefox)
-   (name "firefox-nvda")
+   (name "ff-nvda")
    (replacement firefox)))
 
 (define chrome-nvda
   (package
    (inherit ungoogled-chromium)
-   (name "ungoogled-chromium-nvda")
+   (name "ungoogled-chr-nvda")
    (replacement ungoogled-chromium)))
 
 (define-public firefox-nvda
