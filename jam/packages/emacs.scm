@@ -13,6 +13,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-26))
 
 
@@ -39,14 +40,17 @@
 
 (define emacs-with-native-comp
   (lambda* (emacs gcc #:optional full-aot)
-    (let ((libgccjit (libgccjit-for-gcc gcc)))
+    (let ((libgccjit (libgccjit-for-gcc gcc))
+          (patch-name (if (string= (package-name emacs) "emacs-next-pgtk")
+                          "emacs-pgtk-native-comp-exec-path.patch"
+                          "emacs-native-comp-exec-path.patch")))
       (package
         (inherit emacs)
         (source
          (origin
            (inherit (package-source emacs))
            (patches
-            (append (search-patches "emacs-native-comp-exec-path.patch")
+            (append (search-patches patch-name)
                     (filter
                      (lambda (f)
                        (not (any (cut string-match <> f)
