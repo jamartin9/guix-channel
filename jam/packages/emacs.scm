@@ -10,10 +10,12 @@
   #:use-module (guix i18n)
   #:use-module (gnu packages base)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages webkit)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages xorg)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-26))
 
 
@@ -40,17 +42,14 @@
 
 (define emacs-with-native-comp
   (lambda* (emacs gcc #:optional full-aot)
-    (let ((libgccjit (libgccjit-for-gcc gcc))
-          (patch-name (if (string= (package-name emacs) "emacs-next-pgtk")
-                          "emacs-pgtk-native-comp-exec-path.patch"
-                          "emacs-native-comp-exec-path.patch")))
+    (let ((libgccjit (libgccjit-for-gcc gcc)))
       (package
         (inherit emacs)
         (source
          (origin
            (inherit (package-source emacs))
            (patches
-            (append (search-patches patch-name)
+            (append (search-patches "emacs-native-comp-exec-path.patch")
                     (filter
                      (lambda (f)
                        (not (any (cut string-match <> f)
@@ -100,6 +99,7 @@
         (inputs
          `(("glibc" ,glibc)
            ("libgccjit" ,libgccjit)
+           ("libxcomposite" ,libxcomposite) ;; FIXME belongs upstream
            ,@(package-inputs emacs)))))))
 
 (define emacs-from-git
@@ -125,17 +125,50 @@
    (emacs-with-native-comp emacs-next gcc-11 'full-aot)
    #:pkg-name "emacs-native-comp"
    #:pkg-version "29.0.50"
-   #:pkg-revision "193"
+   #:pkg-revision "195"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "e73b8ae86f09b34a65086641d693aea78e42fb25"
-   #:checksum "1s5dv6zhp0z1vlhyslcqnqnz1six43884bivsl890bdwycqdw42a"))
+   #:git-commit "21ef1740f0fe9424f2a079440d070f725b2ca558"
+   #:checksum "0svdxcg1z84h03rydd4hg2mp046m3lacssg2b6r94597jznca7j0"))
 
-(define-public emacs-pgtk-native-comp
+(define-public emacs-next-pgtk-noxwidgets
+  (let ((commit "ae18c8ec4f0ef37c8c9cda473770ff47e41291e2")
+        (revision "1"))
+    (package
+      (inherit emacs-next)
+      (name "emacs-next-pgtk-noxwidgets")
+      (version (git-version "28.0.50" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.savannah.gnu.org/git/emacs.git/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "07hgfqh965zmra0rbmnf63p3lsinpv5hn5payqcrjx25pl75xnaf"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments emacs-next)
+         ((#:configure-flags flags ''())
+          `(cons* "--with-pgtk" ,flags)))) ;; TODO: upstream remove xwidgets
+      (propagated-inputs
+       (list gsettings-desktop-schemas glib-networking))
+      (inputs
+       `(("webkitgtk" ,webkitgtk-with-libsoup2)
+         ,@(package-inputs emacs-next)))
+      (home-page "https://github.com/masm11/emacs")
+      (synopsis "Emacs text editor with @code{pgtk} and @code{xwidgets} support")
+      (description "This is an unofficial Emacs fork build with a pure-GTK
+graphical toolkit to work natively on Wayland.  In addition to that, xwidgets
+also enabled and works without glitches even on X server."))))
+
+
+(define-public emacs-pgtk-native-comp 
   (emacs-from-git
-   (emacs-with-native-comp emacs-next-pgtk gcc-11 'full-aot)
+   (emacs-with-native-comp emacs-next-pgtk-noxwidgets gcc-11 'full-aot)
    #:pkg-name "emacs-pgtk-native-comp"
    #:pkg-version "29.0.50"
-   #:pkg-revision "193"
+   #:pkg-revision "195"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "b4204bdae83695089a27141602a955339df78b7a"
-   #:checksum "0drpms07231zc4w9g7gikwm5zlgrzdw8vbq853rlb7wqk3xg6gyq"))
+   #:git-commit "21ef1740f0fe9424f2a079440d070f725b2ca558"
+   #:checksum "0svdxcg1z84h03rydd4hg2mp046m3lacssg2b6r94597jznca7j0"))
