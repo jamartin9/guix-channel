@@ -91,12 +91,12 @@
                         "-B" (assoc-ref inputs "libgccjit") "/lib/gcc/"))))
                    #t))))))
         (native-inputs
-         `(("gcc" ,gcc)
-           ,@(package-native-inputs emacs)))
+         (modify-inputs (package-native-inputs emacs)
+                        (prepend gcc)))
         (inputs
-         `(("glibc" ,glibc)
-           ("libgccjit" ,libgccjit)
-           ,@(package-inputs emacs)))))))
+         (modify-inputs (package-inputs emacs)
+                        (prepend glibc)
+                        (prepend libgccjit)))))))
 
 (define emacs-from-git
   (lambda* (emacs #:key pkg-name pkg-version pkg-revision git-repo git-commit checksum)
