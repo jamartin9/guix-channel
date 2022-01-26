@@ -52,7 +52,7 @@
         (revision "1"))
     (package
       (name "p2pool-xmr")
-      (version (git-version "1.5" revision commit))
+      (version (git-version "1.6" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -87,11 +87,11 @@
 
 
 (define-public xmrig
-  (let ((commit "718c7e0fc1452353bc1361b85c8a2a4c81c1379e")
+  (let ((commit "4f103b6b45661bbff9dcd2b84cdf00a1b551e851")
         (revision "1"))
     (package
       (name "xmrig")
-      (version (git-version "6.16.2" revision commit))
+      (version (git-version "6.16.3" revision commit))
       (source (origin
                 (patches (search-patches "xmrig-donate.patch"))
                 (method git-fetch)
@@ -102,7 +102,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1wf4r1wwbyjdrin5a7x1rwnivwcybf5h6gnyisdh3hyiz086zfj5"))
+                  "0d368ld811ysghwk8kyvc2f515z8fib5cgwhpjvd6rifk41gq7v1"))
                 (modules '((guix build utils)))))
       (build-system cmake-build-system)
       (outputs '("out"))
