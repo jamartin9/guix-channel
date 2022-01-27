@@ -48,7 +48,7 @@
 
 
 (define-public monero-p2pool
-  (let ((commit "248fcee1746d14e9e9ff8d0415c34bde924c8fb9")
+  (let ((commit "cf184295b4df337ad201c68bfafb0d576eff7ea6")
         (revision "1"))
     (package
       (name "p2pool-xmr")
@@ -62,7 +62,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1m3i1hmybczxbgvfz2kqb81bspk3nq114b3mxvm060632nngamrv"))
+                  "1y05gz99982i22l7la4af616c8cc4l6wp9jv8gvcbncqb0g81saa"))
                 (modules '((guix build utils)))))
       (build-system cmake-build-system)
       (outputs '("out"))
