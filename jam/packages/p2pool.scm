@@ -5,7 +5,6 @@
   #:use-module (guix utils)
   #:use-module (guix build utils)
   #:use-module (gnu packages)
-  #:use-module (gnu packages pkg-config) ; pkg-config
   #:use-module (gnu packages libevent) ; libuv
   #:use-module (gnu packages gsasl) ; gss - p2pool
   #:use-module (gnu packages networking) ; zeromq - p2pool
@@ -49,7 +48,7 @@
 
 (define-public monero-p2pool
   (let ((commit "cf184295b4df337ad201c68bfafb0d576eff7ea6")
-        (revision "1"))
+        (revision "2"))
     (package
       (name "p2pool-xmr")
       (version (git-version "1.6" revision commit))
@@ -62,8 +61,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1y05gz99982i22l7la4af616c8cc4l6wp9jv8gvcbncqb0g81saa"))
-                (modules '((guix build utils)))))
+                  "1y05gz99982i22l7la4af616c8cc4l6wp9jv8gvcbncqb0g81saa"))))
       (build-system cmake-build-system)
       (outputs '("out"))
       (arguments
@@ -77,8 +75,6 @@
                                               (copy-file "p2pool" (string-append out "/bin" "/p2pool"))))))))
       (inputs
        (list libuv gss zeromq libsodium))
-      (native-inputs
-       (list pkg-config))
       (home-page "https://p2pool.io/")
       (synopsis "p2p mining xmr pool")
       (description
@@ -88,7 +84,7 @@
 
 (define-public xmrig
   (let ((commit "4f5f9bdffb268c38fc70f15e1efe5864a7ed50d0")
-        (revision "1"))
+        (revision "2"))
     (package
       (name "xmrig")
       (version (git-version "6.16.4" revision commit))
@@ -101,8 +97,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0mp7q14pfbdjvjai6nw6psqakr1hnzkkn4c51iw578866n2lmxw5"))
-                (modules '((guix build utils)))))
+                  "0mp7q14pfbdjvjai6nw6psqakr1hnzkkn4c51iw578866n2lmxw5"))))
       (build-system cmake-build-system)
       (outputs '("out"))
       (arguments
@@ -117,8 +112,6 @@
                                               (copy-file "xmrig" (string-append out "/bin" "/xmrig"))))))))
       (inputs
        (list libuv openssl `(,hwloc "lib") libmicrohttpd))
-      (native-inputs
-       (list pkg-config))
       (home-page "https://xmrig.com/")
       (synopsis "crypto miner")
       (description
