@@ -120,32 +120,18 @@
   (emacs-from-git
    (emacs-with-native-comp emacs-next gcc-11 'full-aot)
    #:pkg-name "emacs-native-comp"
-   #:pkg-version "29.0.50"
-   #:pkg-revision "198"
+   #:pkg-version "28.0.92"
+   #:pkg-revision "199"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "0a51a85b5de0ca245252a679f2c44f1d9d0363dd"
-   #:checksum "1f19cff9nizf0dy19pz10lqy26hh7347p02grm66grk2v56sa76j"))
-
-(define-public emacs-pgtk
-  (package
-   (inherit emacs-next-pgtk)
-   (arguments
-    (substitute-keyword-arguments
-     `(#:modules
-       ((guix build glib-or-gtk-build-system)
-        (guix build utils)
-        (ice-9 regex)
-        (srfi srfi-1)
-        (srfi srfi-26))
-        ,@(package-arguments emacs-next-pgtk))
-     ((#:configure-flags flags) `(remove (cut string-match "--with-xwidgets" <>) ,flags))))))
+   #:git-commit "5ba9c8c364f652221a0ac9ed918a831e122581db"
+   #:checksum "0gh2qqcsmjych3xazq5n6s430yfnc5k1hmc7vin6c2scnlswlbz0"))
 
 (define-public emacs-pgtk-native-comp 
   (emacs-from-git
    (emacs-with-native-comp emacs-next-pgtk gcc-11 'full-aot)
    #:pkg-name "emacs-pgtk-native-comp"
    #:pkg-version "29.0.50"
-   #:pkg-revision "198"
+   #:pkg-revision "199"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "0a51a85b5de0ca245252a679f2c44f1d9d0363dd"
-   #:checksum "1f19cff9nizf0dy19pz10lqy26hh7347p02grm66grk2v56sa76j"))
+   #:git-commit "b8e8c83360b5e93af60ee8379921837e06d3325e"
+   #:checksum "02zpaq27k9ljkk3wj2xslavqb73419vz266nnp3vz1a1nprraa6d"))
