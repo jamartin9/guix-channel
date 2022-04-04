@@ -120,11 +120,11 @@
   (emacs-from-git
    (emacs-with-native-comp emacs-next gcc-11 'full-aot)
    #:pkg-name "emacs-native-comp"
-   #:pkg-version "28.1.0"
-   #:pkg-revision "200"
+   #:pkg-version "28.1.50"
+   #:pkg-revision "201"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "5a223c7f2ef4c31abbd46367b6ea83cd19d30aa7"
-   #:checksum "01mfwl6lh79f9icrfw07dns3g0nqwc06k6fm3gr45iv1bjgg0z8g"))
+   #:git-commit "dd3863d8bcc77c43363bbd041da1c1eb37a3ee32"
+   #:checksum "1k2nmm76l5y5f2rfl5iz7w6z6ydw4bh3m1spqj93pf0knicl76pn"))
 
 (define-public emacs-pgtk-native-comp 
   (emacs-from-git
