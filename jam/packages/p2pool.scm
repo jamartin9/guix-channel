@@ -83,11 +83,11 @@
 
 
 (define-public xmrig
-  (let ((commit "4f5f9bdffb268c38fc70f15e1efe5864a7ed50d0")
-        (revision "2"))
+  (let ((commit "56c95703a555e8bdf773b51ea475be9ad58c4333")
+        (revision "1"))
     (package
       (name "xmrig")
-      (version (git-version "6.16.4" revision commit))
+      (version (git-version "6.17.0" revision commit))
       (source (origin
                 (patches (search-patches "xmrig-donate.patch"))
                 (method git-fetch)
@@ -97,7 +97,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0mp7q14pfbdjvjai6nw6psqakr1hnzkkn4c51iw578866n2lmxw5"))))
+                  "11wh2ry3dnjynzc9a3nd8mfja7h6nxmx4fwaha82ssz5dkfqvj9b"))))
       (build-system cmake-build-system)
       (outputs '("out"))
       (arguments
