@@ -919,7 +919,7 @@
                   (invoke #$zfs "unmount" "-a" "-f")))))
 
     `(,zfs-scan
-      ,device-mapping-zvol/*
+      ;,device-mapping-zvol/* ; TODO: zfs not found
       ,@(if (zfs-configuration-auto-mount? conf)
             `(,zfs-auto-mount)
             '()))))
