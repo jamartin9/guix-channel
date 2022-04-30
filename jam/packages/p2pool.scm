@@ -21,8 +21,6 @@
   #:use-module (srfi srfi-26)
   )
 
-
-
 (define (search-patch file-name)
   "Search the patch FILE-NAME.  Raise an error if not found."
   (or (search-path (%patch-path) file-name)
@@ -47,11 +45,11 @@
 
 
 (define-public monero-p2pool
-  (let ((commit "5b9b73abcc8d0cb512532ec065ebe8b77b8a6695")
+  (let ((commit "8aebcdc580c424903221c95ebe2304a2e48b01b8")
         (revision "1"))
     (package
       (name "p2pool-xmr")
-      (version (git-version "1.9" revision commit))
+      (version (git-version "2.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -61,7 +59,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "09l75ca31zyahnd7s62nabsh09icwjgcakvlbiqbm3jhvwbp98ly"))))
+                  "0vpd8ci3nlhbmcax99rsjjalx39y834g3qicccdg2k0gkg8mk4ll"))))
       (build-system cmake-build-system)
       (outputs '("out"))
       (arguments
