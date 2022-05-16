@@ -4,6 +4,7 @@
   #:use-module (guix memoization)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (guix build utils)
   #:use-module ((gnu packages) #:prefix gnu:)
   #:use-module (guix diagnostics)
@@ -15,65 +16,31 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
-
-(define (search-patch file-name)
-  "Search the patch FILE-NAME.  Raise an error if not found."
-  (or (search-path (%patch-path) file-name)
-      (raise (formatted-message (G_ "~a: patch not found")
-                                file-name))))
-
-(define-syntax-rule (search-patches file-name ...)
-  "Return the list of absolute file names corresponding to each FILE-NAME found in %PATCH-PATH."
-  (list (search-patch file-name) ...))
-
-(define %channel-root
-  (find (lambda (path)
-          (file-exists? (string-append path "/jam/packages/emacs.scm")))
-        %load-path))
-
-(define %patch-path
-  (make-parameter
-   (append
-    (list (string-append %channel-root "/jam/packages/patches"))
-    (gnu:%patch-path))))
-
 (define emacs-with-native-comp
   (lambda* (emacs gcc #:optional full-aot)
     (let ((libgccjit (libgccjit-for-gcc gcc)))
       (package
         (inherit emacs)
-        (source
-         (origin
-           (inherit (package-source emacs))
-           (patches
-            (append (search-patches "emacs-native-comp-exec-path.patch")
-                    (filter
-                     (lambda (f)
-                       (not (any (cut string-match <> f)
-                                 '("/emacs-exec-path\\.patch$"
-                                   "/emacs-ignore-empty-xim-styles\\.patch$"))))
-                     (origin-patches (package-source emacs)))))))
         (arguments
          (substitute-keyword-arguments (package-arguments emacs)
-           ((#:make-flags flags ''())
+           ((#:make-flags flags #~'())
             (if full-aot
-                `(cons* "NATIVE_FULL_AOT=1" ,flags)
+                #~(cons* "NATIVE_FULL_AOT=1" #$flags)
                 flags))
            ((#:configure-flags flags)
-            `(cons* "--with-native-compilation" ,flags))
+            #~(cons* "--with-native-compilation" #$flags))
            ((#:phases phases)
-            `(modify-phases ,phases
+            #~(modify-phases #$phases
                ;; Add build-time library paths for libgccjit.
                (add-before 'configure 'set-libgccjit-path
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let ((libgccjit-libdir
                           (string-append (assoc-ref inputs "libgccjit")
                                          "/lib/gcc/" %host-type "/"
-                                         ,(package-version libgccjit) "/")))
+                                         #$(package-version libgccjit) "/")))
                      (setenv "LIBRARY_PATH"
                              (string-append libgccjit-libdir ":"
-                                            (getenv "LIBRARY_PATH"))))
-                   #t))
+                                            (getenv "LIBRARY_PATH"))))))
                ;; Add runtime library paths for libgccjit.
                (add-after 'unpack 'patch-driver-options
                  (lambda* (#:key inputs #:allow-other-keys)
@@ -88,8 +55,7 @@
                        (string-append
                         "-B" (assoc-ref inputs "libgccjit") "/lib/")
                        (string-append
-                        "-B" (assoc-ref inputs "libgccjit") "/lib/gcc/"))))
-                   #t))))))
+                        "-B" (assoc-ref inputs "libgccjit") "/lib/gcc/"))))))))))
         (native-inputs
          (modify-inputs (package-native-inputs emacs)
                         (prepend gcc)))
@@ -121,17 +87,17 @@
    (emacs-with-native-comp emacs-next gcc-11 'full-aot)
    #:pkg-name "emacs-native-comp"
    #:pkg-version "28.1.50"
-   #:pkg-revision "201"
+   #:pkg-revision "202"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "dd3863d8bcc77c43363bbd041da1c1eb37a3ee32"
-   #:checksum "1k2nmm76l5y5f2rfl5iz7w6z6ydw4bh3m1spqj93pf0knicl76pn"))
+   #:git-commit "007bf9a34c52334434e5ee29928773f051e0f19e"
+   #:checksum "138ad1qq3c17mxf9xc7h86jg5xkf3xcp21jdfxc42pqxmhazy1k6"))
 
 (define-public emacs-pgtk-native-comp 
   (emacs-from-git
    (emacs-with-native-comp emacs-next-pgtk gcc-11 'full-aot)
    #:pkg-name "emacs-pgtk-native-comp"
    #:pkg-version "29.0.50"
-   #:pkg-revision "201"
+   #:pkg-revision "202"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "7deaa2e36bafefd5bcd1278444f93212c68ddc19"
-   #:checksum "1ih4mbx64020llcry66hfv7vhd8ph1vmnhfbz844nhgfpcjbxcx4"))
+   #:git-commit "22873b5415fbcc81f2d1e0e69cccd5dbeaac51ee"
+   #:checksum "130jrc0b8z5ixxwwk3h321mlvgpcwfsra7hr0qxgn6al3n78w3by"))
