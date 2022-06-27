@@ -52,6 +52,9 @@
        `(("gcc" ,gcc)
          ,@(package-native-inputs gcc))))))
 
+(define-public libgccjit-12
+  (libgccjit-for-gcc gcc-12))
+
 (define-public libgccjit-11
   (libgccjit-for-gcc gcc-11))
 

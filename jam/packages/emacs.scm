@@ -84,7 +84,7 @@
 
 (define-public emacs-native-comp
   (emacs-from-git
-   (emacs-with-native-comp emacs-next gcc-11 'full-aot)
+   (emacs-with-native-comp emacs-next gcc-12 'full-aot)
    #:pkg-name "emacs-native-comp"
    #:pkg-version "28.1.50"
    #:pkg-revision "203"
@@ -94,7 +94,7 @@
 
 (define-public emacs-pgtk-native-comp 
   (emacs-from-git
-   (emacs-with-native-comp emacs-next-pgtk gcc-11 'full-aot)
+   (emacs-with-native-comp emacs-next-pgtk gcc-12 'full-aot)
    #:pkg-name "emacs-pgtk-native-comp"
    #:pkg-version "29.0.50"
    #:pkg-revision "203"
