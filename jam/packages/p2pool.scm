@@ -9,6 +9,7 @@
   #:use-module (gnu packages gsasl) ; gss - p2pool
   #:use-module (gnu packages networking) ; zeromq - p2pool
   #:use-module (gnu packages crypto) ; libsodium - p2pool
+  #:use-module (gnu packages curl) ; libcurl - p2pool
   #:use-module (guix build-system cmake) ; cmake
   #:use-module (gnu packages gnunet) ; libmicrohttpd - xmrig
   #:use-module (gnu packages mpi) ; hwloc - xmrig
@@ -45,11 +46,11 @@
 
 
 (define-public monero-p2pool
-  (let ((commit "9a5be0a32117836d3adebdbc7befb3c0ea56c885")
+  (let ((commit "c5ea4dca677ec9a1f8963f6fa5016b2682b52d09")
         (revision "1"))
     (package
       (name "p2pool-xmr")
-      (version (git-version "2.1" revision commit))
+      (version (git-version "2.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -59,7 +60,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0gv5k81nhzd7nx0fmmsxd11y72s6d13qa0c9bp3dslywhb6lr43j"))))
+                  "08yh4gsgib2ncfk7zr4g0dxpld6409k0yh6i4pr309hnd9hwh9s5"))))
       (build-system cmake-build-system)
       (outputs '("out"))
       (arguments
@@ -72,7 +73,7 @@
                                               (mkdir-p (string-append out "/bin"))
                                               (copy-file "p2pool" (string-append out "/bin" "/p2pool"))))))))
       (inputs
-       (list libuv gss zeromq libsodium))
+       (list libuv gss zeromq libsodium curl))
       (home-page "https://p2pool.io/")
       (synopsis "p2p mining xmr pool")
       (description
