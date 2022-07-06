@@ -97,7 +97,7 @@
    (emacs-with-native-comp emacs-next-pgtk gcc-12 'full-aot)
    #:pkg-name "emacs-pgtk-native-comp"
    #:pkg-version "29.0.50"
-   #:pkg-revision "204"
+   #:pkg-revision "205"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "fe82c0743b3feecb9b80549ef4bb3dc8529891a8"
-   #:checksum "1m3z2n63qqidjakk4hbaz6izb8a9p3018bvrrhid2ydvaiw57prz"))
+   #:git-commit "22bcbf8e2cc271555a737c176c48e89daa0c17be"
+   #:checksum "0hbx5hp4gzcir54rxyi16p4iryaq736ymjni8lir8zxzcg65a8lh"))
