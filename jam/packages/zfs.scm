@@ -870,7 +870,7 @@
                                       "zfs: error importing pools: ~s~%"
                                       (condition-message c))
                               #f))
-                     ;; TODO: optionally use a cachefile.
+                     ;; TODO optionally use a cachefile.
                      (invoke #$zpool "import" "-a" "-N"))))
         ;; Why not one-shot?  Because we don't really want to rescan
         ;; this each time a requiring process is restarted, as scanning
@@ -919,7 +919,7 @@
                   (invoke #$zfs "unmount" "-a" "-f")))))
 
     `(,zfs-scan
-      ;,device-mapping-zvol/* ; TODO: zfs not found
+      ;,device-mapping-zvol/* ; TODO zfs not found
       ,@(if (zfs-configuration-auto-mount? conf)
             `(,zfs-auto-mount)
             '()))))
