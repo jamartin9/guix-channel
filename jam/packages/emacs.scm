@@ -13,6 +13,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages gcc)
   #:use-module (ice-9 regex)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
@@ -21,6 +22,17 @@
     (let ((libgccjit (libgccjit-for-gcc gcc)))
       (package
         (inherit emacs)
+        (source
+         (origin
+           (inherit (package-source emacs))
+           (patches
+            (if (string=? "emacs-next-pgtk" (package-name emacs))
+                (filter
+                 (lambda (f)
+                   (not (any (cut string-match <> f)
+                             '("/emacs-source-date-epoch\\.patch$")))); emacs-29
+                 (origin-patches (package-source emacs)))
+             (origin-patches (package-source emacs))))))
         (arguments
          (substitute-keyword-arguments (package-arguments emacs)
            ((#:make-flags flags #~'())
@@ -61,8 +73,7 @@
                         (prepend gcc)))
         (inputs
          (modify-inputs (package-inputs emacs)
-                        (prepend glibc)
-                        (prepend libgccjit)))))))
+                        (prepend glibc libgccjit)))))))
 
 (define emacs-from-git
   (lambda* (emacs #:key pkg-name pkg-version pkg-revision git-repo git-commit checksum)
@@ -86,18 +97,18 @@
   (emacs-from-git
    (emacs-with-native-comp emacs-next gcc-12 'full-aot)
    #:pkg-name "emacs-native-comp"
-   #:pkg-version "28.1.90"
-   #:pkg-revision "204"
+   #:pkg-version "28.1.91"
+   #:pkg-revision "206"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "f1de6c0e28fdd34227b24efbd7a0eebff90dd33f"
-   #:checksum "19vvr9vyzsqa9hav8y1zkq8xy7l2441r7g625hgh64yl763n6nyi"))
+   #:git-commit "e6af4968f947a3e536fbd80e74fea44ca18e22ac"
+   #:checksum "0qh598zzwh2vnplp9h33rx7nk311adzpnhzkp2yp1yhqlxqzx3wj"))
 
 (define-public emacs-pgtk-native-comp 
   (emacs-from-git
    (emacs-with-native-comp emacs-next-pgtk gcc-12 'full-aot)
    #:pkg-name "emacs-pgtk-native-comp"
    #:pkg-version "29.0.50"
-   #:pkg-revision "205"
+   #:pkg-revision "206"
    #:git-repo "https://git.savannah.gnu.org/git/emacs.git"
-   #:git-commit "22bcbf8e2cc271555a737c176c48e89daa0c17be"
-   #:checksum "0hbx5hp4gzcir54rxyi16p4iryaq736ymjni8lir8zxzcg65a8lh"))
+   #:git-commit "c0d761bf7f441f8ab9792351a493dc6bd5525dc1"
+   #:checksum "1i4rx2c530mqw2wyjhck461c3xra2pxhsa030cm4c8a33b1q8g7v"))
