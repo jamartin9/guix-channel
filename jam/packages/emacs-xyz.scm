@@ -152,3 +152,23 @@
     (synopsis "Package to help you perform code reviews from your VC provider.")
     (description "Currently supports Github and basic Gitlab and Bitbucket workflows.")
     (license license:gpl3+)))
+
+
+(define-public emacs-signal-msg
+  (package
+    (name "emacs-signal-msg")
+    (version "20220907")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mrkrd/signal-msg/")
+             (commit "c579a286c26467f730731ed410375ef53ba4cd52")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sid4q40rjg36v65p0b4gkd3mv3cql29hf5r8vi5nqfnchw4lky5"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/mrkrd/signal-msg")
+    (synopsis "Sends message with signal-cli.")
+    (description "Sends messages with signal-cli.")
+    (license license:gpl3+)))
