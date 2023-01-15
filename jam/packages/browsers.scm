@@ -5,7 +5,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages chromium)
-  )
+  ) ; BUG non cli grafts seem to be undefined for 'nvda'
 
 (define ff-nvda
   (package
