@@ -5,7 +5,7 @@
        (name nonguix)
        (url "https://gitlab.com/nonguix/nonguix")
        (branch "master")
-       (commit "6a03e22b7ea4a8c9435501947f8628cdcf6ed63d")
+       (commit "15e5924de8696cc4a19a8f508501d07f799650e1")
        (introduction
          (make-channel-introduction
           "897c1a470da759236cc11798f4e0a5f7d4d59fbc"
