@@ -8,5 +8,6 @@
        (introduction
          (channel-introduction
            (version 0)
-           (commit "15e5924de8696cc4a19a8f508501d07f799650e1")
-           (signer "CABB A931 C0FF EEC6 900D  0CFB 090B 1199 3D9A EBB5"))))))
+           (commit "36f5b9750cf95821ea4d0056059454d25a7d5f16")
+           ; gpg key of commit signer
+           (signer "D319 C7A9 8F2C 3A11 D9C0  0E30 F369 0CBE 3152 EF58"))))))
