@@ -1,0 +1,13 @@
+diff --git a/rescene/utility.py b/rescene/utility.py
+index b54eecb..8968bd6 100644
+--- a/rescene/utility.py
++++ b/rescene/utility.py
+@@ -391,7 +391,7 @@ def joinpath(path, start=""):
+ 			raise ValueError(fmt.format(elem))
+ 	return os.path.join(start, *path)
+ 
+-def sep(number, loc=''):
++def sep(number, loc=None):
+ 	"""Adds a thousands separator to the number.
+ 	The function is locale aware."""
+ 	locale.setlocale(locale.LC_ALL, loc)
