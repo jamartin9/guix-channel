@@ -10,7 +10,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils))
 
-(define-public rust-xattr-1
+(define rust-xattr-1
   (package
     (name "rust-xattr")
     (version "1.0.0")
@@ -30,7 +30,7 @@
     (description "unix extended filesystem attributes")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-which-4
+(define rust-which-4
   (package
     (name "rust-which")
     (version "4.4.0")
@@ -56,7 +56,7 @@
 installed executable in cross platforms.")
     (license license:expat)))
 
-(define-public rust-tuikit-0.5
+(define rust-tuikit-0.5
   (package
     (name "rust-tuikit")
     (version "0.5.0")
@@ -81,7 +81,7 @@ installed executable in cross platforms.")
     (description "Toolkit for writing TUI applications")
     (license license:expat)))
 
-(define-public rust-regex-syntax-0.7
+(define rust-regex-syntax-0.7
   (package
     (name "rust-regex-syntax")
     (version "0.7.4")
@@ -101,7 +101,7 @@ installed executable in cross platforms.")
     (description "This package provides a regular expression parser.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-regex-automata-0.3
+(define rust-regex-automata-0.3
   (package
     (name "rust-regex-automata")
     (version "0.3.2")
@@ -125,7 +125,7 @@ installed executable in cross platforms.")
      "Automata construction and matching using regular expressions.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-aho-corasick-1
+(define rust-aho-corasick-1
   (package
     (name "rust-aho-corasick")
     (version "1.0.2")
@@ -146,7 +146,7 @@ installed executable in cross platforms.")
     (description "Fast multiple substring searching.")
     (license (list license:unlicense license:expat))))
 
-(define-public rust-regex-1
+(define rust-regex-1
   (package
     (name "rust-regex")
     (version "1.9.1")
@@ -174,7 +174,7 @@ finite automata and guarantees linear time matching on all inputs.
 finite automata and guarantees linear time matching on all inputs.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-thread-local-1
+(define rust-thread-local-1
   (package
     (name "rust-thread-local")
     (version "1.1.7")
@@ -195,7 +195,7 @@ finite automata and guarantees linear time matching on all inputs.")
     (description "Per-object thread-local storage")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-fuzzy-muff-0.3
+(define rust-fuzzy-muff-0.3
   (package
     (name "rust-fuzzy-muff")
     (version "0.3.10")
@@ -215,7 +215,7 @@ finite automata and guarantees linear time matching on all inputs.")
     (description "Fuzzy Matching Library")
     (license license:expat)))
 
-(define-public rust-derive-builder-core-0.12
+(define rust-derive-builder-core-0.12
   (package
     (name "rust-derive-builder-core")
     (version "0.12.0")
@@ -238,7 +238,7 @@ finite automata and guarantees linear time matching on all inputs.")
     (description "Internal helper library for the derive_builder crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-derive-builder-macro-0.12
+(define rust-derive-builder-macro-0.12
   (package
     (name "rust-derive-builder-macro")
     (version "0.12.0")
@@ -261,7 +261,7 @@ finite automata and guarantees linear time matching on all inputs.")
      "Rust macro to automatically implement the builder pattern for arbitrary structs.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-derive-builder-0.12
+(define rust-derive-builder-0.12
   (package
     (name "rust-derive-builder")
     (version "0.12.0")
@@ -283,7 +283,7 @@ finite automata and guarantees linear time matching on all inputs.")
      "Rust macro to automatically implement the builder pattern for arbitrary structs.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-defer-drop-1
+(define rust-defer-drop-1
   (package
     (name "rust-defer-drop")
     (version "1.3.0")
@@ -305,7 +305,7 @@ finite automata and guarantees linear time matching on all inputs.")
     (description "Defer dropping large types to a background thread")
     (license license:mpl2.0)))
 
-(define-public rust-bitflags-2
+(define rust-bitflags-2
   (package
     (name "rust-bitflags")
     (version "2.3.3")
@@ -331,7 +331,7 @@ finite automata and guarantees linear time matching on all inputs.")
      "This package provides a macro to generate structures which behave like bitflags.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-two-percent-0.10
+(define rust-two-percent-0.10
   (package
     (name "rust-two-percent")
     (version "0.10.19")
@@ -371,7 +371,7 @@ finite automata and guarantees linear time matching on all inputs.")
     (description "Fuzzy Finder in rust!")
     (license license:expat)))
 
-(define-public rust-time-macros-0.2
+(define rust-time-macros-0.2
   (package
     (name "rust-time-macros")
     (version "0.2.10")
@@ -396,7 +396,7 @@ finite automata and guarantees linear time matching on all inputs.")
 and should not be relied upon directly.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-time-core-0.1
+(define rust-time-core-0.1
   (package
     (name "rust-time-core")
     (version "0.1.1")
@@ -417,7 +417,7 @@ and should not be relied upon directly.")
      "This crate is an implementation detail and should not be relied upon directly.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-time-0.3
+(define rust-time-0.3
   (package
     (name "rust-time")
     (version "0.3.23")
@@ -448,7 +448,7 @@ and should not be relied upon directly.")
 compatible with #![no_std].")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-linux-raw-sys-0.3
+(define rust-linux-raw-sys-0.3
   (package
     (name "rust-linux-raw-sys")
     (version "0.3.8")
@@ -470,7 +470,7 @@ compatible with #![no_std].")
     (license (list license:asl2.0 license:asl2.0
                    license:expat))))
 
-(define-public rust-hermit-abi-0.3
+(define rust-hermit-abi-0.3
   (package
     (name "rust-hermit-abi")
     (version "0.3.2")
@@ -492,7 +492,7 @@ compatible with #![no_std].")
     (description "Hermit system calls definitions.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-io-lifetimes-1
+(define rust-io-lifetimes-1
   (package
     (name "rust-io-lifetimes")
     (version "1.0.11")
@@ -522,7 +522,7 @@ compatible with #![no_std].")
     (license (list license:asl2.0 license:asl2.0
                    license:expat))))
 
-(define-public rust-errno-0.3
+(define rust-errno-0.3
   (package
     (name "rust-errno")
     (version "0.3.1")
@@ -544,7 +544,7 @@ compatible with #![no_std].")
     (description "Cross-platform interface to the `errno` variable.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rustix-0.37
+(define rust-rustix-0.37
   (package
     (name "rust-rustix")
     (version "0.37.23")
@@ -577,7 +577,7 @@ compatible with #![no_std].")
     (license (list license:asl2.0
                    license:expat))))
 
-(define-public rust-terminal-size-0.2
+(define rust-terminal-size-0.2
   (package
     (name "rust-terminal-size")
     (version "0.2.6")
@@ -598,7 +598,7 @@ compatible with #![no_std].")
     (description "Gets the size of your Linux or Windows terminal")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-simd-adler32-0.3
+(define rust-simd-adler32-0.3
   (package
     (name "rust-simd-adler32")
     (version "0.3.5")
@@ -620,7 +620,7 @@ compatible with #![no_std].")
 implementation.")
     (license license:expat)))
 
-(define-public rust-quote-1
+(define rust-quote-1
   (package
     (name "rust-quote")
     (version "1.0.29")
@@ -640,7 +640,7 @@ implementation.")
     (description "Quasi-quoting macro quote!(...)")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-proc-macro2-1
+(define rust-proc-macro2-1
   (package
     (name "rust-proc-macro2")
     (version "1.0.64")
@@ -663,7 +663,7 @@ implementation.")
 API to decouple token-based libraries from the procedural macro use case.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-syn-2
+(define rust-syn-2
   (package
     (name "rust-syn")
     (version "2.0.25")
@@ -685,7 +685,7 @@ API to decouple token-based libraries from the procedural macro use case.")
     (description "Parser for Rust source code")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-serde-derive-1
+(define rust-serde-derive-1
   (package
     (name "rust-serde-derive")
     (version "1.0.171")
@@ -708,7 +708,7 @@ API to decouple token-based libraries from the procedural macro use case.")
      "Macros 1.1 implementation of #[derive(Serialize, Deserialize)]")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-serde-1
+(define rust-serde-1
   (package
     (name "rust-serde")
     (version "1.0.171")
@@ -729,7 +729,7 @@ API to decouple token-based libraries from the procedural macro use case.")
      "This package provides a generic serialization/deserialization framework")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rayon-core-1
+(define rust-rayon-core-1
   (package
     (name "rust-rayon-core")
     (version "1.11.0")
@@ -752,7 +752,7 @@ API to decouple token-based libraries from the procedural macro use case.")
     (description "Core APIs for Rayon")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rayon-1
+(define rust-rayon-1
   (package
     (name "rust-rayon")
     (version "1.7.0")
@@ -773,7 +773,7 @@ API to decouple token-based libraries from the procedural macro use case.")
     (description "Simple work-stealing parallelism for Rust")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-partition-identity-0.3
+(define rust-partition-identity-0.3
   (package
     (name "rust-partition-identity")
     (version "0.3.0")
@@ -795,7 +795,7 @@ API to decouple token-based libraries from the procedural macro use case.")
      "Find the ID of a device by its path, or find a device path by its ID.")
     (license license:expat)))
 
-(define-public rust-proc-mounts-0.3
+(define rust-proc-mounts-0.3
   (package
     (name "rust-proc-mounts")
     (version "0.3.0")
@@ -815,7 +815,7 @@ API to decouple token-based libraries from the procedural macro use case.")
     (description "Fetch active mounts and swaps on a Linux system")
     (license license:expat)))
 
-(define-public rust-nu-ansi-term-0.47
+(define rust-nu-ansi-term-0.47
   (package
     (name "rust-nu-ansi-term")
     (version "0.47.0")
@@ -837,7 +837,7 @@ API to decouple token-based libraries from the procedural macro use case.")
      "Library for ANSI terminal colors and styles (bold, underline)")
     (license license:expat)))
 
-(define-public rust-filedescriptor-0.8
+(define rust-filedescriptor-0.8
   (package
     (name "rust-filedescriptor")
     (version "0.8.2")
@@ -859,7 +859,7 @@ API to decouple token-based libraries from the procedural macro use case.")
     (description "More ergonomic wrappers around RawFd and RawHandle")
     (license license:expat)))
 
-(define-public rust-crossterm-0.26
+(define rust-crossterm-0.26
   (package
     (name "rust-crossterm")
     (version "0.26.1")
@@ -891,7 +891,7 @@ API to decouple token-based libraries from the procedural macro use case.")
 terminals.")
     (license license:expat)))
 
-(define-public rust-lscolors-0.14
+(define rust-lscolors-0.14
   (package
     (name "rust-lscolors")
     (version "0.14.0")
@@ -913,7 +913,7 @@ terminals.")
     (description "Colorize paths using the LS_COLORS environment variable")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-libc-0.2
+(define rust-libc-0.2
   (package
     (name "rust-libc")
     (version "0.2.147")
@@ -934,7 +934,7 @@ terminals.")
     (description "Raw FFI bindings to platform libraries like libc.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-vte-0.11
+(define rust-vte-0.11
   (package
     (name "rust-vte")
     (version "0.11.1")
@@ -958,7 +958,7 @@ terminals.")
     (description "Parser for implementing terminal emulators")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-itoa-1
+(define rust-itoa-1
   (package
     (name "rust-itoa")
     (version "1.0.8")
@@ -978,7 +978,7 @@ terminals.")
     (description "Fast integer primitive to string conversion")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-vt100-0.15
+(define rust-vt100-0.15
   (package
     (name "rust-vt100")
     (version "0.15.2")
@@ -1001,7 +1001,7 @@ terminals.")
     (description "Library for parsing terminal data")
     (license license:expat)))
 
-(define-public rust-indicatif-0.17
+(define rust-indicatif-0.17
   (package
     (name "rust-indicatif")
     (version "0.17.5")
@@ -1030,7 +1030,7 @@ terminals.")
      "This package provides a progress bar and cli reporting library for Rust")
     (license license:expat)))
 
-(define-public rust-rkyv-derive-0.7
+(define rust-rkyv-derive-0.7
   (package
     (name "rust-rkyv-derive")
     (version "0.7.42")
@@ -1052,7 +1052,7 @@ terminals.")
     (description "Derive macro for rkyv")
     (license license:expat)))
 
-(define-public rust-bytecheck-derive-0.6
+(define rust-bytecheck-derive-0.6
   (package
     (name "rust-bytecheck-derive")
     (version "0.6.11")
@@ -1074,7 +1074,7 @@ terminals.")
     (description "Derive macro for bytecheck")
     (license license:expat)))
 
-(define-public rust-bytecheck-0.6
+(define rust-bytecheck-0.6
   (package
     (name "rust-bytecheck")
     (version "0.6.11")
@@ -1097,7 +1097,7 @@ terminals.")
     (description "Derive macro for bytecheck")
     (license license:expat)))
 
-(define-public rust-rkyv-0.7
+(define rust-rkyv-0.7
   (package
     (name "rust-rkyv")
     (version "0.7.42")
@@ -1128,7 +1128,7 @@ terminals.")
     (description "Zero-copy deserialization framework for Rust")
     (license license:expat)))
 
-(define-public rust-allocator-api2-0.2
+(define rust-allocator-api2-0.2
   (package
     (name "rust-allocator-api2")
     (version "0.2.15")
@@ -1148,7 +1148,7 @@ terminals.")
     (description "Mirror of Rust's allocator API")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-hashbrown-0.14
+(define rust-hashbrown-0.14
   (package
     (name "rust-hashbrown")
     (version "0.14.0")
@@ -1176,7 +1176,7 @@ terminals.")
      "This package provides a Rust port of Google's SwissTable hash map")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-x86-64-msvc-0.48
+(define rust-windows-x86-64-msvc-0.48
   (package
     (name "rust-windows-x86-64-msvc")
     (version "0.48.0")
@@ -1195,7 +1195,7 @@ terminals.")
     (description "Import lib for Windows")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-x86-64-gnullvm-0.48
+(define rust-windows-x86-64-gnullvm-0.48
   (package
     (name "rust-windows-x86-64-gnullvm")
     (version "0.48.0")
@@ -1214,7 +1214,7 @@ terminals.")
     (description "Import lib for Windows")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-x86-64-gnu-0.48
+(define rust-windows-x86-64-gnu-0.48
   (package
     (name "rust-windows-x86-64-gnu")
     (version "0.48.0")
@@ -1233,7 +1233,7 @@ terminals.")
     (description "Import lib for Windows")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-i686-msvc-0.48
+(define rust-windows-i686-msvc-0.48
   (package
     (name "rust-windows-i686-msvc")
     (version "0.48.0")
@@ -1252,7 +1252,7 @@ terminals.")
     (description "Import lib for Windows")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-i686-gnu-0.48
+(define rust-windows-i686-gnu-0.48
   (package
     (name "rust-windows-i686-gnu")
     (version "0.48.0")
@@ -1271,7 +1271,7 @@ terminals.")
     (description "Import lib for Windows")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-aarch64-msvc-0.48
+(define rust-windows-aarch64-msvc-0.48
   (package
     (name "rust-windows-aarch64-msvc")
     (version "0.48.0")
@@ -1290,7 +1290,7 @@ terminals.")
     (description "Import lib for Windows")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-aarch64-gnullvm-0.48
+(define rust-windows-aarch64-gnullvm-0.48
   (package
     (name "rust-windows-aarch64-gnullvm")
     (version "0.48.0")
@@ -1309,7 +1309,7 @@ terminals.")
     (description "Import lib for Windows")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-targets-0.48
+(define rust-windows-targets-0.48
   (package
     (name "rust-windows-targets")
     (version "0.48.1")
@@ -1335,7 +1335,7 @@ terminals.")
     (description "Import libs for Windows")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-sys-0.48
+(define rust-windows-sys-0.48
   (package
     (name "rust-windows-sys")
     (version "0.48.0")
@@ -1355,7 +1355,7 @@ terminals.")
     (description "Rust for Windows")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-filetime-0.2
+(define rust-filetime-0.2
   (package
     (name "rust-filetime")
     (version "0.2.21")
@@ -1379,7 +1379,7 @@ terminals.")
     (description "Platform-agnostic accessors of timestamps in File metadata")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-exacl-0.10
+(define rust-exacl-0.10
   (package
     (name "rust-exacl")
     (version "0.10.0")
@@ -1406,7 +1406,7 @@ terminals.")
      "Manipulate file system access control lists (ACL) on macOS, Linux, and FreeBSD")
     (license license:expat)))
 
-(define-public rust-crossbeam-channel-0.5
+(define rust-crossbeam-channel-0.5
   (package
     (name "rust-crossbeam-channel")
     (version "0.5.8")
@@ -1428,7 +1428,7 @@ terminals.")
     (description "Multi-producer multi-consumer channels for message passing")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-clap-derive-3
+(define rust-clap-derive-3
   (package
     (name "rust-clap-derive")
     (version "3.2.25")
@@ -1454,7 +1454,7 @@ terminals.")
      "Parse command line argument by defining a struct, derive crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-clap-3
+(define rust-clap-3
   (package
     (name "rust-clap")
     (version "3.2.25")
