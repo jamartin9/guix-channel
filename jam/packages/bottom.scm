@@ -3953,7 +3953,8 @@ in a Rust program.")
     (build-system cargo-build-system)
     ;(propagated-inputs (list nvidia-nvml))
     (arguments
-     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-backtrace" ,rust-backtrace-0.3)
                        ("rust-cfg-if" ,rust-cfg-if-1)
                        ("rust-clap" ,rust-clap-4)

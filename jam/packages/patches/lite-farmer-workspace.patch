@@ -1,0 +1,78 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index d4d2475..cf4daf8 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -3,14 +3,14 @@ resolver = "2"
+ 
+ members = [
+     "lite-farmer",
+-    "dg_xch_utils/cli",
+-    "dg_xch_utils/clients",
+-    "dg_xch_utils/core",
+-    "dg_xch_utils/keys",
+-    "dg_xch_utils/macros",
+-    "dg_xch_utils/proof_of_space",
+-    "dg_xch_utils/puzzles",
+-    "dg_xch_utils/serialize"
++#    "dg_xch_utils/cli",
++#    "dg_xch_utils/clients",
++#    "dg_xch_utils/core",
++#    "dg_xch_utils/keys",
++#    "dg_xch_utils/macros",
++#    "dg_xch_utils/proof_of_space",
++#    "dg_xch_utils/puzzles",
++#    "dg_xch_utils/serialize"
+ ]
+ 
+ [workspace.dependencies]
+@@ -22,14 +22,14 @@ bls12_381 = "0.8.0"
+ blst = "0.3.7"
+ bytes = "1.4.0"
+ clap = { version = "4.1.1", features = ["derive"] }
+-dg_xch_cli = {path = "./dg_xch_utils/cli"}
+-dg_xch_clients = {path = "./dg_xch_utils/clients"}
+-dg_xch_core = {path = "./dg_xch_utils/core", features = ["paperclip"] }
+-dg_xch_keys = {path = "./dg_xch_utils/keys"}
+-dg_xch_macros = {path = "./dg_xch_utils/macros"}
+-dg_xch_pos = {path = "./dg_xch_utils/proof_of_space"}
+-dg_xch_puzzles = {path = "./dg_xch_utils/puzzles"}
+-dg_xch_serialize = {path = "./dg_xch_utils/serialize"}
++#dg_xch_cli = {path = "./dg_xch_utils/cli"}
++#dg_xch_clients = {path = "./dg_xch_utils/clients"}
++#dg_xch_core = {path = "./dg_xch_utils/core", features = ["paperclip"] }
++#dg_xch_keys = {path = "./dg_xch_utils/keys"}
++#dg_xch_macros = {path = "./dg_xch_utils/macros"}
++#dg_xch_pos = {path = "./dg_xch_utils/proof_of_space"}
++#dg_xch_puzzles = {path = "./dg_xch_utils/puzzles"}
++#dg_xch_serialize = {path = "./dg_xch_utils/serialize"}
+ futures-util = "0.3.25"
+ hex = "0.4.3"
+ hkdf = "0.12.3"
+diff --git a/lite-farmer/Cargo.toml b/lite-farmer/Cargo.toml
+index 0c431d1..d146ffc 100644
+--- a/lite-farmer/Cargo.toml
++++ b/lite-farmer/Cargo.toml
+@@ -13,13 +13,16 @@ bip39.workspace = true
+ blst.workspace = true
+ bytes.workspace = true
+ clap.workspace = true
+-dg_xch_cli.workspace = true
+-dg_xch_clients.workspace = true
+-dg_xch_core.workspace = true
+-dg_xch_keys.workspace = true
+-dg_xch_pos.workspace = true
+-dg_xch_puzzles.workspace = true
+-dg_xch_serialize.workspace = true
++
++dg_xch_cli = "1.0.5"
++dg_xch_clients = "1.0.5"
++dg_xch_core = "1.0.5"
++dg_xch_keys = "1.0.5"
++dg_xch_macros = "1.0.5"
++dg_xch_pos = "1.0.5"
++dg_xch_puzzles = "1.0.5"
++dg_xch_serialize = "1.0.5"
++
+ futures = "0.3.25"
+ futures-util.workspace = true
+ hex.workspace = true

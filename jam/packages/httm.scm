@@ -1503,7 +1503,8 @@ Argument Parser")
                 "0yibx88prypap1qkzm7bgn4zmfs2w0xbbbg7bgbg35bs7nbf164x"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-clap" ,rust-clap-3)
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-clap" ,rust-clap-3)
                        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
                        ("rust-exacl" ,rust-exacl-0.10)
                        ("rust-filetime" ,rust-filetime-0.2)
