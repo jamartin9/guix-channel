@@ -5,28 +5,6 @@
   #:use-module (gnu packages emacs-xyz)
   #:use-module ((guix licenses) #:prefix license:))
 
-(define-public emacs-flycheck-popup-tip
-  (package
-    (name "emacs-flycheck-popup-tip")
-    (version "20170812.2351")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/flycheck/flycheck-popup-tip")
-             (commit "ef86aad907f27ca076859d8d9416f4f7727619c6")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bi6f9nm4bylsbjv4qnkar35s6xzdf2cc2cxi3g691p9527apdz6"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-popup emacs-flycheck))
-    (home-page "https://github.com/flycheck/flycheck-popup-tip")
-    (synopsis "This is extension for Flycheck.")
-    (description "It displays Flycheck error messages in buffer using popup.el library.")
-    (license license:gpl3+)))
-
-
 (define-public emacs-orgit-forge
   (package
     (name "emacs-orgit-forge")
