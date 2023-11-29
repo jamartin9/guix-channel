@@ -1,0 +1,311 @@
+From 214a2025bdc5d79352ee33db0fcb74678dfeb668 Mon Sep 17 00:00:00 2001
+From: phelrine <phelrine@gmail.com>
+Date: Sat, 22 Apr 2023 10:08:05 +0900
+Subject: [PATCH 1/3] use updated closql
+
+---
+ code-review-db.el | 89 +++++++++++++++--------------------------------
+ 1 file changed, 29 insertions(+), 60 deletions(-)
+
+diff --git a/code-review-db.el b/code-review-db.el
+index 2442ab1..f90ca14 100644
+--- a/code-review-db.el
++++ b/code-review-db.el
+@@ -35,19 +35,12 @@
+ (require 'uuidgen)
+ (require 'dash)
+ 
+-(defcustom code-review-db-database-connector 'sqlite
+-  "The database connector."
+-  :group 'code-review
+-  :type 'keyword)
+-
+ (defcustom code-review-db-database-file
+   (expand-file-name "code-review-db-file.sqlite" user-emacs-directory)
+   "The file used to store the `code-review' database."
+   :group 'code-review
+   :type 'file)
+ 
+-(declare-function code-review-db-database--eieio-childp "code-review-db.el" (obj) t)
+-
+ (defclass code-review-db-buffer (closql-object)
+   ((closql-table        :initform 'buffer)
+    (closql-primary-key  :initform 'id)
+@@ -116,41 +109,22 @@
+    (buffer              :closql-class code-review-db-buffer))
+   :abstract t)
+ 
+-(defclass code-review-db-database (emacsql-sqlite-connection closql-database)
+-  ((object-class :initform 'code-review-db-pullreq)))
+-
+-;;; LOL, why? why did I started the database on version 7? :/
+-;;; damn copy and paste from `forge-db'.
+-(defconst code-review-db-version 8)
+-
+-(defconst code-review-db--sqlite-available-p
+-  (with-demoted-errors "Code Review initialization: %S"
+-    (emacsql-sqlite-ensure-binary)
+-    t))
+-
+-(defvar code-review-db-connection nil
+-  "The EmacSQL database connection.")
+-
+-(defun code-review-db ()
+-  "Start connection."
+-  (unless (and code-review-db-connection (emacsql-live-p code-review-db-connection))
+-    (make-directory (file-name-directory code-review-db-database-file) t)
+-    (closql-db 'code-review-db-database 'code-review-db-connection
+-               code-review-db-database-file t)
+-    (let* ((db code-review-db-connection)
+-           (version (closql--db-get-version db))
+-           (version (code-review--db-maybe-update code-review-db-connection version)))
+-      (cond
+-       ((> version code-review-db-version)
+-        (emacsql-close db)
+-        (user-error
+-         "The Code Review database was created with a newer Code Review version.  %s"
+-         "You need to update the Code Review package."))
+-       ((< version code-review-db-version)
+-        (emacsql-close db)
+-        (error "BUG: The Code Review database scheme changed %s"
+-               "and there is no upgrade path.")))))
+-  code-review-db-connection)
++(defclass code-review-db-database (closql-database)
++  ((name         :initform "code-review-db")
++   (object-class :initform 'code-review-db-pullreq)
++   (file         :initform 'code-review-db-database-file)
++   (schemata     :initform 'code-review-db-table-schema)
++   (version      :initform 8)))
++
++(defvar code-review-db--override-connection-class nil)
++
++(defvar code-review-db--sqlite-available-p t)
++
++(defun code-review-db (&optional livep)
++  (condition-case err
++      (closql-db 'code-review-db-database livep code-review-db--override-connection-class)
++    (error (setq code-review-db--sqlite-available-p nil)
++           (signal (car err) (cdr err)))))
+ 
+ ;;; Schema
+ 
+@@ -220,22 +194,17 @@
+       [path] :references path [id]
+       :on-delete :cascade))))
+ 
+-(cl-defmethod closql--db-init ((db code-review-db-database))
+-  "Initialize the DB."
+-  (emacsql-with-transaction db
+-    (pcase-dolist (`(,table . ,schema) code-review-db-table-schema)
+-      (emacsql db [:create-table $i1 $S2] table schema))
+-    (closql--db-set-version db code-review-db-version)))
+-
+-(defun code-review--db-maybe-update (db version)
+-  (emacsql-with-transaction db
+-    (when (= version 7)
+-      (message "Upgrading Code Review database from version 7 to 8...")
+-      (emacsql db [:alter-table pullreq :add-column base-ref-name :default nil])
+-      (emacsql db [:alter-table pullreq :add-column head-ref-name :default nil])
+-      (closql--db-set-version db (setq version 8))
+-      (message "Upgrading Code Review database from version 7 to 8...done"))
+-    version))
++(cl-defmethod closql--db-update-schema ((db code-review-db-database))
++  (let ((code-version (oref-default 'code-review-db-database version))
++        (version (closql--db-get-version db)))
++    (closql-with-transaction db
++      (when (= version 7)
++        (message "Upgrading Code Review database from version 7 to 8...")
++        (emacsql db [:alter-table pullreq :add-column base-ref-name :default nil])
++        (emacsql db [:alter-table pullreq :add-column head-ref-name :default nil])
++        (closql--db-set-version db (setq version 8))
++        (message "Upgrading Code Review database from version 7 to 8...done"))
++      (cl-call-next-method))))
+ 
+ ;;; Core
+ 
+@@ -436,12 +405,12 @@
+                                           :buffer pr-id
+                                           :name curr-path
+                                           :at-pos-p t)))
+-          (emacsql-with-transaction db
++          (closql-with-transaction db
+             (closql-insert db buf t)
+             (closql-insert db path t)))
+       (let* ((paths (oref buf paths))
+              (curr-path-re-enabled? nil))
+-        (emacsql-with-transaction db
++        (closql-with-transaction db
+           ;;; disable all previous ones and enable curr-path is already exists
+           (-map
+            (lambda (path)
+
+From 97dae6fca12d49833dcbe865460021151520c10b Mon Sep 17 00:00:00 2001
+From: phelrine <phelrine@gmail.com>
+Date: Sat, 22 Apr 2023 10:10:37 +0900
+Subject: [PATCH 2/3] fix `code-review-db--comment-already-written?` test.
+
+---
+ code-review-db.el | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/code-review-db.el b/code-review-db.el
+index f90ca14..a79bd12 100644
+--- a/code-review-db.el
++++ b/code-review-db.el
+@@ -511,7 +511,7 @@ Very Bad Performance!."
+          (if written?
+              t
+            (when comment
+-             (-contains-p (oref comment identifiers) identifier)))))
++             (and (-contains-p (oref comment identifiers) identifier) t)))))
+      nil
+      paths)))
+ 
+
+From 3da405ef90cc8901d1000ddb15988e4c8f1eeeaa Mon Sep 17 00:00:00 2001
+From: Daniel Kraus <daniel@kraus.my>
+Date: Wed, 20 Sep 2023 14:55:13 +0200
+Subject: [PATCH 3/3] Remove uuidgen dependency
+
+We already depend on `forge` which comes with a helper function
+to generate uuid's.
+Better use this instead of needing an extra package.
+---
+ Cask                             | 1 -
+ code-review-comment.el           | 5 +++--
+ code-review-db.el                | 6 +++---
+ code-review.el                   | 2 +-
+ test/code-review-db-test.el      | 4 ++--
+ test/code-review-section-test.el | 4 ++--
+ 6 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/Cask b/Cask
+index 2734014..ae4c0dd 100644
+--- a/Cask
++++ b/Cask
+@@ -7,7 +7,6 @@
+ (depends-on "transient" "0.3.7")
+ (depends-on "a" "1.0.0")
+ (depends-on "ghub" "3.5.1")
+-(depends-on "uuidgen" "1.2")
+ (depends-on "deferred" "0.5.1")
+ (depends-on "markdown-mode" "2.4")
+ (depends-on "forge" "0.3.0")
+diff --git a/code-review-comment.el b/code-review-comment.el
+index 1e60917..5cfdd1f 100644
+--- a/code-review-comment.el
++++ b/code-review-comment.el
+@@ -31,6 +31,7 @@
+ (require 'code-review-section)
+ (require 'code-review-utils)
+ (require 'markdown-mode)
++(require 'forge)
+ 
+ (defcustom code-review-comment-buffer-name "*Code Review Comment*"
+   "Name of comment buffer."
+@@ -268,7 +269,7 @@ Inform if a SUGGESTION-CODE? is being proposed."
+                      default-buff-msg))
+          (raw-comment `((author (login . ,(oref obj author)))
+                         (state . ,(oref obj state))
+-                        (comments (nodes ((internal-id . ,(uuidgen-4))
++                        (comments (nodes ((internal-id . ,(forge--uuid))
+                                           (bodyText . ,clean-msg)
+                                           (path . ,(oref obj path))
+                                           (position . ,reply-pos)
+@@ -291,7 +292,7 @@ Inform if a SUGGESTION-CODE? is being proposed."
+                      default-buff-msg))
+          (raw-comment `((author (login . ,(oref obj author)))
+                         (state . ,(oref obj state))
+-                        (comments (nodes ((internal-id . ,(uuidgen-4))
++                        (comments (nodes ((internal-id . ,(forge--uuid))
+                                           (bodyText . ,clean-msg)
+                                           (path . ,(oref obj path))
+                                           (position . ,(oref obj position))
+diff --git a/code-review-db.el b/code-review-db.el
+index a79bd12..66d3ce3 100644
+--- a/code-review-db.el
++++ b/code-review-db.el
+@@ -32,7 +32,7 @@
+ (require 'a)
+ (require 'closql)
+ (require 'eieio)
+-(require 'uuidgen)
++(require 'forge)
+ (require 'dash)
+ 
+ (defcustom code-review-db-database-file
+@@ -283,7 +283,7 @@
+ 
+ (defun code-review-db--pullreq-create (obj)
+   "Create a pullreq db object from OBJ."
+-  (let* ((pr-id (uuidgen-4)))
++  (let* ((pr-id (forge--uuid)))
+     (oset obj id pr-id)
+     (closql-insert (code-review-db) obj t)
+     (setq code-review-db--pullreq-id pr-id)))
+@@ -395,7 +395,7 @@
+ (defun code-review-db--curr-path-update (curr-path)
+   "Update pullreq (ID) with CURR-PATH."
+   (let* ((buf (code-review-db-get-buffer))
+-         (new-path-id (uuidgen-4))
++         (new-path-id (forge--uuid))
+          (db (code-review-db)))
+     (if (not buf)
+         (let* ((pr (code-review-db-get-pullreq))
+diff --git a/code-review.el b/code-review.el
+index eb0c5e8..49c4eff 100644
+--- a/code-review.el
++++ b/code-review.el
+@@ -8,7 +8,7 @@
+ ;; Version: 0.0.7
+ ;; Keywords: git, tools, vc
+ ;; Homepage: https://github.com/wandersoncferreira/code-review
+-;; Package-Requires: ((emacs "25.1") (closql "1.2.0") (magit "3.0.0") (transient "0.3.7") (a "1.0.0") (ghub "3.5.1") (uuidgen "1.2") (deferred "0.5.1") (markdown-mode "2.4") (forge "0.3.0") (emojify "1.2"))
++;; Package-Requires: ((emacs "25.1") (closql "1.2.0") (magit "3.0.0") (transient "0.3.7") (a "1.0.0") (ghub "3.5.1") (deferred "0.5.1") (markdown-mode "2.4") (forge "0.3.0") (emojify "1.2"))
+ 
+ ;; This file is not part of GNU Emacs
+ 
+diff --git a/test/code-review-db-test.el b/test/code-review-db-test.el
+index 32a9444..77bbce2 100644
+--- a/test/code-review-db-test.el
++++ b/test/code-review-db-test.el
+@@ -4,7 +4,7 @@
+ 
+ (require 'a)
+ (require 'dash)
+-(require 'uuidgen)
++(require 'forge)
+ (require 'buttercup)
+ (require 'code-review-db)
+ (require 'code-review-gitlab)
+@@ -23,7 +23,7 @@
+    :number "num"))
+ 
+ (defconst random-test-db
+-  (format "/tmp/code-review-test-db-%s.sqlite" (uuidgen-4)))
++  (format "/tmp/code-review-test-db-%s.sqlite" (forge--uuid)))
+ 
+ (describe "pullreq"
+   :var (code-review-database-file
+diff --git a/test/code-review-section-test.el b/test/code-review-section-test.el
+index dd08f42..059abdc 100644
+--- a/test/code-review-section-test.el
++++ b/test/code-review-section-test.el
+@@ -2,7 +2,7 @@
+ ;;; Commentary:
+ ;;; Code:
+ 
+-(require 'uuidgen)
++(require 'forge)
+ (require 'buttercup)
+ (require 'code-review-db)
+ (require 'code-review-gitlab)
+@@ -16,7 +16,7 @@
+    :number "num"))
+ 
+ (defconst random-test-db
+-  (format "/tmp/code-review-test-db-%s.sqlite" (uuidgen-4)))
++  (format "/tmp/code-review-test-db-%s.sqlite" (forge--uuid)))
+ 
+ (defun with-written-section (fun expected &optional buffer-nil?)
+   "Execute magit insert FUN and match against EXPECTED.

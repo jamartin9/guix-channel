@@ -3,64 +3,26 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system emacs)
   #:use-module (gnu packages emacs-xyz)
+  #:use-module (jam packages)
   #:use-module ((guix licenses) #:prefix license:))
-
-(define-public emacs-orgit-forge
-  (package
-    (name "emacs-orgit-forge")
-    (version "20220422.1625")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/magit/orgit-forge")
-             (commit "8baf1dee795f026d4555687022487fab89c9bcdf")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zdp3yi4vmrhpl8v0vk5d4b8kz77k0qnnhmapm7arv7719ydwzff"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-compat emacs-forge emacs-magit emacs-orgit emacs-org))
-    (home-page "https://github.com/magit/orgit-forge")
-    (synopsis "Adds orgit-topic link to org-mode for Forge topic buffers.")
-    (description "This package defines the Org link type orgit-topic, which can be used to link to Forge topic buffers. This is similar to the orgit package, which links to various Magit buffers")
-    (license license:gpl3+)))
-
-(define-public emacs-uuidgen
-  (package
-    (name "emacs-uuidgen")
-    (version "20220405.1345")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kanru/uuidgen-el/")
-             (commit "7b728c1d92e196c3acf87a004949335cfc18eab3")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1z7x4p1qgyginn74xapd1iq0k53m9qbfk57dzc8srg7fcn5ip1js"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/kanru/uuidgen-el/")
-    (synopsis "This is a naive implementation of RFC4122 Universally Unique IDentifier generation in elisp.")
-    (description "Currently implemented are UUID v1 v3, v4 and v5 generation.")
-    (license license:gpl3+)))
 
 (define-public emacs-code-review
   (package
     (name "emacs-code-review")
-    (version "20220629.1215")
+    (version "20221209.1215")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/wandersoncferreira/code-review/")
-             (commit "95b36ec8e7935f96b2f3c6c9086d49cf4a72cbff")))
+             (commit "26f426e99221a1f9356aabf874513e9105b68140")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mplrc84a5qd6cqv0kcqm13zdmvn71g5pmilhjdagn36dsb1vn16"))))
+        (base32 "1031sq40kysbkvl0cl4lq39ls13n0y3kafbmf4c30grbydljbd52"))
+       (patches (search-patches "emacs-code-review-closql-uuidgen.patch"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-closql emacs-magit emacs-transient emacs-a emacs-ghub emacs-uuidgen emacs-deferred emacs-markdown-mode emacs-forge emacs-emojify))
+     (list emacs-closql emacs-magit emacs-transient emacs-a emacs-ghub emacs-deferred emacs-markdown-mode emacs-forge emacs-emojify))
     (home-page "https://github.com/wandersoncferreira/code-review/")
     (synopsis "Package to help you perform code reviews from your VC provider.")
     (description "Currently supports Github and basic Gitlab and Bitbucket workflows.")
