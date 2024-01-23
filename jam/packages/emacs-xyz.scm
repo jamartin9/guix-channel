@@ -33,13 +33,13 @@
 (define-public emacs-dape
   (package
    (name "emacs-dape")
-   (version "0.2.2")
+   (version "0.4.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://elpa.gnu.org/packages/dape-" version
                                 ".tar"))
             (sha256 (base32
-                     "1723264qx3x03xs706ci0yn62rc18ydblszm8m1as67ph7s8hrjn"))))
+                     "1yfv7mgr9jdw3i3a684fjvcb18asa92iy41f8xpn4qi36i1dbvyg"))))
    (build-system emacs-build-system)
    (home-page "https://github.com/svaante/dape")
    (synopsis "Debug Adapter Protocol for Emacs")
