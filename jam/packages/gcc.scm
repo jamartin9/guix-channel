@@ -26,22 +26,6 @@
 (define glibc-instead-pie
   (package-input-rewriting/spec `(("glibc" . ,(const glibc-pie) ))))
 
-;; gcc-10-jit
-(define gcc-10-jit
-  (package
-   (inherit gcc-10)
-   (outputs (delete "lib" (package-outputs gcc-10))) ;; delete http://debbugs.gnu.org/18101
-   (arguments
-    (substitute-keyword-arguments `(#:modules ((guix build gnu-build-system)
-                                                (guix build utils)
-                                                (ice-9 regex)
-                                                (srfi srfi-1)
-                                                (srfi srfi-26))
-                                    ,@(package-arguments gcc))
-                                  ((#:configure-flags flags) `(append `("--enable-host-shared" ,(string-append "--enable-languages=c,c++,jit"))
-                                                                      (remove (cut string-match "--enable-languages.*" <>) ,flags)))
-                                  ))))
-
-;; gcc-glibc-pie-2.31-toolchain
+;; gcc-glibc-pie-2.35-toolchain
 (define-public gcc-glibc-pie-toolchain
-  (make-gcc-toolchain gcc-10-jit glibc-pie))
+  (make-gcc-toolchain gcc-10 glibc-pie))

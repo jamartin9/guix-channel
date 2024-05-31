@@ -1018,7 +1018,7 @@ the programmer.")
                                   ((#:tests? flags #f) #f)))
     (properties '())))
 
-(define-public vapoursynth-git
+(define-public vapoursynth-git ; MAYBE add wrap-program from (guix build utils) to set the plugin directory
   (package
    (inherit vapoursynth)
    (name "vapoursynth-git")

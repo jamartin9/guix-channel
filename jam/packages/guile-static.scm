@@ -2,6 +2,8 @@
   #:use-module (jam packages gcc)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix build utils)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages libunistring)
@@ -36,16 +38,18 @@
         ;; The build system refuses to check for compiler intrinsics when
         ;; cross-compiling, and demands using libatomic-ops instead.
         `(("libatomic-ops" ,libatomic-ops-static))
-        '()))
+        '())
+   )
    (arguments (substitute-keyword-arguments (package-arguments libgc)
-                                            ((#:configure-flags flags ''()) `(cons "--enable-static" ,flags))))))
+                                            ((#:configure-flags flags ''()) #~(cons "--enable-static" #$flags))))
+   ))
 
 
 ;;  "relocatable statically linked guile-3.0 with libs"
-(define guile-stat-next
+(define-public guile-next-static
   (package
    (inherit guile-3.0)
-   (name "guile-stat-next")
+   (name "guile-next-static")
    (source (origin (inherit (package-source guile-3.0))
                    (patches (cons*
                                   (search-patch "guile-3.0-relocatable.patch")
@@ -70,15 +74,15 @@
       ("glibc:static" ,glibc-pie "static")
       ("glibc" ,glibc-pie)
       ("libffi" ,libffi)
-      ("bdw-gc" ,libgc-static) ;; add static gc and remove old
-      ,@(alist-delete "bdw-gc" (package-propagated-inputs guile-3.0)))
+      ("libgc" ,libgc-static) ;; add static gc and remove old
+      ,@(alist-delete "libgc" (package-propagated-inputs guile-3.0)))
     )
    (arguments
     (substitute-keyword-arguments (package-arguments guile-3.0)
                                   ((#:strip-flags flags) ''()) ; remove strip flags
-                                  ((#:configure-flags flags) ''("LDFLAGS=-ldl")) ; remove config flags
-                                  ((#:phases '%standard-phases) ; remove static phase
-                                   `(modify-phases ,phases
+                                  ((#:configure-flags flags) ''("CFLAGS=-ffat-lto-objects" "LDFLAGS=-ldl" "--enable-mini-gmp")) ; remove config flags
+                                  ((#:phases phases '%standard-phases) ; remove static phase
+                                   #~(modify-phases #$phases
                                                    (delete 'pre-configure)
                                                    (add-before 'configure 'static-guile
                                                                (lambda _
@@ -94,7 +98,7 @@
                                                    ))
 
 
-                                  ((#:tests? _ #f)
+                                  ((#:tests? flags #f)
                                    ;; There are uses of `dynamic-link' in
                                    ;; {foreign,coverage}.test that don't fly here.
                                    #f)
@@ -104,10 +108,4 @@
                                   ;;#f)
                                   ))))
 
-(define-public guile-next-static
-  (package
-   (inherit guile-stat-next)
-   (name "guile-next-static"))
-  )
-
-;; guile-next-static
+guile-next-static
