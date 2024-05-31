@@ -5,6 +5,7 @@
   #:use-module (gnu system install)
   #:use-module (gnu packages base)
   #:use-module (gnu packages finance)
+  #:use-module (gnu packages virtualization)
   #:use-module (gnu compression)
   #:use-module ((guix scripts pack) #:select (self-contained-tarball docker-image))
   #:use-module (guix gexp)
@@ -59,6 +60,17 @@
                                             (self-contained-tarball "binary-guile" profile
                                                                     #:profile-name "default-guile"
                                                                     #:localstatedir? #t ; allows package to be updated by guix
+                                                                    #:symlinks '(("/bin" -> "bin"))
+                                                                    #:compressor (lookup-compressor "gzip")))))
+                             #:system system))
+      (->job "binary-qemu-tarball"
+             (run-with-store store
+                             (mbegin %store-monad
+                                     (set-guile-for-build (default-guile))
+                                     (>>= (profile-derivation (packages->manifest (list qemu:static)) #:relative-symlinks? #t)
+                                          (lambda (profile)
+                                            (self-contained-tarball "binary-qemu" profile
+                                                                    #:profile-name "default-qemu"
                                                                     #:symlinks '(("/bin" -> "bin"))
                                                                     #:compressor (lookup-compressor "gzip")))))
                              #:system system))
