@@ -6,6 +6,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages finance)
   #:use-module (gnu packages virtualization)
+  #:use-module (gnu packages)
   #:use-module (gnu compression)
   #:use-module ((guix scripts pack) #:select (self-contained-tarball docker-image))
   #:use-module (guix gexp)
@@ -63,17 +64,17 @@
                                                                     #:symlinks '(("/bin" -> "bin"))
                                                                     #:compressor (lookup-compressor "gzip")))))
                              #:system system))
-;      (->job "binary-qemu-tarball"
-;             (run-with-store store
-;                             (mbegin %store-monad
-;                                     (set-guile-for-build (default-guile))
-;                                     (>>= (profile-derivation (packages->manifest (list qemu:static)) #:relative-symlinks? #t)
-;                                          (lambda (profile)
-;                                            (self-contained-tarball "binary-qemu" profile
-;                                                                    #:profile-name "default-qemu"
-;                                                                    #:symlinks '(("/bin" -> "bin"))
-;                                                                    #:compressor (lookup-compressor "gzip")))))
-;                             #:system system))
+      (->job "binary-qemu-tarball"
+             (run-with-store store
+                             (mbegin %store-monad
+                                     (set-guile-for-build (default-guile))
+                                     (>>= (profile-derivation (specifications->manifest '("qemu:static")) #:relative-symlinks? #t)
+                                          (lambda (profile)
+                                            (self-contained-tarball "binary-qemu" profile
+                                                                    #:profile-name "default-qemu"
+                                                                    #:symlinks '(("/bin" -> "bin"))
+                                                                    #:compressor (lookup-compressor "gzip")))))
+                             #:system system))
       (->job "binary-container"
              (run-with-store store
                              (mbegin %store-monad
