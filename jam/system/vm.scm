@@ -528,8 +528,7 @@
                                                                                              (job "binary*")
                                                                                              (type "archive")
                                                                                              (output "out")
-                                                                                             (path "")
-                                                                                             )))
+                                                                                             (path ""))))
                                                                             (period 600))
                                                                            (specification
                                                                             (name "packages")
@@ -550,8 +549,8 @@
                                                                                                "a8de09ac62260319e6376f21c995f713c1b09279"
                                                                                                (openpgp-fingerprint
                                                                                                 "34AF BE87 8193 580F F441  AB3F 95AF 699C 293E 302B"))))))
-                                                                            (period 600))
-                                                                           ))
+                                                                            (period 600))))
+                                                   (ttl 172800); two days before clearing gc roots
                                                    (host "0.0.0.0")))
                    ;(service plasma-desktop-service-type) ; plasma and sddm login for KDE(wayland)
                    ;(service sddm-service-type

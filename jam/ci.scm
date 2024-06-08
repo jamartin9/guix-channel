@@ -8,7 +8,7 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages)
   #:use-module (gnu compression)
-  #:use-module ((guix scripts pack) #:select (self-contained-tarball docker-image))
+  #:use-module ((guix scripts pack) #:select (self-contained-tarball docker-image guix-pack))
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix monads)
@@ -32,6 +32,7 @@
   #:export (cuirass-jobs))
 
 (define-public (cuirass-jobs store arguments)
+  ;; define job params
   (define systems
     (arguments->systems arguments))
   (define channels
@@ -51,19 +52,13 @@
        (let ((name (string-append name "." system)))
          (parameterize ((%graft? #f))
            (derivation->job name drv))))
+
+     ;; define packed derivation
+     (define drv-str (with-output-to-string (lambda () (guix-pack "--derivation" "-S" "/bin=bin" "-RR" "guile-next-static")))) ; get derivation output path; MAYBE make lazy with monad
+     (define packed-drv (call-with-input-file (string-trim-right drv-str) read-derivation)) ; remove newline and read in derivation
+
      (list
-      (->job "binary-tarball"
-             (run-with-store store
-                             (mbegin %store-monad
-                                     (set-guile-for-build (default-guile))
-                                     (>>= (profile-derivation (packages->manifest (list guile-next-static)) #:relative-symlinks? #t) ; MAYBE add relocatable wrapped-package (map-manifest-entries (cut (@@ (guix scripts pack) wrapped-manifest-entry) <> #:proot? #t) (packages->manifest (list hello)))
-                                          (lambda (profile)
-                                            (self-contained-tarball "binary-guile" profile
-                                                                    #:profile-name "default-guile"
-                                                                    #:localstatedir? #t ; allows package to be updated by guix
-                                                                    #:symlinks '(("/bin" -> "bin"))
-                                                                    #:compressor (lookup-compressor "gzip")))))
-                             #:system system))
+      (->job "binary-relocatable-guile" packed-drv) ; use relocatable for guile-next-static because dns resolution will still try to dlopen
       (->job "binary-qemu-tarball"
              (run-with-store store
                              (mbegin %store-monad
@@ -73,6 +68,7 @@
                                             (self-contained-tarball "binary-qemu" profile
                                                                     #:profile-name "default-qemu"
                                                                     #:symlinks '(("/bin" -> "bin"))
+                                                                    ;#:localstatedir? #t ; allows package to be updated by guix
                                                                     #:compressor (lookup-compressor "gzip")))))
                              #:system system))
       (->job "binary-container"

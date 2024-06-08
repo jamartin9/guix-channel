@@ -4,6 +4,7 @@
   #:use-module (gnu home services guix)
   #:use-module (gnu home services shells)
   #:use-module (gnu home services shepherd)
+;  #:use-module (gnu home services sound)
   #:use-module (gnu services)
   #:use-module (gnu services ssh)
   #:use-module (gnu services shepherd)
@@ -83,6 +84,7 @@
                                               "git"
                                               "nss-certs"
                                               "aspell" "aspell-dict-en"
+                                              ;"ungoogled-chromium" "ublock-origin-chromium"
                                               ;"ripgrep" ;"fd"
                                               ;"mpv"; MAYBE add guix package for mpv with libvdpau-nvidia from nvidia-libs nonguix
                                               ;"virt-viewer" ; "qemu"; for spice remote-viewer
@@ -95,6 +97,7 @@
                                               "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-transmission" "emacs-undo-tree" "emacs-pass" "emacs-password-store-otp" "emacs-company" "emacs-which-key" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
    (services
     (list
+     ;(service home-pipewire-service-type)
      (simple-service 'my-channel-services
                      home-channels-service-type
                      %jam-channels
