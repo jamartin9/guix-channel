@@ -943,7 +943,7 @@ little-endian formats.")
   (package
    (inherit ffms2)
    (name "ffms2-git")
-   (version "5.0-RC4")
+   (version "5.0")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -952,7 +952,7 @@ little-endian formats.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0d48x559g4ilr7775bgp4mw15kcl8bxc6jqnkl3xnyh5jnddiw19"))))
+              "10fbhs3205phfj6d9x23wsn070xr7kljn0f5w2hm2j6a2vr6amr2"))))
    (arguments
     '(#:configure-flags
       (list "--enable-avresample")
