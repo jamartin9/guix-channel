@@ -8,6 +8,6 @@
        (introduction
          (channel-introduction
            (version 0)
-           (commit "1a7a7a2a6de557d1d4701d63a2e7dbf2e60d00f6")
+           (commit "877ed8cc4eee26ddde3d7d200c19c370c6bf7cb1")
            ; gpg key of commit signer (jonsger - Jonathan Breilmaier)
            (signer "8141 6036 E81A 5CF7 8F80  1071 ECFC 8398 8B4E 4B9F"))))))

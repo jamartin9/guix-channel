@@ -13,7 +13,6 @@
   #:use-module (srfi srfi-9 gnu)
   #:use-module (guix channels)
   #:use-module (gnu packages emacs-xyz)
-  #:use-module (jam packages emacs-xyz)
   #:use-module (jam packages emacs)
   #:use-module (jam packages tree-sitter)
   #:use-module (jam system services)
