@@ -28,4 +28,4 @@
 
 ;; gcc-glibc-pie-2.35-toolchain
 (define-public gcc-glibc-pie-toolchain
-  (make-gcc-toolchain gcc-10 glibc-pie))
+  (@@ (gnu packages commencement) make-gcc-toolchain) gcc-10 glibc-pie)
