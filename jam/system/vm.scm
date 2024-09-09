@@ -52,7 +52,7 @@
   #:use-module (jam system home)
   )
 
-(define my-kernel linux-libre-6.9)
+(define my-kernel linux-libre)
 
 ;; Source: <https://github.com/Kicksecure/security-misc> via https://github.com/rakino/Testament/blob/trunk/testament/kicksecure.scm
 ;; Extracted with the following command:
