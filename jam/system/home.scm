@@ -89,6 +89,7 @@
                                               ;"virt-viewer" ; "qemu"; for spice remote-viewer
                                               ;"alacritty"; "xterm"
                                               ;"screen"
+                                              ;"xdg-utils" "xdg-dbus-proxy" "shared-mime-info"; "xorg-server-wayland" ;(list glib "bin")
                                               "gnupg"
                                               "password-store" "pass-otp"
                                               "curl"; emacs-osm needs for CA's
