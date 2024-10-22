@@ -40,7 +40,7 @@
      (sha256
       (base32 "0s47r623x9vw0nrlpjfypn33ckp0gxgbl7qhdbw3m77v7lh32670"))))
    (build-system python-build-system)
-   (inputs (list vapoursynth-git))
+   (inputs (list vapoursynth))
    (arguments `(#:tests? #f
                 #:phases
                 (modify-phases %standard-phases
@@ -66,7 +66,7 @@ be reused in modules and scripts.")
      (sha256
       (base32 "0cdf16hnn3akx9yx6xijf1f1m368n9x2pl67h0dq8kh7fysw1yr4"))))
    (build-system python-build-system)
-   (inputs (list vapoursynth-git vsutil))
+   (inputs (list vapoursynth vsutil))
    (arguments `(#:tests? #f
                 #:phases
                 (modify-phases %standard-phases
@@ -89,7 +89,7 @@ be reused in modules and scripts.")
      (sha256
       (base32 "0mbj2ps158b2pp271pk02hvlwknwn6cl9clh80mk4628bhpk6c43"))))
    (build-system python-build-system)
-   (inputs (list python-numpy vapoursynth-git vs-rekt vsutil))
+   (inputs (list python-numpy vapoursynth vs-rekt vsutil))
    (native-inputs (list python-pylint python-toml python-yapf))
    (arguments `(#:tests? #f
                 #:phases
@@ -97,7 +97,7 @@ be reused in modules and scripts.")
                                ;; This package only has a Python script, not a Python module, so the
                                ;; sanity-check phase can't work.
                                (delete 'sanity-check))))
-   (home-page "")
+   (home-page "https://github.com/OpusGang/awsmfunc")
    (synopsis "awesome VapourSynth functions")
    (description "awesome @code{VapourSynth} functions")
    (license license:expat)))
@@ -119,7 +119,7 @@ be reused in modules and scripts.")
        (patches (search-patches "vs-placebo.patch"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth-git zimg libplacebo shaderc vulkan-headers vulkan-loader lcms rust-dolby-vision-3)) ; check libdovi
+    (inputs (list vapoursynth zimg libplacebo shaderc vulkan-headers vulkan-loader lcms rust-dolby-vision-3)) ; check libdovi
     (arguments `(#:tests? #f
                  #:phases
                  (modify-phases %standard-phases
@@ -153,7 +153,7 @@ be reused in modules and scripts.")
        (patches (search-patches "vs-eedi3m.patch"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth-git zimg opencl-icd-loader opencl-headers boost))
+    (inputs (list vapoursynth zimg opencl-icd-loader opencl-headers boost))
     (arguments `(#:tests? #f
                  #:phases
                  (modify-phases %standard-phases
@@ -187,7 +187,7 @@ be reused in modules and scripts.")
        (patches (search-patches "vs-subtext.patch"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth-git zimg libass ffmpeg))
+    (inputs (list vapoursynth zimg libass ffmpeg))
     (arguments `(#:tests? #f
                  #:phases
                  (modify-phases %standard-phases
@@ -220,7 +220,7 @@ be reused in modules and scripts.")
         (base32 "1qpaks4sf5librcbxlckg6sm31r49546lpdlp44b12scdxa8a1wq"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth-git zimg))
+    (inputs (list vapoursynth zimg))
     (arguments `(#:tests? #f
                  #:phases
                  (modify-phases %standard-phases
@@ -254,7 +254,7 @@ be reused in modules and scripts.")
        (patches (search-patches "vs-vivtc.patch"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth-git zimg))
+    (inputs (list vapoursynth zimg))
     (arguments `(#:tests? #f
                  #:phases
                  (modify-phases %standard-phases
@@ -1009,7 +1009,7 @@ little-endian formats.")
                                    (install-file
                                     (car (find-files "." "^libvs_nlq\\.so$"))
                                     (string-append out "/lib/vapoursynth"))))))))
-    (inputs (list vapoursynth-git))
+    (inputs (list vapoursynth))
     (home-page "https://github.com/quietvoid/vs-nlq/")
     (synopsis "vs-nlq plugin for vapoursynth")
     (description "Dolby Vision FEL mapping plugin for vapoursynth")
@@ -1127,7 +1127,9 @@ the programmer.")
 ;vs-placebo
 ;rust-vs-nlq
 ;ffms2-git
-;vapoursynth-git
+;vapoursynth ;vapoursynth-git
 ;vsutil
 ;vs-rekt
 ;awsmfunc
+;python-numpy
+;python
