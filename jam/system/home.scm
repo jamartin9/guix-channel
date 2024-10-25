@@ -91,7 +91,6 @@
                                               ;"screen"
                                               ;"xdg-utils" "xdg-dbus-proxy" "shared-mime-info"; "xorg-server-wayland" ;(list glib "bin")
                                               "gnupg"
-                                              "password-store" "pass-otp"
                                               "curl"; emacs-osm needs for CA's
                                               "tree-sitter-rust" "tree-sitter-python"
                                               "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-transmission" "emacs-undo-tree" "emacs-pass" "emacs-password-store-otp" "emacs-company" "emacs-which-key" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
