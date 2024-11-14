@@ -76,7 +76,7 @@
 (define %jam-home
   (home-environment
    (packages (append
-            (list emacs-dape tree-sitter-yaml)
+            (list tree-sitter-yaml)
             ;(map transform-emacs-build-git (list emacs-fd))
             (map specification->package (list "guile"
                                               "emacs-pgtk-xwidgets" ; managed by default profile
@@ -93,7 +93,7 @@
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
                                               "tree-sitter-rust" "tree-sitter-python"
-                                              "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-transmission" "emacs-undo-tree" "emacs-pass" "emacs-password-store-otp" "emacs-company" "emacs-which-key" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
+                                              "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-transmission" "emacs-undo-tree" "emacs-company" "emacs-dape" "emacs-which-key" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
    (services
     (list
      ;(service home-pipewire-service-type)
@@ -139,9 +139,9 @@
   alias emacskill=\"emacsc -e '(kill-emacs)'\"
   _emacs_run_dump(){
       if [ ! -f ~/emp.dmp ]; then
-          emacs --batch --eval='(dump-emacs-portable \"~/emp.dmp\")'
+          emacs --batch --load ${XDG_CONFIG_DIR:-~/.config}/emacs/init.el --eval='(dump-emacs-portable \"~/emp.dmp\")'
       fi
-      emacs --dump-file=~/emp.dmp $@
+      emacs --dump-file=$HOME/emp.dmp $@
   }
   alias emrd=\"_emacs_run_dump\"
 
