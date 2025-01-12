@@ -58,7 +58,7 @@
      (define packed-drv (call-with-input-file (string-trim-right drv-str) read-derivation)) ; remove newline and read in derivation
 
      (list
-      (->job "binary-relocatable-guile" packed-drv) ; use relocatable for guile-next-static because dns resolution will still try to dlopen
+      (->job "binary-relocatable-guile" packed-drv) ; use relocatable for guile-next-static because dns resolution will still try to dlopen ; MAYBE use appimage
       (->job "binary-qemu-tarball"
              (run-with-store store
                              (mbegin %store-monad

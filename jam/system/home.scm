@@ -79,7 +79,7 @@
             (list tree-sitter-yaml)
             ;(map transform-emacs-build-git (list emacs-fd))
             (map specification->package (list "guile"
-                                              "emacs-pgtk-xwidgets" ; managed by default profile
+                                              "emacs-pgtk" ; managed by default profile
                                               "git"
                                               "nss-certs"
                                               "aspell" "aspell-dict-en"

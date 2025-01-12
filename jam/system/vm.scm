@@ -628,16 +628,16 @@
                        #tcp dport 51413 accept
 
                        # allow ssdp, pcp and nat-pmp port mapping
-                       udp sport 1900 udp dport >= 1024 meta pkttype unicast limit rate 4/second burst 20 packets accept comment \"Accept UPnP IGD port mapping reply\"
-                       udp sport 1900 ip saddr $router accept
-                       udp sport 5350 ip saddr $router accept
-                       udp sport 5351 ip saddr $router accept
+                       #udp sport 1900 udp dport >= 1024 meta pkttype unicast limit rate 4/second burst 20 packets accept comment \"Accept UPnP IGD port mapping reply\"
+                       #udp sport 1900 ip saddr $router accept
+                       #udp sport 5350 ip saddr $router accept
+                       #udp sport 5351 ip saddr $router accept
 
                        # allow monerod
-                       tcp dport 18080 accept
+                       #tcp dport 18080 accept
 
                        # allow p2pool
-                       tcp dport 37889 accept
+                       #tcp dport 37889 accept
 
                        # allow cuirass
                        tcp dport 8081 accept
