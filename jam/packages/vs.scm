@@ -15,6 +15,7 @@
   #:use-module (gnu packages rust) ; rust-cargo-c for rust-dolby-vision-3
   #:use-module (gnu packages rust-apps) ; for vs-nlq
   #:use-module (gnu packages crates-io) ; for vs-nlq
+  #:use-module (gnu packages crates-check) ; for vs-nlq (criterion)
   #:use-module (guix build-system meson)
   #:use-module (gnu packages check) ; pylint for awsmfunc
   #:use-module (gnu packages video) ; libplacebo for vs-placebo
