@@ -8,7 +8,7 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages)
   #:use-module (gnu compression)
-  #:use-module ((guix scripts pack) #:select (self-contained-tarball docker-image guix-pack))
+  #:use-module ((guix scripts pack) #:select (self-contained-tarball self-contained-appimage docker-image guix-pack))
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix monads)
@@ -53,12 +53,30 @@
          (parameterize ((%graft? #f))
            (derivation->job name drv))))
 
-     ;; define packed derivation
-     (define drv-str (with-output-to-string (lambda () (guix-pack "--derivation" "-S" "/bin=bin" "-RR" "guile-next-static")))) ; get derivation output path; MAYBE make lazy with monad
-     (define packed-drv (call-with-input-file (string-trim-right drv-str) read-derivation)) ; remove newline and read in derivation
-
+     (define relocatable-pack-drv ;; define packed derivation
+       (with-imported-modules (source-module-closure '((guix scripts pack)))
+                     (gexp->derivation "guile-pack-relocatable"
+                                       #~(begin
+                                           (use-modules (guix scripts pack))
+                                           (define drv-str
+                                             (with-output-to-string (lambda () (guix-pack "--derivation" "-S" "/bin=bin" "-RR" "guile-next-static")))) ; get derivation output path;
+                                           (define packed-drv
+                                             (call-with-input-file (string-trim-right drv-str) read-derivation)) ; remove newline and read in derivation
+                                           packed-drv))))
      (list
-      (->job "binary-relocatable-guile" packed-drv) ; use relocatable for guile-next-static because dns resolution will still try to dlopen ; MAYBE use appimage
+      (->job "binary-relocatable-guile" relocatable-pack-drv) ; use relocatable for guile-next-static because dns resolution will still try to dlopen
+      (->job "binary-qemu-appimage"
+             (run-with-store store
+                             (mbegin %store-monad
+                                     (set-guile-for-build (default-guile))
+                                     (>>= (profile-derivation (specifications->manifest '("qemu")) #:relative-symlinks? #t)
+                                          (lambda (profile)
+                                            (self-contained-appimage "appimage-qemu" profile
+                                                                    #:profile-name "appimage-qemu"
+                                                                    #:symlinks '(("/bin" -> "bin"))
+                                                                    #:extra-options (list #:relocatable? #t); appimage require relocatable
+                                                                    #:compressor (lookup-compressor "gzip")))))
+                             #:system system))
       (->job "binary-qemu-tarball"
              (run-with-store store
                              (mbegin %store-monad
