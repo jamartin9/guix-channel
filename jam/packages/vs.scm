@@ -2,6 +2,7 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix download)
+  #:use-module (nongnu packages nvidia) ; for mesa to nvda graft
   #:use-module (guix utils) ; substutite keyword cython
   #:use-module (guix build-system gnu) ; zimg for vapoursynth
   #:use-module (guix build-system python) ; cython for vapoursynth
@@ -137,6 +138,14 @@ be reused in modules and scripts.")
     (synopsis "placebo vapoursynth plugin")
     (description "libplacebo-based debanding, scaling and color mapping plugin for VapourSynth")
     (license license:lgpl2.1+)))
+
+(define vs-nvda
+  (package
+   (inherit vs-placebo)
+   (name "vs-placebo-nvda")))
+
+(define-public vs-placebo-nvda ; graft nvda for mesa
+  (replace-mesa vs-nvda))
 
 (define-public vs-eedi3m
   (package
