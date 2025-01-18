@@ -17,6 +17,8 @@
   #:use-module (gnu services spice)
   #:use-module (gnu services xorg)
   #:use-module (gnu services sddm)
+;  #:use-module (gnu packages databases)
+  #:use-module (gnu services databases); for cuirass
   #:use-module (gnu services cuirass)
   #:use-module (gnu services ssh)
   #:use-module (gnu services base)
@@ -552,6 +554,9 @@
                                                                             (period 600))))
                                                    (ttl 172800); two days before clearing gc roots
                                                    (host "0.0.0.0")))
+                   (service postgresql-service-type
+                            (postgresql-configuration
+                             (postgresql (@ (gnu packages databases) postgresql-15))))
                    ;(service plasma-desktop-service-type) ; plasma and sddm login for KDE(wayland)
                    ;(service sddm-service-type
                    ;          (sddm-configuration
