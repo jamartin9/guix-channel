@@ -12,6 +12,7 @@
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix monads)
+  #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix profiles)
   #:use-module (guix utils)
@@ -52,30 +53,26 @@
        (let ((name (string-append name "." system)))
          (parameterize ((%graft? #f))
            (derivation->job name drv))))
-
-     (define relocatable-pack-drv ;; define packed derivation
-       (with-imported-modules (source-module-closure '((guix scripts pack)))
-                     (gexp->derivation "guile-pack-relocatable"
-                                       #~(begin
-                                           (use-modules (guix scripts pack))
-                                           (define drv-str
-                                             (with-output-to-string (lambda () (guix-pack "--derivation" "-S" "/bin=bin" "-RR" "guile-next-static")))) ; get derivation output path;
-                                           (define packed-drv
-                                             (call-with-input-file (string-trim-right drv-str) read-derivation)) ; remove newline and read in derivation
-                                           packed-drv))))
+     ;(define drv-str (with-output-to-string (lambda () (guix-pack "--derivation" "-S" "/bin=bin" "-RR" "guile-next-static")))) ; get derivation output path;
+     ;(define packed-drv (call-with-input-file (string-trim-right drv-str) read-derivation)) ; remove newline and read in derivation
      (list
-      (->job "binary-relocatable-guile" relocatable-pack-drv) ; use relocatable for guile-next-static because dns resolution will still try to dlopen
-      (->job "binary-qemu-appimage"
+      (->job "binary-relocatable-guile"
              (run-with-store store
                              (mbegin %store-monad
                                      (set-guile-for-build (default-guile))
-                                     (>>= (profile-derivation (specifications->manifest '("qemu")) #:relative-symlinks? #t)
+                                     (>>= (return (call-with-input-file (string-trim-right (with-output-to-string (lambda () (guix-pack "--derivation" "-S" "/bin=bin" "-RR" "guile-next-static")))) read-derivation))
+                                          (lambda (profile) (return profile))))
+                             #:system system)) ; use relocatable for guile-next-static because dns resolution will still try to dlopen
+      (->job "binary-hello-appimage"
+             (run-with-store store
+                             (mbegin %store-monad
+                                     (set-guile-for-build (default-guile))
+                                     (>>= (profile-derivation (specifications->manifest '("hello")) #:relative-symlinks? #t)
                                           (lambda (profile)
-                                            (self-contained-appimage "appimage-qemu" profile
-                                                                    #:profile-name "appimage-qemu"
-                                                                    #:symlinks '(("/bin" -> "bin"))
-                                                                    #:extra-options (list #:relocatable? #t); appimage require relocatable
-                                                                    #:compressor (lookup-compressor "gzip")))))
+                                            (self-contained-appimage "appimage-hello" profile
+                                                                     #:profile-name "appimage-hello"
+                                                                     #:extra-options (list #:relocatable? #t); appimage require relocatable
+                                                                     #:entry-point "bin/hello"))))
                              #:system system))
       (->job "binary-qemu-tarball"
              (run-with-store store
@@ -93,7 +90,7 @@
              (run-with-store store
                              (mbegin %store-monad
                                      (set-guile-for-build (default-guile))
-                                     (>>= (profile-derivation (packages->manifest (list monero p2pool)))
+                                     (>>= (profile-derivation (packages->manifest (list hello)))
                                           (lambda (profile)
                                             (docker-image "binary-container" profile
                                                                     #:profile-name "default-container"
@@ -101,10 +98,6 @@
                                                                     #:compressor (lookup-compressor "gzip")))))
                              #:system system))
       (image->job store (os->image %jam-vm #:type qcow2-image-type) #:name "binary-vm" #:system system); qemu-image; (image (inherit mbr-hybrid-disk-image) (operating-system %jam-vm)) ; usb image
-      (image->job store
-                  (image-with-os iso9660-image
-                                 installation-os-nonfree)
-                  #:name "binary-installer"
-                  #:system system)
+      (image->job store (image-with-os iso9660-image installation-os-nonfree) #:name "binary-installer" #:system system)
       ))
    systems)))
