@@ -477,8 +477,10 @@
   %wheel ALL=NOPASSWD: ALL\n"))
 
     (packages (append (list ;x-resize ; xfce spice resizing https://gitlab.xfce.org/xfce/xfce4-settings/-/issues/142
-                            cloud-utils); cloud-utils for growpart with resize2fs after img resize
-                      %base-packages)) ; blueman podman flatpak gvfs waypipe
+                       isc-dhcp nss-certs
+                       cloud-utils); cloud-utils for growpart with resize2fs after img resize
+                      %base-packages-utils
+                      %base-packages-linux)) ;sudo wget man-db ;podman flatpak gvfs waypipe guix-icons
     ;(name-service-switch %mdns-host-lookup-nss) ;; Allow resolution of '.local' host names with mDNS.
     (services
      (append (list ;(service xfce-desktop-service-type)
