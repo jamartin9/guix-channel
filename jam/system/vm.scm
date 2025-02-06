@@ -37,6 +37,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages file-systems)
+;  #:use-module (gnu packages freedesktop); waypipe
 ;  #:use-module (guix)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -475,35 +476,26 @@
   root ALL=(ALL) ALL
   %wheel ALL=NOPASSWD: ALL\n"))
 
-    (packages (append (list x-resize ; xfce spice resizing https://gitlab.xfce.org/xfce/xfce4-settings/-/issues/142
+    (packages (append (list ;x-resize ; xfce spice resizing https://gitlab.xfce.org/xfce/xfce4-settings/-/issues/142
                             cloud-utils); cloud-utils for growpart with resize2fs after img resize
-                      %base-packages)) ; blueman podman flatpak gvfs
+                      %base-packages)) ; blueman podman flatpak gvfs waypipe
     ;(name-service-switch %mdns-host-lookup-nss) ;; Allow resolution of '.local' host names with mDNS.
     (services
-     (append (list (service xfce-desktop-service-type)
+     (append (list ;(service xfce-desktop-service-type)
                    ;(service nvidia-service-type)
-                   (service slim-service-type ;; Choose SLiM, which is lighter than the default GDM.
-                            (slim-configuration
-                             (auto-login? #t)
-                             (default-user "guest")
-                             (xorg-configuration
-                              (xorg-configuration
-                               (modules (cons* xf86-video-qxl;; QXL virtual GPU driver for SPICE
-                                               ;nvidia-driver ;; nvidia-xorg
-                                               %default-xorg-modules))
-                               ;(server (nvidia-transform xorg-server))
-                               ;(drivers '("nvidia"))
-                               ;(extra-config (list %nvidia-xorg-config))
-                               (keyboard-layout keyboard-layout)))))
+                   ;(service slim-service-type ;; Choose SLiM, which is lighter than the default GDM.
+                   ;         (slim-configuration
+                   ;          (auto-login? #t)
+                   ;          (default-user "guest")
+                   ;          (xorg-configuration
+                   ;           (xorg-configuration
+                   ;            (modules (cons* xf86-video-qxl;; QXL virtual GPU driver for SPICE
+                   ;                            ;nvidia-driver ;; nvidia-xorg
+                   ;                            %default-xorg-modules))
+                   ;            ;(server (nvidia-transform xorg-server));(drivers '("nvidia"));(extra-config (list %nvidia-xorg-config))
+                   ;            (keyboard-layout keyboard-layout)))))
 
-                   (service spice-vdagent-service-type);; Enables dynamic resizing of the guest screen resolution, clipboard and integration with the host SPICE protocol
-                   ;(service transmission-daemon-service-type
-                   ;         (transmission-daemon-configuration
-                   ;          ;(peer-port 51413)
-                   ;          (port-forwarding-enabled? #f)
-                   ;          (dht-enabled? #f)
-                   ;          (pex-enabled? #f)
-                   ;          (rpc-whitelist '("127.0.0.1" "::1" "10.0.0.*"))))
+                   ;(service spice-vdagent-service-type);; Enables dynamic resizing of the guest screen resolution, clipboard and integration with the host SPICE protocol
                    (service cuirass-service-type
                             (cuirass-configuration (specifications #~(list (specification
                                                                             (name "binary")
@@ -562,6 +554,7 @@
                    ;          (sddm-configuration
                    ;           (theme "breeze")))
                    (service dhcp-client-service-type) ;; Use the DHCP client service rather than NetworkManager.
+                   (service ntp-service-type); time without %desktop-services
                    ;(service zfs-service-type
                    ;         (zfs-configuration
                    ;          (kernel my-kernel)))
@@ -627,22 +620,13 @@
                        tcp dport 8080 accept
 
                        # allow spice
-                       tcp dport 5930 accept
-
-                       # allow transmission
-                       #tcp dport 51413 accept
+                       #tcp dport 5930 accept
 
                        # allow ssdp, pcp and nat-pmp port mapping
                        #udp sport 1900 udp dport >= 1024 meta pkttype unicast limit rate 4/second burst 20 packets accept comment \"Accept UPnP IGD port mapping reply\"
                        #udp sport 1900 ip saddr $router accept
                        #udp sport 5350 ip saddr $router accept
                        #udp sport 5351 ip saddr $router accept
-
-                       # allow monerod
-                       #tcp dport 18080 accept
-
-                       # allow p2pool
-                       #tcp dport 37889 accept
 
                        # allow cuirass
                        tcp dport 8081 accept
@@ -678,7 +662,7 @@
                        type filter hook output priority 0; policy accept;
                      }
                    }")))))
-             (remove (lambda (service) ;; Remove some services that don't make sense in a VM.
+             (remove (lambda (service) ;; Remove some services that don't make sense in a desktop VM.
                        (let ((type (service-kind service)))
                          (or (memq type
                                    (list gdm-service-type
@@ -689,7 +673,7 @@
                                          modem-manager-service-type))
                              (eq? 'network-manager-applet
                                   (service-type-name type)))))
-                     (modify-services %desktop-services
+                     (modify-services %base-services; %desktop-services
                                       (sysctl-service-type config =>
                                                            (sysctl-configuration
                                                             (settings (append `(,@%kicksecure-sysctl-rules
