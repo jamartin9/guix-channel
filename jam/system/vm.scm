@@ -525,7 +525,7 @@
                                                                                              (type "archive")
                                                                                              (output "out")
                                                                                              (path ""))))
-                                                                            (period 600))
+                                                                            (period 86400))
                                                                            (specification
                                                                             (name "packages")
                                                                             (build '(channels mychannel))
@@ -545,7 +545,7 @@
                                                                                                "a8de09ac62260319e6376f21c995f713c1b09279"
                                                                                                (openpgp-fingerprint
                                                                                                 "34AF BE87 8193 580F F441  AB3F 95AF 699C 293E 302B"))))))
-                                                                            (period 600))))
+                                                                            (period 86400))))
                                                    (ttl 172800); two days before clearing gc roots
                                                    (host "0.0.0.0")))
                    (service postgresql-service-type
