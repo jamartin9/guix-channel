@@ -13,3 +13,8 @@
   (define xform (options->transformation `((with-branch . ,(string-append (package-name pkg) "=master"))
                                            (with-input . "emacs-minimal=emacs"))))
   (xform pkg))
+
+;; transform emacs package configure flags for ~5% perf in emacs-30+
+(define-public (transform-emacs-configure pkg)
+  (define xform (options->transformation `((with-configure-flag . ,(string-append (package-name pkg) "=--disable-gc-mark-trace")))))
+  (xform pkg))

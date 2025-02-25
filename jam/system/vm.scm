@@ -47,9 +47,6 @@
   #:use-module (srfi srfi-1)
 ;  #:use-module (nongnu packages linux)
 ;  #:use-module (nongnu system linux-initrd)
-;  #:use-module (nongnu packages nvidia)
-;  #:use-module (nongnu services nvidia)
-;  #:use-module (jam system services) ; nvidia
 ;  #:use-module (jam packages zfs) ; zfs
   #:use-module (jam system channels)
   #:use-module (jam system home)
@@ -444,7 +441,7 @@
 
     (kernel my-kernel)
     ;(initrd microcode-initrd)
-    (kernel-arguments %kicksecure-kernel-arguments);(append %default-kernel-arguments ("modprobe.blacklist=nouveau" "nvidia_drm.modeset=1"))
+    (kernel-arguments %kicksecure-kernel-arguments)
 
     (label (string-append "GNU Guix " (package-version guix)))
 
@@ -478,13 +475,13 @@
 
     (packages (append (list ;x-resize ; xfce spice resizing https://gitlab.xfce.org/xfce/xfce4-settings/-/issues/142
                        isc-dhcp nss-certs
+                       sudo
                        cloud-utils); cloud-utils for growpart with resize2fs after img resize
                       %base-packages-utils
-                      %base-packages-linux)) ;sudo wget man-db ;podman flatpak gvfs waypipe guix-icons
+                      %base-packages-linux)) ;wget man-db guix-icons; podman flatpak gvfs waypipe
     ;(name-service-switch %mdns-host-lookup-nss) ;; Allow resolution of '.local' host names with mDNS.
     (services
      (append (list ;(service xfce-desktop-service-type)
-                   ;(service nvidia-service-type)
                    ;(service slim-service-type ;; Choose SLiM, which is lighter than the default GDM.
                    ;         (slim-configuration
                    ;          (auto-login? #t)
@@ -492,16 +489,14 @@
                    ;          (xorg-configuration
                    ;           (xorg-configuration
                    ;            (modules (cons* xf86-video-qxl;; QXL virtual GPU driver for SPICE
-                   ;                            ;nvidia-driver ;; nvidia-xorg
                    ;                            %default-xorg-modules))
-                   ;            ;(server (nvidia-transform xorg-server));(drivers '("nvidia"));(extra-config (list %nvidia-xorg-config))
                    ;            (keyboard-layout keyboard-layout)))))
 
                    ;(service spice-vdagent-service-type);; Enables dynamic resizing of the guest screen resolution, clipboard and integration with the host SPICE protocol
                    (service cuirass-service-type
                             (cuirass-configuration (specifications #~(list (specification
                                                                             (name "binary")
-                                                                            (build '(custom (jam ci)));'(channels my-channel) ; TODO try CI again
+                                                                            (build '(custom (jam ci)))
                                                                             (channels (list (channel ;; custom guix override
                                                                                              (name 'guix)
                                                                                              (url "https://git.savannah.gnu.org/git/guix.git")
@@ -529,7 +524,7 @@
                                                                            (specification
                                                                             (name "packages")
                                                                             (build '(channels mychannel))
-                                                                            (channels (list (channel ;; custom guix override
+                                                                            (channels (list (channel
                                                                                              (name 'guix)
                                                                                              (url "https://git.savannah.gnu.org/git/guix.git")
                                                                                              (introduction
@@ -537,7 +532,7 @@
                                                                                                "9edb3f66fd807b096b48283debdcddccfea34bad"
                                                                                                (openpgp-fingerprint
                                                                                                 "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
-                                                                                            (channel ;; GUIX_PACKAGE_PATH and (url "file:///home/.../guix-channel")
+                                                                                            (channel
                                                                                              (name 'mychannel)
                                                                                              (url "https://github.com/jamartin9/guix-channel")
                                                                                              (introduction

@@ -13,6 +13,7 @@
   #:use-module (srfi srfi-9 gnu)
   #:use-module (guix channels)
   #:use-module (gnu packages emacs-xyz)
+  #:use-module (gnu packages emacs)
   #:use-module (jam packages emacs)
   #:use-module (jam packages tree-sitter)
   #:use-module (jam system services)
@@ -77,9 +78,9 @@
   (home-environment
    (packages (append
             (list tree-sitter-yaml)
-            ;(map transform-emacs-build-git (list emacs-fd))
+            (map transform-emacs-configure (list emacs-next))
             (map specification->package (list "guile"
-                                              "emacs-pgtk" ; managed by default profile
+                                              ;"emacs-next-pgtk" ; managed by default profile
                                               "git"
                                               "nss-certs"
                                               "aspell" "aspell-dict-en"
@@ -93,7 +94,7 @@
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
                                               "tree-sitter-rust" "tree-sitter-python"
-                                              "emacs-gptel" "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-transmission" "emacs-undo-tree" "emacs-company" "emacs-dape" "emacs-which-key" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
+                                              "emacs-gptel" "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-transmission" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
    (services
     (append
      (list

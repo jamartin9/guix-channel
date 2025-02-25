@@ -53,8 +53,6 @@
        (let ((name (string-append name "." system)))
          (parameterize ((%graft? #f))
            (derivation->job name drv))))
-     ;(define drv-str (with-output-to-string (lambda () (guix-pack "--derivation" "-S" "/bin=bin" "-RR" "guile-next-static")))) ; get derivation output path;
-     ;(define packed-drv (call-with-input-file (string-trim-right drv-str) read-derivation)) ; remove newline and read in derivation
      (list
       (->job "binary-relocatable-guile"
              (run-with-store store
