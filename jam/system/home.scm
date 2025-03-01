@@ -78,9 +78,9 @@
   (home-environment
    (packages (append
             (list tree-sitter-yaml)
-            (map transform-emacs-configure (list emacs-next))
+            ;(map transform-emacs-configure (list emacs-next-pgtk))
             (map specification->package (list "guile"
-                                              ;"emacs-next-pgtk" ; managed by default profile
+                                              "emacs-next" ; managed by default profile
                                               "git"
                                               "nss-certs"
                                               "aspell" "aspell-dict-en"
