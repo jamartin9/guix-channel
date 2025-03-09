@@ -1,4 +1,4 @@
-(define-module (jam system netbook)
+(define-module (jam system laptop)
   #:use-module (gnu)
   #:use-module (gnu home services)
   #:use-module (gnu services)
@@ -16,6 +16,7 @@
   #:use-module (gnu services sddm)
   #:use-module (gnu services cuirass)
   #:use-module (gnu services guix)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages containers)
   #:use-module (gnu packages ssh)
@@ -37,9 +38,9 @@
   #:use-module (jam system home)
   #:use-module (jam system channels))
 
-(define-public %jam-netbook
+(define-public %jam-laptop
   (operating-system
-  (host-name "jam-netbook")
+  (host-name "jam-laptop")
   (timezone "Etc/UTC")
   (locale "en_US.utf8")
   (keyboard-layout (keyboard-layout "us" "altgr-intl"))
@@ -53,17 +54,17 @@
   (bootloader (bootloader-configuration
                (bootloader grub-efi-bootloader)
                (targets '("/boot/efi"))))
-  (initrd-modules (append '("mmc_block" "sdhci_acpi") %base-initrd-modules))
-  (swap-devices (list (swap-space (target (uuid "a82191d1-c19b-43b3-a4b0-c7d50ca08f58")))))
+
+  (swap-devices (list (swap-space (target (uuid "739db872-a920-4caf-a661-76d1236da594")))))
 
   (file-systems (cons*
                  (file-system
                         (mount-point "/boot/efi")
-                        (device (uuid "F904-5CD0" 'fat32)) ; blkid output
+                        (device (uuid "5B38-FA4C" 'fat32)) ; blkid output
                         (type "vfat"))
                  (file-system
                         (mount-point "/")
-                        (device (uuid "c25ef7d9-95bf-4c80-94a2-8e569b71985a" 'ext4))
+                        (device (uuid "376ff986-6a68-451a-a949-de7c8bd116e5" 'ext4))
                         (type "ext4"))
                       %base-file-systems))
 
@@ -76,7 +77,7 @@
                                         "audio" "video")))
                %base-user-accounts))
 
-  (packages (append (list blueman); podman flatpak gvfs
+  (packages (append (list blueman gvfs); podman flatpak gvfs
                     %base-packages))
 
   (services
@@ -86,7 +87,7 @@
                           (bluetooth-configuration
                            (auto-enable? #f)))
                  (simple-service 'os-file etc-service-type
-                                 (list `("netbook.scm" ,(local-file "netbook.scm"))))
+                                 (list `("laptop.scm" ,(local-file "laptop.scm"))))
                  (simple-service 'os-file etc-service-type
                                  (list `("home.scm" ,(local-file "home.scm"))))
                  (simple-service 'channel-file etc-service-type ; link to ~/.config/guix/channels.scm
@@ -120,4 +121,4 @@
                                                         (authorized-keys
                                                          (append (list (local-file "./nonguix.pub"))
                                                                  %default-authorized-guix-keys))))))))))
-%jam-netbook
+%jam-laptop
