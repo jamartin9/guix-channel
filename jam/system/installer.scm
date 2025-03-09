@@ -9,6 +9,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mtools)
+  #:use-module (gnu packages ntp)
   #:use-module (gnu packages package-management)
   #:use-module (gnu system)
   #:use-module (gnu system image)
@@ -51,7 +52,7 @@
                                                      %default-authorized-guix-keys)))))))
 
     (packages ;; Add some extra packages useful for the installation process
-     (append (list git curl emacs-no-x-toolkit)
+     (append (list git curl emacs-no-x-toolkit ntp)
              (operating-system-packages installation-os)))))
 
 installation-os-nonfree

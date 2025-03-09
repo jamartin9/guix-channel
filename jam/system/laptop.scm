@@ -60,11 +60,11 @@
   (file-systems (cons*
                  (file-system
                         (mount-point "/boot/efi")
-                        (device (uuid "5B38-FA4C" 'fat32)) ; blkid output
+                        (device (uuid "59C7-2F6C" 'fat32)) ; blkid output
                         (type "vfat"))
                  (file-system
                         (mount-point "/")
-                        (device (uuid "376ff986-6a68-451a-a949-de7c8bd116e5" 'ext4))
+                        (device (uuid "297e72c5-bf76-47ef-b6b7-e57f60fbf1cb" 'ext4))
                         (type "ext4"))
                       %base-file-systems))
 
