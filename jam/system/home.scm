@@ -90,7 +90,7 @@
                                               ;"virt-viewer" ; "qemu"; for spice remote-viewer
                                               ;"alacritty"; "xterm"
                                               ;"screen"
-                                              ;"xdg-utils" "xdg-dbus-proxy" "shared-mime-info"; "xorg-server-wayland" ;(list glib "bin")
+                                              ;"xdg-utils" "xdg-dbus-proxy"; "xdg-desktop-portal-gtk" ;"shared-mime-info"; "xorg-server-wayland" ;(list glib "bin") ; "flatpak"
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
                                               "tree-sitter-rust" "tree-sitter-python"
