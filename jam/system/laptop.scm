@@ -35,6 +35,7 @@
   #:use-module (guix channels)
   #:use-module (srfi srfi-1)
   #:use-module (nongnu packages linux)
+  #:use-module (nongnu system linux-initrd)
   #:use-module (jam system home)
   #:use-module (jam system services)
   #:use-module (jam system channels))
@@ -46,11 +47,11 @@
   (locale "en_US.utf8")
   (keyboard-layout (keyboard-layout "us" "altgr-intl"))
 
-  (kernel linux-6.12)
+  (kernel linux-6.6); use 6.6 due to bug in 6.9+ broadcom driver (Unpatched return thunk in use)
   (kernel-arguments '("modprobe.blacklist=b43,b43legacy,ssb,bcm43xx,brcm80211,brcmfmac,brcmsmac,bcma"))
   (kernel-loadable-modules (list broadcom-sta))
-  (firmware (cons* broadcom-bt-firmware
-                   %base-firmware))
+  (firmware (cons* broadcom-bt-firmware %base-firmware))
+  (initrd microcode-initrd)
 
   (label (string-append "GNU Guix " (package-version guix)))
 
@@ -59,7 +60,7 @@
                (bootloader grub-efi-bootloader)
                (targets '("/boot/efi"))))
 
-  (swap-devices (list (swap-space (target (uuid "739db872-a920-4caf-a661-76d1236da594")))))
+  ;(swap-devices (list (swap-space (target (uuid "739db872-a920-4caf-a661-76d1236da594")))))
 
   (file-systems (cons*
                  (file-system
