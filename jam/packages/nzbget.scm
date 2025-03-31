@@ -5,8 +5,12 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system cmake); cmake-build-system
   #:use-module (guix build-system gnu); gnu-build-system
+  #:use-module (guix build-system copy); gnu-build-system
   #:use-module (gnu packages autotools) ; automake
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages base); tar
+  #:use-module (gnu packages compression); xz
+  ;#:use-module (nonguix build-system binary) ; binary-build-system
   #:use-module (jam packages) ; for search-patches
   #:use-module ((guix licenses) #:prefix license:))
 
@@ -102,5 +106,65 @@
   )
 
 
+(define-public parpar
+ (package
+   (name "parpar")
+   (version "0.4.5")
+   (source (origin
+             (method url-fetch)
+             (uri (string-append "https://github.com/animetosho/ParPar/releases/download/v" version "/parpar-v" version "-linux-static-amd64.xz"))
+             (sha256
+              (base32
+               "0v8m09r74cnr74246zgqr4b25faf1lrhw6ffrh1rlm81dvmj9k6b"))))
+   (build-system copy-build-system)
+   (arguments
+    (append
+     (list #:install-plan `'(("./parpar-v0.4.5-linux-static-amd64" "/bin/"))
+           #:phases
+           #~(modify-phases %standard-phases
+                            (add-after 'unpack 'chmod
+                                       (lambda _
+                                         (chmod "parpar-v0.4.5-linux-static-amd64" #o755)))))))
+   (native-inputs
+    (list xz))
+   ;(inputs (list `(,gcc "lib") zlib))
+   (supported-systems '("x86_64-linux"))
+   (home-page "https://github.com/animetosho/ParPar")
+   (synopsis  "PAR2 create client")
+   (description "High performance PAR2 create client for NodeJS")
+   (license license:epl1.0)))
+
+(define-public nyuu
+ (package
+   (name "nyuu")
+   (version "0.4.2")
+   (source (origin
+             (method url-fetch)
+             (uri (string-append "https://github.com/Antidote2151/Nyuu-Obfuscation/releases/download/v" version"-Obfuscate1.3/nyuu-v" version "-Obfuscate1.3-linux-amd64.tar.xz"))
+             (sha256
+              (base32
+               "194cglzs6aail9imzddmy12gd9l3b2ch1q5jzykllp8i36skk474"))))
+   (build-system copy-build-system)
+   (arguments
+      (append
+       (list #:install-plan `'(("./nyuu" "/bin/"))
+             #:phases #~(modify-phases %standard-phases
+                                       (replace 'unpack
+                                                (lambda* (#:key source #:allow-other-keys)
+                                                  (invoke "tar" "xvf" source)
+                                                  (chmod "nyuu" #o755)))))))
+   (native-inputs
+    (list tar xz))
+   ;(inputs (list `(,gcc "lib") zlib))
+   (supported-systems '("x86_64-linux"))
+   (home-page "https://github.com/Antidote2151/Nyuu-Obfuscation")
+   (synopsis  "Flexible usenet binary posting tool")
+   (description "A small variation of Nyuu with article Obfuscation")
+   (license license:epl1.0)))
+
+
+
 ;par2cmdline-turbo
-nzbget-next
+;nyuu
+;parpar
+;nzbget-next

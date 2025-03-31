@@ -26,6 +26,7 @@
   #:use-module (guix build-system channel)
   #:use-module (guix config)
   #:use-module (jam system vm)
+  #:use-module (jam system ci-vm)
   #:use-module (jam packages guile-static)
   #:use-module (jam packages gcc)
   #:use-module (srfi srfi-26)
@@ -95,7 +96,8 @@
                                                                     #:symlinks '(("/bin" -> "bin"))
                                                                     #:compressor (lookup-compressor "gzip")))))
                              #:system system))
-      (image->job store (os->image %jam-vm #:type qcow2-image-type) #:name "binary-vm" #:system system); qemu-image; (image (inherit mbr-hybrid-disk-image) (operating-system %jam-vm)) ; usb image
+      (image->job store (os->image %ci-vm #:type qcow2-image-type) #:name "binary-vm" #:system system); qemu-image
+      (image->job store (os->image %jam-vm #:type qcow2-image-type) #:name "binary-vm" #:system system); (image (inherit mbr-hybrid-disk-image) (operating-system %jam-vm)) ; usb image
       (image->job store (image-with-os iso9660-image installation-os-nonfree) #:name "binary-installer" #:system system)
       ))
    systems)))
