@@ -42,7 +42,7 @@
   #:use-module (guix channels)
   #:use-module (srfi srfi-1)
   #:use-module (jam packages nzbget)
-  #:use-module (nongnu packages compression) ; unrar
+  #:use-module (nongnu packages compression) ; unrar-free fails unpacking with multipart issue(.r00)/crc issues and --cpu host needs to support instructions
   #:use-module (jam system channels)
   #:use-module (jam system services) ; kicksecure sysctl and kernel args
   #:use-module (jam system home)

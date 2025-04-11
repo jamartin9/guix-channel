@@ -27,6 +27,7 @@
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages wget)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (guix)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -82,7 +83,7 @@
                                         "audio" "video")))
                %base-user-accounts))
 
-  (packages (append (list blueman gvfs); podman flatpak gvfs
+  (packages (append (list blueman gvfs pavucontrol flatpak); podman
                     %base-packages))
 
   (services

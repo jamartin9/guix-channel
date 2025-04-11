@@ -77,28 +77,20 @@
 (define %jam-home
   (home-environment
    (packages (append
-            (list tree-sitter-yaml)
+            (list tree-sitter-yaml emacs-scala-ts-mode)
             ;(map transform-emacs-configure (list emacs-next-pgtk))
             (map specification->package (list "guile"
                                               "emacs-next" ; managed by default profile
                                               "git"
                                               "nss-certs"
                                               "aspell" "aspell-dict-en"
-                                              ;"ungoogled-chromium" "ublock-origin-chromium"
-                                              ;"ripgrep" ;"fd"
-                                              ;"mpv"; MAYBE add guix package for mpv with libvdpau-nvidia from nvidia-libs nonguix
-                                              ;"virt-viewer" ; "qemu"; for spice remote-viewer
-                                              ;"alacritty"; "xterm"
-                                              ;"screen"
-                                              ;"xdg-utils" "xdg-dbus-proxy"; "xdg-desktop-portal-gtk" ;"shared-mime-info"; "xorg-server-wayland" ;(list glib "bin") ; "flatpak"
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
-                                              "tree-sitter-rust" "tree-sitter-python"
-                                              "emacs-gptel" "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-transmission" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
+                                              "tree-sitter-rust" "tree-sitter-python" "tree-sitter-scala"
+                                              "emacs-gptel" "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-transmission" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv" "emacs-scala-mode" "emacs-sbt-mode"))))
    (services
     (append
      (list
-     ;(service home-pipewire-service-type)
      (simple-service 'my-channel-services
                      home-channels-service-type
                      %jam-channels
