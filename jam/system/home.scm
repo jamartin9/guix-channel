@@ -21,7 +21,7 @@
   #:use-module (guix gexp)
   #:export (%jam-home))
 
-  (define emacs-service
+  (define emacs-service ; MAYBE add activation service script to clone config
     (shepherd-service
      (provision '(emacs))
      (start #~(make-system-constructor "emacs --daemon"))
@@ -87,7 +87,7 @@
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
                                               "tree-sitter-rust" "tree-sitter-python" "tree-sitter-scala"
-                                              "emacs-gptel" "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-transmission" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv" "emacs-scala-mode" "emacs-sbt-mode"))))
+                                              "emacs-gptel" "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv" "emacs-scala-mode" "emacs-sbt-mode"))))
    (services
     (append
      (list
@@ -99,7 +99,6 @@
                                           (shepherd (specification->package "shepherd"))
                                           ;(auto-start? #f)
                                           (services (list emacs-service
-                                                          ;transmission-service
                                                           ;ssh-service
                                                           ;guix-service
                                                           ))))
