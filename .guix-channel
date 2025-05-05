@@ -8,6 +8,6 @@
        (introduction
          (channel-introduction
            (version 0)
-           (commit "40bf089faa720ad47efbdf7b257a0ae3127078a9")
-           ; gpg key of commit signer (jonsger - Jonathan Breilmaier)
-           (signer "8141 6036 E81A 5CF7 8F80  1071 ECFC 8398 8B4E 4B9F"))))))
+           (commit "b9d3169772b45a2457def49318173f8353bb34f9")
+           ; gpg key of commit signer (hako - Hilton Chan)
+           (signer "F4C2 D1DF 3FDE EA63 D1D3  0776 ACC6 6D09 CA52 8292"))))))

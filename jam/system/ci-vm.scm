@@ -310,10 +310,11 @@
                                                           (channels %jam-channels)
                                                           ;(log-compression 'none); use btrfs compression
                                                           (guix (current-guix))
+                                                          (privileged? #f)
                                                           (substitute-urls
-                                                           (append (list "https://substitutes.nonguix.org/"); 4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
+                                                           (append (list "https://substitutes.nonguix.org/" "https://cuirass.genenetwork.org/"); 4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
                                                                    %default-substitute-urls)) ;(http-proxy) with tor config HTTPTunnelPort
                                                           (authorized-keys
-                                                           (append (list (local-file "./nonguix.pub"))
+                                                           (append (list (local-file "./nonguix.pub") (local-file "./gene.pub"))
                                                                    %default-authorized-guix-keys))))))))))
 %ci-vm

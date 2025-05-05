@@ -77,7 +77,7 @@
 (define %jam-home
   (home-environment
    (packages (append
-            (list tree-sitter-yaml emacs-scala-ts-mode)
+            (list tree-sitter-yaml)
             ;(map transform-emacs-configure (list emacs-next-pgtk))
             (map specification->package (list "guile"
                                               "emacs-next" ; managed by default profile
@@ -86,8 +86,8 @@
                                               "aspell" "aspell-dict-en"
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
-                                              "tree-sitter-rust" "tree-sitter-python" "tree-sitter-scala"
-                                              "emacs-gptel" "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv" "emacs-scala-mode" "emacs-sbt-mode"))))
+                                              "tree-sitter-rust" "tree-sitter-python"
+                                              "emacs-gptel" "emacs-eat" "emacs-debbugs" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
    (services
     (append
      (list
