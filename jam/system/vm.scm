@@ -130,6 +130,8 @@
                                    (list `("channels.scm" ,(local-file "channels.scm"))))
                    (simple-service 'channel-pub etc-service-type
                                    (list `("nonguix.pub" ,(local-file "nonguix.pub"))))
+                   (simple-service 'gene-channel-pub etc-service-type
+                                   (list `("gene.pub" ,(local-file "gene.pub"))))
                    (simple-service 'guest-home-service guix-home-service-type
                                   `(("guest" ,%jam-home)))
 
@@ -207,7 +209,7 @@
                                                           (inherit config)
                                                           (channels %jam-channels)
                                                           (guix (current-guix))
-                                                          (privileged? #f)
+                                                          (privileged? #t)
                                                           (substitute-urls
                                                            (append (list "https://substitutes.nonguix.org/" "https://cuirass.genenetwork.org/"); 4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
                                                                    %default-substitute-urls)) ;(http-proxy) with tor config HTTPTunnelPort
