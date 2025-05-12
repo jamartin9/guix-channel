@@ -111,7 +111,7 @@
                    (simple-service 'vpn-key-file etc-service-type
                                    (list `("openvpn/client.key" ,(local-file "riseup.key")))); https://api.black.riseup.net/3/cert (first half is key second is cert)
                    (simple-service 'vpn-cert-file etc-service-type
-                                   (list `("openvpn/client.crt" ,(local-file "riseup.cert"))))
+                                   (list `("openvpn/client.crt" ,(local-file "riseup.cert")))); TODO startup activation script to download
                    (simple-service 'vpn-ca-file etc-service-type
                                    (list `("openvpn/ca.crt" ,(local-file "riseup.ca")))) ; CA: https://black.riseup.net/ca.crt
 
@@ -182,6 +182,7 @@
                        oifname { lo, $vpn } counter accept
                        oifname $wan ip daddr { 50.205.57.38, 149.28.200.179, 65.100.46.166, 44.190.5.123 } udp dport 123 counter accept
                        oifname $wan ip daddr 185.220.103.11 counter accept
+                       oifname $wan ip daddr { 198.252.153.106, 198.252.153.67 } counter accept
                        oifname $wan ip daddr 255.255.255.255 counter accept
                        oifname $wan ip daddr 10.0.2.3 counter accept
                        ct state related,established accept
