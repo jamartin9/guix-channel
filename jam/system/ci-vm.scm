@@ -140,7 +140,7 @@
                                                                                                 "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
                                                                                             (channel ;; GUIX_PACKAGE_PATH and (url "file:///home/.../guix-channel")
                                                                                              (name 'mychannel)
-                                                                                             (url "https://github.com/jamartin9/guix-channel")
+                                                                                             (url "https://codeberg.org/jamartin9/guix-channel")
                                                                                              (introduction
                                                                                               (make-channel-introduction
                                                                                                "a8de09ac62260319e6376f21c995f713c1b09279"
@@ -167,7 +167,7 @@
                                                                                                 "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
                                                                                             (channel
                                                                                              (name 'mychannel)
-                                                                                             (url "https://github.com/jamartin9/guix-channel")
+                                                                                             (url "https://codeberg.org/jamartin9/guix-channel")
                                                                                              (introduction
                                                                                               (make-channel-introduction
                                                                                                "a8de09ac62260319e6376f21c995f713c1b09279"
