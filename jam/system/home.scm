@@ -21,63 +21,17 @@
   #:use-module (guix gexp)
   #:export (%jam-home))
 
-  (define emacs-service ; MAYBE add activation service script to clone config
-    (shepherd-service
-     (provision '(emacs))
-     (start #~(make-system-constructor "emacs --daemon"))
-     (stop #~(make-system-destructor "emacsclient --eval '(kill-emacs)'"))
-     (auto-start? #f)))
-
-  (define guix-service ; add type for portable guix package
-    (shepherd-service
-     (provision '(guix))
-     (start #~(make-forkexec-constructor `("guix-daemon" ,(string-append "--listen=" (if (getenv "XDG_DATA_HOME") (getenv "XDG_DATA_HOME")
-                                                                                         (string-append (getenv "HOME")
-                                                                                                        file-name-separator-string
-                                                                                                        ".local"
-                                                                                                        file-name-separator-string
-                                                                                                        "share"))
-                                                                         file-name-separator-string
-                                                                         "guix"
-                                                                         file-name-separator-string
-                                                                         "var"
-                                                                         file-name-separator-string
-                                                                         "guix"
-                                                                         file-name-separator-string
-                                                                         "daemon-socket"
-                                                                         file-name-separator-string
-                                                                         "socket") ;;"--build-users-group=guixbuild"
-                                           "--disable-chroot")
-                                         #:environment-variables `(,(string-append "NIX_STORE=" (if (getenv "XDG_DATA_HOME")
-                                                                                                   (getenv "XDG_DATA_HOME")
-                                                                                                    (string-append (getenv "HOME")
-                                                                                                                   file-name-separator-string
-                                                                                                                   ".local"
-                                                                                                                   file-name-separator-string
-                                                                                                                   "share"))
-                                                                                   file-name-separator-string
-                                                                                   "guix"
-                                                                                   file-name-separator-string
-                                                                                   "gnu"
-                                                                                   file-name-separator-string
-                                                                                   "store")
-                                                                   ,@(environ))))
-     (stop #~(make-kill-destructor))
-     (auto-start? #f)))
-
-  (define ssh-service ; writes to /etc/dropbear for keys
-    (set-fields       ; least-authority-wrapper or fork+exec-command/container or run-container to contain
-     (car ((@@ (gnu services ssh) dropbear-shepherd-service) (dropbear-configuration (port-number 2222)
-                                                                                     (syslog-output? #f)
-                                                                                     (password-authentication? #f)
-                                                                                     (pid-file "/tmp/dropbear.pid"))))
-     ((shepherd-service-requirement) '())
-     ((shepherd-service-auto-start?) #f)))
+(define emacs-service ; MAYBE add activation service script to clone config
+  (shepherd-service
+   (provision '(emacs))
+   (start #~(make-system-constructor "emacs --daemon"))
+   (stop #~(make-system-destructor "emacsclient --eval '(kill-emacs)'"))
+   (auto-start? #f)))
 
 (define %jam-home
   (home-environment
    (packages (append
-            (list tree-sitter-yaml)
+            (list tree-sitter-yaml emacs-scala-ts-mode)
             ;(map transform-emacs-configure (list emacs-next-pgtk))
             (map specification->package (list "guile"
                                               "emacs-next" ; managed by default profile
@@ -86,22 +40,15 @@
                                               "aspell" "aspell-dict-en"
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
-                                              "tree-sitter-rust" "tree-sitter-python"
+                                              "tree-sitter-rust" "tree-sitter-python" "tree-sitter-scala" "emacs-scala-mode" "emacs-sbt-mode"
                                               "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
    (services
     (append
      (list
-     (simple-service 'my-channel-services
-                     home-channels-service-type
-                     %jam-channels
-                     )
+     (simple-service 'my-channel-services home-channels-service-type %jam-channels )
      (service home-shepherd-service-type (home-shepherd-configuration
-                                          (shepherd (specification->package "shepherd"))
-                                          ;(auto-start? #f)
-                                          (services (list emacs-service
-                                                          ;ssh-service
-                                                          ;guix-service
-                                                          ))))
+                                          (shepherd (specification->package "shepherd")) ;(auto-start? #f)
+                                          (services (list emacs-service))))
 
      (service home-bash-service-type
               (home-bash-configuration
