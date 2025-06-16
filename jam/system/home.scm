@@ -15,7 +15,7 @@
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages emacs)
   #:use-module (jam packages emacs)
-  #:use-module (jam packages tree-sitter)
+;  #:use-module (jam packages tree-sitter)
   #:use-module (jam system services)
   #:use-module (jam system channels)
   #:use-module (guix gexp)
@@ -30,18 +30,16 @@
 
 (define %jam-home
   (home-environment
-   (packages (append
-            (list tree-sitter-yaml emacs-scala-ts-mode)
-            ;(map transform-emacs-configure (list emacs-next-pgtk))
+   (packages ;(append ;(map transform-emacs-configure (list emacs-next-pgtk))
             (map specification->package (list "guile"
-                                              "emacs-next" ; managed by default profile
+                                              "emacs" ; managed by default profile
                                               "git"
                                               "nss-certs"
                                               "aspell" "aspell-dict-en"
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
-                                              "tree-sitter-rust" "tree-sitter-python" "tree-sitter-scala" "emacs-scala-mode" "emacs-sbt-mode"
-                                              "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))))
+                                              "tree-sitter-rust" "tree-sitter-python" "emacs-scala-mode" "emacs-sbt-mode"
+                                              "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv")));)
    (services
     (append
      (list
@@ -53,8 +51,7 @@
      (service home-bash-service-type
               (home-bash-configuration
                (package (specification->package "bash"))
-               (guix-defaults? #f)
-               ;(environment-variables (list '("EDITOR" . "emacs")))
+               (guix-defaults? #f);(environment-variables (list '("EDITOR" . "emacs")))
                (bashrc (list (plain-file "guix.alias" "\
   #!/usr/bin/env bash
   # shellcheck disable=SC2155,SC2076,SC2068,SC1090,SC1091

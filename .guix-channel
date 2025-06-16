@@ -8,6 +8,6 @@
        (introduction
          (channel-introduction
            (version 0)
-           (commit "b9d3169772b45a2457def49318173f8353bb34f9")
+           (commit "7be4267bd9037c8d8790bd840d35c539bdf192b7")
            ; gpg key of commit signer (hako - Hilton Chan)
            (signer "F4C2 D1DF 3FDE EA63 D1D3  0776 ACC6 6D09 CA52 8292"))))))
