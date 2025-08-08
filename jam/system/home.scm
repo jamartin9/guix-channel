@@ -38,8 +38,8 @@
                                               "aspell" "aspell-dict-en"
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
-                                              "tree-sitter-rust" "tree-sitter-python" "emacs-scala-mode" "emacs-sbt-mode"
-                                              "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv")));)
+                                              "tree-sitter-rust" "tree-sitter-python"
+                                              "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv" "emacs-nov-el")));)
    (services
     (append
      (list

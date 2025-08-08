@@ -89,8 +89,7 @@
                        isc-dhcp nss-certs iproute curl; curl/iproute for debugging
                        sudo
                        cloud-utils
-                       nzbget-next unrar ;MAYBE use flatpak build instead of: nzbget-next unrar p7zip python3
-                       parpar nyuu)
+                       nzbget-next unrar) ; p7zip python3
                       %base-packages-utils
                       %base-packages-linux))
     (services

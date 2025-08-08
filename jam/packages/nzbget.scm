@@ -17,7 +17,7 @@
 (define-public par2cmdline-turbo
   (package
     (name "par2cmdline-turbo")
-    (version "1.2.0-nzbget-20250213")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26,7 +26,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i62b9xk9h3i1dqv9y7z5sk2pbyv758f6pdwbl8i6asvdyyi4yi0"))))
+                "0ghnib69cdq8n43jjckas7ysm1m6k99649kpwm04vh5dykzxzp5l"))))
     (arguments
      (append (list #:configure-flags '(list "-DBUILD_LIB=ON" "-DBUILD_TOOL=ON"))
      (list #:phases #~(modify-phases %standard-phases ; TODO readd install and -Dbuild_lib to configure flags
@@ -51,14 +51,14 @@
     (build-system cmake-build-system)
     (synopsis "File verification and repair tools")
     (description "This is a simple fork of par2cmdline which replaces core computation routines with ParPar’s processing backend, improving par2cmdline’s performance on x86/ARM platforms.")
-    (home-page "https://github.com/animetosho/par2cmdline-turbo")
+    (home-page "https://github.com/nzbgetcom/par2cmdline-turbo")
     (license license:gpl3+)))
 
 (define-public nzbget-next
   (package
    (inherit nzbget)
    (name "nzbget-next")
-   (version "24.8")
+   (version "25.2")
    (source
      (origin
        (method git-fetch)
@@ -67,7 +67,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18bl8bz8i722ila0iv97r5zkazkvh1c35ph7527jybirjj4s7h4f"))
+        (base32 "1xhy8s71zlzm63mg0635d2ck8jmf3i5q6cn6m8fm07ncak63hlkq"))
        (patches (search-patches "nzbget.patch")) ; patch SOURCE_DIR to PAR2_ROOT unlike nixos
        ))
    (arguments
@@ -98,65 +98,5 @@
   )
 
 
-(define-public parpar
- (package
-   (name "parpar")
-   (version "0.4.5")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/animetosho/ParPar/releases/download/v" version "/parpar-v" version "-linux-static-amd64.xz"))
-             (sha256
-              (base32
-               "0v8m09r74cnr74246zgqr4b25faf1lrhw6ffrh1rlm81dvmj9k6b"))))
-   (build-system copy-build-system)
-   (arguments
-    (append
-     (list #:install-plan `'(("./parpar-v0.4.5-linux-static-amd64" "/bin/"))
-           #:phases
-           #~(modify-phases %standard-phases
-                            (add-after 'unpack 'chmod
-                                       (lambda _
-                                         (chmod "parpar-v0.4.5-linux-static-amd64" #o755)))))))
-   (native-inputs
-    (list xz))
-   ;(inputs (list `(,gcc "lib") zlib))
-   (supported-systems '("x86_64-linux"))
-   (home-page "https://github.com/animetosho/ParPar")
-   (synopsis  "PAR2 create client")
-   (description "High performance PAR2 create client for NodeJS")
-   (license license:epl1.0)))
-
-(define-public nyuu
- (package
-   (name "nyuu")
-   (version "0.4.2")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/Antidote2151/Nyuu-Obfuscation/releases/download/v" version"-Obfuscate1.3/nyuu-v" version "-Obfuscate1.3-linux-amd64.tar.xz"))
-             (sha256
-              (base32
-               "194cglzs6aail9imzddmy12gd9l3b2ch1q5jzykllp8i36skk474"))))
-   (build-system copy-build-system)
-   (arguments
-      (append
-       (list #:install-plan `'(("./nyuu" "/bin/"))
-             #:phases #~(modify-phases %standard-phases
-                                       (replace 'unpack
-                                                (lambda* (#:key source #:allow-other-keys)
-                                                  (invoke "tar" "xvf" source)
-                                                  (chmod "nyuu" #o755)))))))
-   (native-inputs
-    (list tar xz))
-   ;(inputs (list `(,gcc "lib") zlib))
-   (supported-systems '("x86_64-linux"))
-   (home-page "https://github.com/Antidote2151/Nyuu-Obfuscation")
-   (synopsis  "Flexible usenet binary posting tool")
-   (description "A small variation of Nyuu with article Obfuscation")
-   (license license:epl1.0)))
-
-
-
 ;par2cmdline-turbo
-;nyuu
-;parpar
-;nzbget-next
+nzbget-next
