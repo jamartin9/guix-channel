@@ -35,6 +35,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages nss)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix transformations)

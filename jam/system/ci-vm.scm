@@ -38,6 +38,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages nss)
 ;  #:use-module (gnu packages freedesktop); waypipe
 ;  #:use-module (guix)
   #:use-module (guix gexp)
