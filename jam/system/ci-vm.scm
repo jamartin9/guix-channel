@@ -180,7 +180,7 @@
                    (service postgresql-service-type
                             (postgresql-configuration
                              (postgresql (@ (gnu packages databases) postgresql-15))))
-                   (service dhcp-client-service-type) ;; Use the DHCP client service rather than NetworkManager.
+                   (service dhcpcd-service-type) ;; Use the DHCP client service rather than NetworkManager.
                    (service ntp-service-type); time without %desktop-services
 
                    (service openssh-service-type

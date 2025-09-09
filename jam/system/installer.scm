@@ -45,10 +45,10 @@
                                             (guix (current-guix))
                                             (channels %jam-channels)
                                             (substitute-urls
-                                             (append (list "https://substitutes.nonguix.org/")
+                                             (append (list "https://substitutes.nonguix.org/" "https://cuirass.genenetwork.org/")
                                                      %default-substitute-urls))
                                             (authorized-keys
-                                             (append (list (local-file "./nonguix.pub"))
+                                             (append (list (local-file "./nonguix.pub") (local-file "./gene.pub"))
                                                      %default-authorized-guix-keys)))))))
 
     (packages ;; Add some extra packages useful for the installation process

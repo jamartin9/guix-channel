@@ -17,7 +17,7 @@
 (define-public par2cmdline-turbo
   (package
     (name "par2cmdline-turbo")
-    (version "1.3.0")
+    (version "1.3.0-20250808")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26,11 +26,11 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ghnib69cdq8n43jjckas7ysm1m6k99649kpwm04vh5dykzxzp5l"))))
+                "1w87mqnfp4nj0msi937y2ahqvjj3bhl82vqb84qlg63dk0ih1zv4"))))
     (arguments
      (append (list #:configure-flags '(list "-DBUILD_LIB=ON" "-DBUILD_TOOL=ON"))
-     (list #:phases #~(modify-phases %standard-phases ; TODO readd install and -Dbuild_lib to configure flags
-                               (delete 'check); skip tests and skip install until build with BUILD_LIB or BUILD_TOOL (only need src atm)
+     (list #:phases #~(modify-phases %standard-phases
+                               (delete 'check); skip tests
                                (add-after 'unpack 'pre-install-source ; copy source
                                           (lambda* (#:key outputs #:allow-other-keys)
                                             (copy-recursively
@@ -58,7 +58,7 @@
   (package
    (inherit nzbget)
    (name "nzbget-next")
-   (version "25.2")
+   (version "25.3")
    (source
      (origin
        (method git-fetch)
@@ -67,7 +67,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xhy8s71zlzm63mg0635d2ck8jmf3i5q6cn6m8fm07ncak63hlkq"))
+        (base32 "1182xfxsljh5n4z54snv68kgca8ica2fq8jcgd8yjg3amkwz7i3r"))
        (patches (search-patches "nzbget.patch")) ; patch SOURCE_DIR to PAR2_ROOT unlike nixos
        ))
    (arguments

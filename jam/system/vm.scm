@@ -94,7 +94,7 @@
                       %base-packages-utils
                       %base-packages-linux))
     (services
-     (append (list (service dhcp-client-service-type) ;; Use the DHCP client service rather than NetworkManager.
+     (append (list (service dhcpcd-service-type) ;; Use the DHCP client service rather than NetworkManager.
                    (service ntp-service-type
                             (ntp-configuration (servers (list
                                                         (ntp-server
