@@ -1,0 +1,16 @@
+diff --git a/configure.ac b/configure.ac
+index 5c8c2dca..723898d9 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1,10 +1,4 @@
+-AC_INIT(
+-        [vapoursynth],
+-        m4_esyscmd_s([sed -e 's/.* \(.*\)/\1/' VAPOURSYNTH_VERSION]),
+-        [https://github.com/vapoursynth/vapoursynth/issues],
+-        [vapoursynth],
+-        [http://www.vapoursynth.com/]
+-)
++AC_INIT([vapoursynth], [68])
+ 
+ : ${CFLAGS=""}
+ : ${CXXFLAGS=""}
