@@ -29,16 +29,16 @@
                 "1w87mqnfp4nj0msi937y2ahqvjj3bhl82vqb84qlg63dk0ih1zv4"))))
     (arguments
      (append (list #:configure-flags '(list "-DBUILD_LIB=ON" "-DBUILD_TOOL=ON"))
-     (list #:phases #~(modify-phases %standard-phases
-                                     (delete 'check); skip tests
-                               (add-after 'install 'really-install ;(add-after 'install 'fail (lambda* (#:key outputs #:allow-other-keys) (exit 1)))
-                                          (lambda* (#:key outputs #:allow-other-keys)
-                                            (let ((out (assoc-ref outputs "out")))
-                                              (install-file "par2" (string-append out "/bin"))
-                                              (install-file "libpar2-turbo.a" (string-append out "/lib"))
-                                              (install-file "libgf16.a" (string-append out "/lib"))
-                                              (install-file "libhasher.a" (string-append out "/lib"))
-                                              (copy-recursively "../source/include" (string-append (assoc-ref outputs "out") "/include")))))))))
+             (list #:phases #~(modify-phases %standard-phases
+                                             (delete 'check); skip tests despite make check and WITH_TESTS
+                                             (add-after 'install 'really-install ;(add-after 'install 'fail (lambda* (#:key outputs #:allow-other-keys) (exit 1)))
+                                                        (lambda* (#:key outputs #:allow-other-keys)
+                                                          (let ((out (assoc-ref outputs "out")))
+                                                            (install-file "par2" (string-append out "/bin"))
+                                                            (install-file "libpar2-turbo.a" (string-append out "/lib"))
+                                                            (install-file "libgf16.a" (string-append out "/lib"))
+                                                            (install-file "libhasher.a" (string-append out "/lib")); add includes after configure for version.h
+                                                            (copy-recursively "../source/include" (string-append (assoc-ref outputs "out") "/include")))))))))
     (outputs '("out"))
     (build-system cmake-build-system)
     (synopsis "File verification and repair tools")
@@ -64,13 +64,13 @@
     (append (list #:configure-flags `(list "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H" "-DCMAKE_C_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H")); cmake/par2-turbo.cmake: add_compile_definitions(HAVE_CONFIG_H PARPAR_ENABLE_HASHER_MD5CRC)
 
             (list #:tests? #f) ; skip tests due to errors
-             (list #:phases
-                   #~(modify-phases %standard-phases
-                                    (add-after 'unpack 'sub-tests
-                                               (lambda* (#:key inputs #:allow-other-keys)
-                                                   (substitute* "cmake/posix.cmake"
-                                                                (("include\\(\\$\\{CMAKE_SOURCE_DIR}/cmake/par2-turbo.cmake)") "set(LIBS ${LIBS} libpar2-turbo.a gf16.a hasher.a)\n")
-                                                                (("set\\(DEPENDENCIES.*par2-turbo)") "\n"))))))))
+            (list #:phases
+                  #~(modify-phases %standard-phases
+                                   (add-after 'unpack 'sub-tests
+                                              (lambda* (#:key inputs #:allow-other-keys)
+                                                (substitute* "cmake/posix.cmake"
+                                                             (("include\\(\\$\\{CMAKE_SOURCE_DIR}/cmake/par2-turbo.cmake)") "set(LIBS ${LIBS} libpar2-turbo.a gf16.a hasher.a)\n")
+                                                             (("set\\(DEPENDENCIES.*par2-turbo)") "\n"))))))))
    (inputs `(("par2cmdline-turbo" ,par2cmdline-turbo)
              ,@(package-inputs nzbget)))))
 
