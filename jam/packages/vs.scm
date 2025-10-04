@@ -118,14 +118,17 @@ be reused in modules and scripts.")
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s31gs8l0hh4h2ic2y4jxq7qdc8xx11hqpx0m6g3w7cdpl6i6pml"))
-       (patches (search-patches "vs-placebo.patch"))))
+        (base32 "1s31gs8l0hh4h2ic2y4jxq7qdc8xx11hqpx0m6g3w7cdpl6i6pml"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list vapoursynth zimg libplacebo shaderc vulkan-headers vulkan-loader lcms rust-dolby-vision-3)) ; check libdovi
     (arguments `(#:tests? #f
                  #:phases
                  (modify-phases %standard-phases
+                                (add-after 'unpack 'remove-install-dir
+                                           (lambda* (#:key inputs #:allow-other-keys)
+                                             (substitute* "meson.build"
+                                                          ((".*install_dir.*'vapoursynth'),") "\n"))))
                                 (add-after 'install 'move-library
                                            (lambda* (#:key outputs #:allow-other-keys)
                                              (let* ((out (assoc-ref outputs "out"))
@@ -160,14 +163,17 @@ be reused in modules and scripts.")
              (commit "d11bdb37c7a7118cd095b53d9f8fbbac02a06ac0")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j4rk04pwvvdnsqanhb4n6ag6a6ny90w9qhd3fm6n9x7qgm1z19h"))
-       (patches (search-patches "vs-eedi3m.patch"))))
+        (base32 "1j4rk04pwvvdnsqanhb4n6ag6a6ny90w9qhd3fm6n9x7qgm1z19h"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list vapoursynth zimg opencl-icd-loader opencl-headers boost))
     (arguments `(#:tests? #f
                  #:phases
                  (modify-phases %standard-phases
+                                (add-after 'unpack 'remove-install-dir
+                                           (lambda* (#:key inputs #:allow-other-keys)
+                                             (substitute* "meson.build"
+                                                          ((".*install_dir.*'vapoursynth'),") "\n"))))
                                 (add-after 'install 'move-library
                                            (lambda* (#:key outputs #:allow-other-keys)
                                              (let* ((out (assoc-ref outputs "out"))
@@ -194,14 +200,17 @@ be reused in modules and scripts.")
              (commit "ee915bcaa31d2106d5156e602a470d0b4964321f")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wax8wj4rwgy3kbrfc23y1vicfs5pf9dra3fk2w46zxc3p4sr0jk"))
-       (patches (search-patches "vs-subtext.patch"))))
+        (base32 "0wax8wj4rwgy3kbrfc23y1vicfs5pf9dra3fk2w46zxc3p4sr0jk"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list vapoursynth zimg libass ffmpeg))
     (arguments `(#:tests? #f
                  #:phases
                  (modify-phases %standard-phases
+                                (add-after 'unpack 'remove-install-dir
+                                           (lambda* (#:key inputs #:allow-other-keys)
+                                             (substitute* "meson.build"
+                                                          ((".*install_dir.*'vapoursynth'),") "\n"))))
                                 (add-after 'install 'move-library
                                            (lambda* (#:key outputs #:allow-other-keys)
                                              (let* ((out (assoc-ref outputs "out"))
@@ -261,14 +270,17 @@ be reused in modules and scripts.")
              (commit "4ac661d78eaf8b5ab7c5dd2d05c81234fe9aaca8")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w8psk51cxr3c9y13bdrvxglhjy0zq1sa4rmdyfp32zs0s6wlkpc"))
-       (patches (search-patches "vs-vivtc.patch"))))
+        (base32 "1w8psk51cxr3c9y13bdrvxglhjy0zq1sa4rmdyfp32zs0s6wlkpc"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list vapoursynth zimg))
     (arguments `(#:tests? #f
                  #:phases
                  (modify-phases %standard-phases
+                                (add-after 'unpack 'remove-install-dir
+                                           (lambda* (#:key inputs #:allow-other-keys)
+                                             (substitute* "meson.build"
+                                                          ((".*install_dir.*'vapoursynth'),") "\n"))))
                                 (add-after 'install 'move-library
                                            (lambda* (#:key outputs #:allow-other-keys)
                                              (let* ((out (assoc-ref outputs "out"))
@@ -386,8 +398,7 @@ the programmer.")
            pkg-config
            yasm))))
 
-;;; maybe remove patches for snippets/phases
-;;; vendored zimg, cython, some rust crates and patches for issues
+;;; vendored zimg, cython
 ;vs-fillborders
 ;vs-vivtc
 ;vs-subtext
