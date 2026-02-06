@@ -50,7 +50,7 @@
   (package
    (inherit nzbget)
    (name "nzbget-next")
-   (version "25.4")
+   (version "26.0")
    (source
      (origin
        (method git-fetch)
@@ -59,7 +59,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06ysbn9fykjhd8v9qdc0y6gfpbd1adkmpm1vw5b5lb8304va9z84"))))
+        (base32 "04l5qv1q63bbvifhpp5f495cm61i99pspw3dp34ajh618rxr69i3"))))
    (arguments
     (append (list #:configure-flags `(list "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H" "-DENABLE_TESTS=1")); cmake/par2-turbo.cmake: add_compile_definitions(HAVE_CONFIG_H PARPAR_ENABLE_HASHER_MD5CRC)
 
@@ -75,5 +75,5 @@
    (home-page "https://github.com/nzbgetcom/nzbget")))
 
 
-par2cmdline-turbo
-;nzbget-next
+;par2cmdline-turbo
+nzbget-next
