@@ -38,7 +38,7 @@
                                               "aspell" "aspell-dict-en"
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
-                                              "emacs-mcp" "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv" "emacs-nov-el")));)
+                                              "emacs-mcp" "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-undo-tree" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv" "emacs-nov-el")));) ; "emacs-geiser-hoot"
    (services
     (append
      (list
@@ -59,7 +59,6 @@
   export CARGO_HOME=\"${XDG_DATA_HOME}\"/cargo
   export RUSTUP_HOME=\"${XDG_DATA_HOME}\"/rustup
   export GNUPGHOME=\"${XDG_DATA_HOME}\"/gnupg
-  export PASSWORD_STORE_DIR=\"${XDG_DATA_HOME}\"/pass
   export CUDA_CACHE_PATH=\"${XDG_CACHE_HOME}\"/nv
   export ICEAUTHORITY=\"${XDG_CACHE_HOME}\"/ICEauthority
   export TEXMFVAR=\"${XDG_CACHE_HOME}\"/texlive/texmf-var

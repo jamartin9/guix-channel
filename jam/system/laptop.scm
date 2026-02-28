@@ -48,7 +48,7 @@
   (locale "en_US.utf8")
   (keyboard-layout (keyboard-layout "us" "altgr-intl"))
 
-  (kernel linux-6.6); use 6.6 due to bug in 6.9+ broadcom driver (Unpatched return thunk in use)
+  (kernel linux-6.18)
   (kernel-arguments '("modprobe.blacklist=b43,b43legacy,ssb,bcm43xx,brcm80211,brcmfmac,brcmsmac,bcma"))
   (kernel-loadable-modules (list broadcom-sta))
   (firmware (cons* broadcom-bt-firmware %base-firmware))
