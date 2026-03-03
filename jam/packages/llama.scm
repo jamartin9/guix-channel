@@ -19,13 +19,13 @@
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ikawrakow/ik_llama.cpp")
-             (commit "1e6d36b1b4a4c99fac8e00b3a91deb3bd5ab601f"))); commit before fused deltanet3 (qwen3.5 rambles after)
+             (commit "ea3e8e30e1588a381d49cc3e8ed0ef2e0cd210e5")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18iyk9lkbdlw91r2nwc95g75nq6c5z76il70hq0g2n6vrvr83nls"))))
+        (base32 "1k2yi5lyrvnqjghzm4blni14f23nhcpahzwmyi8fqpxkyp0vaa7g"))))
    (arguments
     (substitute-keyword-arguments (package-arguments llama-cpp)
-                                  ((#:configure-flags flags '("-DGGML_IQK_FA_ALL_QUANTS=ON")) ''("-DGGML_IQK_FA_ALL_QUANTS=ON"))
+                                  ((#:configure-flags flags '("-DGGML_IQK_FA_ALL_QUANTS=ON" "-DGGML_NATIVE=ON")) ''("-DGGML_IQK_FA_ALL_QUANTS=ON" "-DGGML_NATIVE=ON"))
                                   ((#:tests? _ #t) #f)
                                   ((#:phases phases) #~(modify-phases #$phases (delete 'patch-paths)))))
    (inputs
