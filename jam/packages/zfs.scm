@@ -1040,6 +1040,7 @@
 (define-public pyzfs
   (package
    (inherit zfs)
+   (name "pyzfs")
    (inputs (modify-inputs (package-inputs zfs)
                           (append linux-pam)))
    (native-inputs (modify-inputs (package-native-inputs zfs)
@@ -1060,8 +1061,8 @@
                                                                            "--with-config=all"
                                                                            "--enable-pyzfs"; add python bindings
                                                                            "--enable-pam"; add pam module for mounting datasets on ssh login
-                                                                           (string-append "--with-pammoduledir=" out "/lib/security/"); pam
-                                                                           (string-append "--with-pamconfigsdir=" out "/etc/pam.d/"); pam
+                                                                           (string-append "--with-pammoduledir=" out "/lib/security"); pam
+                                                                           (string-append "--with-pamconfigsdir=" out "/etc/pam.d"); pam
                                                                            (string-append "--prefix=" out)
                                                                            (string-append "--with-dracutdir=" out "/lib/dracut")
                                                                            (string-append "--with-udevdir=" out "/lib/udev")
