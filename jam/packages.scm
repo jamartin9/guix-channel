@@ -5,6 +5,7 @@
   #:use-module (srfi srfi-1)
   #:export (search-patch
             search-patches
+            jam-patches
             %patch-path))
 
 

@@ -50,16 +50,16 @@
   (package
    (inherit nzbget)
    (name "nzbget-next")
-   (version "26.0")
+   (version "26.1-testing")
    (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/nzbgetcom/nzbget")
-             (commit (string-append "v" version))))
+             (commit "cc3be448a07d9b7ed1ff7be14e7bb2e434bf7346")));(string-append "v" version)
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04l5qv1q63bbvifhpp5f495cm61i99pspw3dp34ajh618rxr69i3"))))
+        (base32 "03ij15afzkwqmi9di90cf2m7v6c288wixf9f8i46kkmii0ykp7d8"))))
    (arguments
     (append (list #:configure-flags `(list "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H -DPARPAR_INVERT_SUPPORT -DPARPAR_SLIM_GF16" "-DENABLE_TESTS=1")); cmake/par2-turbo.cmake: add_compile_definitions(HAVE_CONFIG_H PARPAR_ENABLE_HASHER_MD5CRC PARPAR_INVERT_SUPPORT PARPAR_SLIM_GF16)
 
@@ -75,5 +75,5 @@
    (home-page "https://github.com/nzbgetcom/nzbget")))
 
 
-;nzbget-next
-par2cmdline-turbo
+;par2cmdline-turbo
+nzbget-next
