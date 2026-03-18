@@ -55,7 +55,7 @@
                                   ((#:phases phases) #~(modify-phases #$phases (delete 'patch-paths)))))
    (inputs
     (modify-inputs (package-inputs llama-cpp)
-                   (add cuda-12); maybe add NCCL with -DGGML_USE_NCCL=ON ?
+                   (add cuda-12); maybe add NCCL with -DGGML_USE_NCCL=ON ? maybe shorten compile for only arch(s) needed -DCMAKE_CUDA_ARCHITECTURES=52
                    (delete "ggml"))) ; use ggml fork
    (home-page "https://github.com/ikawrakow/ik_llama.cpp")))
 
