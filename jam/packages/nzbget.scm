@@ -46,6 +46,33 @@
     (home-page "https://github.com/nzbgetcom/par2cmdline-turbo")
     (license license:gpl3+)))
 
+(define-public rapidyenc
+  (package
+    (name "rapidyenc")
+    (version "1.1.1-20260217")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nzbgetcom/rapidyenc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256 (base32 "0caw4fda519a7hmmalc8zv0400dxzqlphy7y9ccag1a03nn0pbfl"))))
+    (arguments
+     (append (list #:configure-flags '(list "-DDISABLE_ENCODE=ON" "-DDISABLE_SHARED_LIB=ON" "-DDISABLE_CLI=ON" "-DDISABLE_BENCH_CLI=ON" "-DDISABLE_DECODE=OFF" "-DBUILD_NATIVE=ON"))
+             (list #:phases #~(modify-phases %standard-phases
+                                             (delete 'check); no tests
+                                             (add-after 'install 'really-install
+                                                        (lambda* (#:key outputs #:allow-other-keys)
+                                                          (let ((out (assoc-ref outputs "out"))) ;(exit 1)
+                                                            (install-file "../source/rapidyenc.h" (string-append out "/include"))
+                                                            (install-file "rapidyenc_static/librapidyenc.a" (string-append out "/lib")))))))))
+    (outputs '("out"))
+    (build-system cmake-build-system)
+    (synopsis "C compatible library provides functions for implementing yenc")
+    (description "C compatible library provides functions for implementing yenc")
+    (home-page "https://github.com/nzbgetcom/rapidyenc")
+    (license license:gpl3+)))
+
 (define-public nzbget-next
   (package
    (inherit nzbget)
@@ -61,19 +88,23 @@
        (sha256
         (base32 "03ij15afzkwqmi9di90cf2m7v6c288wixf9f8i46kkmii0ykp7d8"))))
    (arguments
-    (append (list #:configure-flags `(list "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H -DPARPAR_INVERT_SUPPORT -DPARPAR_SLIM_GF16" "-DENABLE_TESTS=1")); cmake/par2-turbo.cmake: add_compile_definitions(HAVE_CONFIG_H PARPAR_ENABLE_HASHER_MD5CRC PARPAR_INVERT_SUPPORT PARPAR_SLIM_GF16)
+    (append (list #:configure-flags `(list "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H -DPARPAR_INVERT_SUPPORT -DPARPAR_SLIM_GF16" "-DENABLE_TESTS=1")); cmake/par2-turbo.cmake: add_compile_definitions(HAVE_CONFIG_H PARPAR_ENABLE_HASHER_MD5CRC PARPAR_INVERT_SUPPORT PARPAR_SLIM_GF16) RAPIDYENC_VERSION
 
             (list #:phases
                   #~(modify-phases %standard-phases
-                                   (add-after 'unpack 'unbundle-par2
+                                   (add-after 'unpack 'unbundle-par2-rapidyenc
                                               (lambda _
                                                 (substitute* "cmake/posix.cmake"
                                                              (("include\\(\\$\\{CMAKE_SOURCE_DIR}/cmake/par2-turbo.cmake)") "set(LIBS ${LIBS} libpar2-turbo.a gf16.a hasher.a)\n")
-                                                             (("set\\(DEPENDENCIES.*par2-turbo)") "\n"))))))))
+                                                             (("include\\(\\$\\{CMAKE_SOURCE_DIR}/cmake/rapidyenc.cmake)") "set(LIBS ${LIBS} librapidyenc.a)\n")
+                                                             (("list\\(APPEND EXTERNAL_DEPS par2-turbo)") "\n")
+                                                             (("list\\(APPEND EXTERNAL_DEPS rapidyenc)") "\n"))))))))
    (inputs `(("par2cmdline-turbo" ,par2cmdline-turbo)
+             ("rapidyenc" ,rapidyenc)
              ,@(package-inputs nzbget)))
    (home-page "https://github.com/nzbgetcom/nzbget")))
 
 
 ;par2cmdline-turbo
+;rapidyenc
 nzbget-next
