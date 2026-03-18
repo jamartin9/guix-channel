@@ -706,6 +706,8 @@
    #:use-module (gnu services mcron)
    #:use-module (gnu services shepherd)
    #:use-module (gnu system mapped-devices)
+   #:use-module (gnu packages package-management) ; guix
+   #:use-module (jam packages) ; patches
    #:use-module (guix gexp)
    #:use-module (guix modules)
    #:use-module (guix records)
@@ -725,6 +727,7 @@
              zfs-configuration-auto-snapshot?
              zfs-configuration-auto-snapshot-keep
              %zfs-zvol-dependency))
+
 (define-record-type* <zfs-configuration>
   zfs-configuration
   make-zfs-configuration
@@ -1069,4 +1072,17 @@
                                                                            (string-append "--with-mounthelperdir=" out "/sbin")
                                                                            (string-append "--with-linux=" (search-input-directory inputs "lib/modules/build")))))))))))))
 
-pyzfs
+(define-public guix/zfs
+  (package
+    (inherit
+     (package-with-extra-patches guix ;(current-guix)
+       (jam-patches "guix-allow-out-of-tree-modules-in-initrd.patch"
+                    "guix-wip-zfs-boot-support.patch")))
+    (name "guix-zfs")
+    (arguments
+     (substitute-keyword-arguments (package-arguments guix)
+       ((#:parallel-build? _ #f) #t)))))
+
+;pyzfs
+guix/zfs
+

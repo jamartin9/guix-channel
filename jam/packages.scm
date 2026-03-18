@@ -29,3 +29,7 @@
    (append
     (list (string-append %channel-root "/jam/packages/patches"))
     (gnu:%patch-path))))
+
+(define-syntax-rule (jam-patches file-name ...) ; renamed search-patches
+  "Return the list of absolute file names corresponding to each FILE-NAME found in %PATCH-PATH."
+  (list (search-patch file-name) ...))

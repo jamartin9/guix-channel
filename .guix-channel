@@ -8,8 +8,8 @@
    (introduction
     (channel-introduction
      (version 0)
-     (commit "da4e72efef62d48dbc2eb089c36972ff55fe6acd")
-     (signer "A420 7B56 C255 109F 2CB3  157E 4990 97AE 5EA8 15D9")))) ; gpg key of commit signer (podiki)
+     (commit "7d14e819fc7b2681240023b9e4c001fc3f5cba04")
+     (signer "E31D 9DDE EBA5 4A14 8A20  4550 DA45 97F9 47B4 1025")))) ; gpg key of commit signer (jlicht)
   (channel
    (name guix-science-nonfree)
    (url "https://codeberg.org/guix-science/guix-science-nonfree")
