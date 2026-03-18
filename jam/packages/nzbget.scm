@@ -17,7 +17,7 @@
 (define-public par2cmdline-turbo
   (package
     (name "par2cmdline-turbo")
-    (version "1.3.0-20250808")
+    (version "1.4.0-20260310")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26,9 +26,9 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w87mqnfp4nj0msi937y2ahqvjj3bhl82vqb84qlg63dk0ih1zv4"))))
+                "0bdb526gcc7ac9dn5g85bq7h7jyhm7cfkz1d31bi1zhmzds9m3w7"))))
     (arguments
-     (append (list #:configure-flags '(list "-DBUILD_LIB=ON" "-DBUILD_TOOL=ON"))
+     (append (list #:configure-flags '(list "-DBUILD_LIB=ON" "-DBUILD_TOOL=ON" "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H -DPARPAR_INVERT_SUPPORT -DPARPAR_SLIM_GF16"))
              (list #:phases #~(modify-phases %standard-phases
                                              (delete 'check); skip tests despite make check and WITH_TESTS. MAYBE add native inputs for replacing ctest with make check
                                              (add-after 'install 'really-install ;(add-after 'install 'fail (lambda* (#:key outputs #:allow-other-keys) (exit 1)))
@@ -61,7 +61,7 @@
        (sha256
         (base32 "04l5qv1q63bbvifhpp5f495cm61i99pspw3dp34ajh618rxr69i3"))))
    (arguments
-    (append (list #:configure-flags `(list "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H" "-DENABLE_TESTS=1")); cmake/par2-turbo.cmake: add_compile_definitions(HAVE_CONFIG_H PARPAR_ENABLE_HASHER_MD5CRC)
+    (append (list #:configure-flags `(list "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H -DPARPAR_INVERT_SUPPORT -DPARPAR_SLIM_GF16" "-DENABLE_TESTS=1")); cmake/par2-turbo.cmake: add_compile_definitions(HAVE_CONFIG_H PARPAR_ENABLE_HASHER_MD5CRC PARPAR_INVERT_SUPPORT PARPAR_SLIM_GF16)
 
             (list #:phases
                   #~(modify-phases %standard-phases
@@ -75,5 +75,5 @@
    (home-page "https://github.com/nzbgetcom/nzbget")))
 
 
-;par2cmdline-turbo
-nzbget-next
+;nzbget-next
+par2cmdline-turbo

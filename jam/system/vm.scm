@@ -109,19 +109,19 @@
                                                    (authorized-keys `(("guest" ,(plain-file "jam.pub" "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILjfouQY9m8opK3Sq5G81FuqlMEa5no1Jy1UywweZY3u jam@jam-pc"))
                                                                       ("guest" ,(plain-file "jaming.pub" "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK+JSxpOM9X8rM6bS0VEfmBeOaQi98o0+aDzYaWIhTBp jam@jam-workstation"))))))
 
-                   (simple-service 'vpn-key-file etc-service-type
-                                   (list `("openvpn/client.key" ,(local-file "riseup.key")))); https://api.black.riseup.net/3/cert (first half is key second is cert)
-                   (simple-service 'vpn-cert-file etc-service-type
-                                   (list `("openvpn/client.crt" ,(local-file "riseup.cert")))); TODO startup activation script to download
-                   (simple-service 'vpn-ca-file etc-service-type
-                                   (list `("openvpn/ca.crt" ,(local-file "riseup.ca")))) ; CA: https://black.riseup.net/ca.crt
+                   ;(simple-service 'vpn-key-file etc-service-type
+                   ;                (list `("openvpn/client.key" ,(local-file "riseup.key")))); https://api.black.riseup.net/3/cert (first half is key second is cert)
+                   ;(simple-service 'vpn-cert-file etc-service-type
+                   ;                (list `("openvpn/client.crt" ,(local-file "riseup.cert")))); TODO startup activation script to download
+                   ;(simple-service 'vpn-ca-file etc-service-type
+                   ;                (list `("openvpn/ca.crt" ,(local-file "riseup.ca")))) ; CA: https://black.riseup.net/ca.crt
 
-                   (service openvpn-client-service-type; 'redirect-gateway def1'/'dhcp-option DNS 1.1.1.1' are not needed; test with curl https://checkip.amazonaws.com
-                            (openvpn-client-configuration
-                              (comp-lzo? #f) ; remove 'comp-lzo'
-                              (remote (list (openvpn-remote-configuration
-                                             (name "185.220.103.11"); curl https://api.black.riseup.net/3/config/eip-service.json | python -m json.tool
-                                             (port 1194))))))
+                   ;(service openvpn-client-service-type; 'redirect-gateway def1'/'dhcp-option DNS 1.1.1.1' are not needed; test with curl https://checkip.amazonaws.com
+                   ;         (openvpn-client-configuration
+                   ;           (comp-lzo? #f) ; remove 'comp-lzo'
+                   ;           (remote (list (openvpn-remote-configuration
+                   ;                          (name "185.220.103.11"); curl https://api.black.riseup.net/3/config/eip-service.json | python -m json.tool
+                   ;                          (port 1194))))))
 
                    (simple-service 'vm-file etc-service-type
                                    (list `("vm.scm" ,(local-file "vm.scm"))))
@@ -182,8 +182,8 @@
                        # accept from local/dhcp/ntp/dns(10.0.2.3)/vpn drop rest (dig +short 1.guix.pool.ntp.org)
                        oifname { lo, $vpn } counter accept
                        oifname $wan ip daddr { 50.205.57.38, 149.28.200.179, 65.100.46.166, 44.190.5.123 } udp dport 123 counter accept
-                       oifname $wan ip daddr 185.220.103.11 counter accept
-                       oifname $wan ip daddr { 198.252.153.106, 198.252.153.67 } counter accept
+                       #oifname $wan ip daddr 185.220.103.11 counter accept
+                       #oifname $wan ip daddr { 198.252.153.106, 198.252.153.67 } counter accept
                        oifname $wan ip daddr 255.255.255.255 counter accept
                        oifname $wan ip daddr 10.0.2.3 counter accept
                        ct state related,established accept

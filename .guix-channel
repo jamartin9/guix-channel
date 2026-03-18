@@ -1,13 +1,21 @@
 (channel
-  (version 0)
-  (dependencies (channel
-       ;; third party
-       (name nonguix)
-       (url "https://gitlab.com/nonguix/nonguix")
-       (branch "master")
-       (introduction
-         (channel-introduction
-           (version 0)
-           (commit "da4e72efef62d48dbc2eb089c36972ff55fe6acd")
-           ; gpg key of commit signer (podiki)
-           (signer "A420 7B56 C255 109F 2CB3  157E 4990 97AE 5EA8 15D9"))))))
+ (version 0)
+ (dependencies
+  (channel
+   (name nonguix)
+   (url "https://gitlab.com/nonguix/nonguix")
+   (branch "master")
+   (introduction
+    (channel-introduction
+     (version 0)
+     (commit "da4e72efef62d48dbc2eb089c36972ff55fe6acd")
+     (signer "A420 7B56 C255 109F 2CB3  157E 4990 97AE 5EA8 15D9")))) ; gpg key of commit signer (podiki)
+  (channel
+   (name guix-science-nonfree)
+   (url "https://codeberg.org/guix-science/guix-science-nonfree")
+   (branch "master")
+   (introduction
+    (channel-introduction
+     (version 0)
+     (commit "268e6d26c3e7cd4d0137dc04fe1b0298a4aa2536")
+     (signer "B46D F948 B731 3402 FBCF  9021 2934 03FE 476B 7D63")))))); rgarbage
