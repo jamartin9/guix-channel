@@ -706,6 +706,7 @@
    #:use-module (gnu services mcron)
    #:use-module (gnu services shepherd)
    #:use-module (gnu system mapped-devices)
+   #:use-module (gnu system pam)
    #:use-module (gnu packages package-management) ; guix
    #:use-module (jam packages) ; patches
    #:use-module (guix gexp)
@@ -1009,35 +1010,58 @@
               (zfs-mcron-auto-scrub-jobs conf)
               '())))
 
+
+(define (pam-zfs-extension-procedure config)
+  "Return an extension for PAM-ROOT-SERVICE"
+  (define pam-zfs-key-pam-entry
+    (pam-entry
+      (control "optional")
+      (module "pam_zfs_key.so")
+      (arguments '("homes=jam/system/home"
+                   "runstatedir=/run/pam_zfs_key")))); TODO take from config/args
+  (list (pam-extension
+          (transformer
+           (lambda (pam)
+             (pam-service
+               (inherit pam);(name "zfs-pam-login")
+               (auth (append pam-zfs-key-pam-entry (pam-service-auth pam)))
+               (session (append pam-zfs-key-pam-entry (pam-service-session pam)))
+               (password (append pam-zfs-key-pam-entry (pam-service-password pam))))))))
+  )
+
 (define zfs-service-type
   (service-type
     (name 'zfs)
-    (extensions ; TODO add pam module
-      (list ;; Install OpenZFS kernel module into kernel profile.
-            (service-extension linux-loadable-module-service-type
+    (extensions
+     (list ;; Extend PAM with pam_zfs_key.so
+           (service-extension pam-root-service-type
+                              pam-zfs-extension-procedure)
+           ;; Install OpenZFS kernel module into kernel profile.
+           (service-extension linux-loadable-module-service-type
                                zfs-loadable-modules)
-            ;; And load it.
-            (service-extension kernel-module-loader-service-type
-                               (const '("zfs")))
-            ;; Make sure ZFS pools and datasets are mounted at
-            ;; boot.
-            (service-extension shepherd-root-service-type
-                               zfs-shepherd-services)
-            ;; Make sure user-processes don't start until
-            ;; after ZFS does.
-            (service-extension user-processes-service-type
-                               zfs-user-processes)
-            ;; Install automated scrubbing and snapshotting.
-            (service-extension mcron-service-type
-                               zfs-mcron-jobs)
+           ;; And load it.
+           (service-extension kernel-module-loader-service-type
+                              (const '("zfs")))
+           ;; Make sure ZFS pools and datasets are mounted at
+           ;; boot.
+           (service-extension shepherd-root-service-type
+                              zfs-shepherd-services)
+           ;; Make sure user-processes don't start until
+           ;; after ZFS does.
+           (service-extension user-processes-service-type
+                              zfs-user-processes)
+           ;; Install automated scrubbing and snapshotting.
+           (service-extension mcron-service-type
+                              zfs-mcron-jobs)
 
-            ;; Install ZFS management commands in the system
-            ;; profile.
-            (service-extension profile-service-type
-                               (compose list make-zfs-package))
-            ;; Install ZFS udev rules.
-            (service-extension udev-service-type
-                               (compose list make-zfs-package))))
+           ;; Install ZFS management commands in the system
+           ;; profile.
+           (service-extension profile-service-type
+                              (compose list make-zfs-package))
+           ;; Install ZFS udev rules.
+           (service-extension udev-service-type
+                              (compose list make-zfs-package))
+           ))
     (description "Installs ZFS, an advanced filesystem and volume manager.")))
 
 (define-public pyzfs

@@ -27,14 +27,14 @@ index 33b035aa96..930b663ef2 100644
 -         spec)) ; do not resolve NFS / CIFS / tmpfs devices
 +     (cond
 +      ((or (string-prefix? "/dev/" spec))
-+           spec)
++           (resolve device-exists? spec identity))
 +       ((and (>= (string-length spec) 4)
 +             (string=? (string-take spec 4) "zfs:"))
 +        ;; "zfs:zpool/dataset" => "zpool/dataset"
 +        (string-drop spec 4))
 +       (else
 +        ;; Nothing to do, but wait until SPEC shows up.
-+        (resolve identity spec identity)
++        ;(resolve device-exists? spec identity)
 +        spec)))
      ((? file-system-label?)
       ;; Resolve the label.

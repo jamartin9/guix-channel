@@ -1,10 +1,11 @@
 (define-module (jam system ci-vm)
+  #:use-module (gnu bootloader)
   #:use-module (gnu system)
   #:use-module (gnu system keyboard)
-  #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system shadow)
+  #:use-module (gnu system linux-initrd)
   #:use-module (gnu services)
   #:use-module (gnu services linux)
   #:use-module (gnu services shepherd)
@@ -49,16 +50,17 @@
   #:use-module (srfi srfi-1)
   #:use-module (jam packages nzbget)
   #:use-module (nongnu packages compression) ; unrar
+  #:use-module (rosenthal bootloader limine)
 ;  #:use-module (nongnu packages linux)
 ;  #:use-module (nongnu system linux-initrd)
-;  #:use-module (jam packages zfs) ; zfs kernel-loadable-modules
+  #:use-module (jam packages zfs) ; zfs kernel-loadable-modules
   #:use-module (jam system channels)
   #:use-module (jam system home)
   #:use-module (jam system services) ; kicksecure sysctl and kernel args
   )
 
 
-(define my-kernel linux-libre)
+(define my-kernel linux-libre-lts) ; 6.18
 
 (define-public %ci-vm
   (operating-system
@@ -68,6 +70,8 @@
     (keyboard-layout (keyboard-layout "us" "altgr-intl"))
 
     (kernel my-kernel)
+    ;(initrd-modules (cons "zfs" %base-initrd-modules))
+    (kernel-loadable-modules (list `(,pyzfs "module")))
     ;(initrd microcode-initrd)
     (kernel-arguments %kicksecure-kernel-arguments)
 
@@ -76,15 +80,27 @@
     ;(firmware (list linux-firmware))
 
     (bootloader (bootloader-configuration
-                 (bootloader grub-bootloader)
-                 ;(terminal-outputs '(console))
-                 (targets '("/dev/vda"))))
-
-    (file-systems (cons (file-system
+                 (bootloader limine-efi-removable-bootloader);(terminal-outputs '(console))
+                 (targets '("/efi"))))
+    (file-systems (cons* (file-system
+                           (mount-point "/efi")
+                           (device (file-system-label "boot"))
+                           (type "vfat")
+                           (flags '(no-exec no-suid no-dev))
+                           (options "fmask=0177,dmask=0077"))
+                        (file-system
+                          (device "zfs:jam/system/root")
                           (mount-point "/")
-                          (device "/dev/vda2");(device (file-system-label "root"))
-                          ;(options "compress=zstd,space_cache=v2"); ssd_spread,discard
-                          (type "ext4")); "btrfs"
+                          (type "zfs"))
+                        (file-system
+                         (device "zfs:jam/system/store")
+                         (mount-point "/gnu")
+                         (type "zfs")
+                         (needed-for-boot? #t))
+                        (file-system
+                         (device "zfs:jam/system/home")
+                         (mount-point "/home")
+                         (type "zfs"))
                         %base-file-systems))
 
     (users (cons (user-account
@@ -124,62 +140,63 @@
                    ;(service sddm-service-type
                    ;          (sddm-configuration
                    ;           (theme "breeze")))
-                   ;(service zfs-service-type ; maybe snapshot sync from existing when on root?
-                   ;         (zfs-configuration
-                   ;          (kernel my-kernel)))
-              (service cuirass-service-type
-                            (cuirass-configuration (specifications #~(list (specification
-                                                                            (name "binary")
-                                                                            (build '(custom (jam ci)))
-                                                                            (channels (list (channel ;; custom guix override
-                                                                                             (name 'guix)
-                                                                                             (url "https://git.savannah.gnu.org/git/guix.git")
-                                                                                             (introduction
-                                                                                              (make-channel-introduction
-                                                                                               "9edb3f66fd807b096b48283debdcddccfea34bad"
-                                                                                               (openpgp-fingerprint
-                                                                                                "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
-                                                                                            (channel ;; GUIX_PACKAGE_PATH and (url "file:///home/.../guix-channel")
-                                                                                             (name 'mychannel)
-                                                                                             (url "https://codeberg.org/jamartin9/guix-channel")
-                                                                                             (introduction
-                                                                                              (make-channel-introduction
-                                                                                               "a8de09ac62260319e6376f21c995f713c1b09279"
-                                                                                               (openpgp-fingerprint
-                                                                                                "34AF BE87 8193 580F F441  AB3F 95AF 699C 293E 302B"))))))
-                                                                            ;(notifications (list (rss-feed))); add import for (cuirass rss) for https://127.0.0.1/events/rss/?specification=my-channel-packages
-                                                                            (build-outputs (list
-                                                                                            (build-output
-                                                                                             (job "binary*")
-                                                                                             (type "archive")
-                                                                                             (output "out")
-                                                                                             (path ""))))
-                                                                            (period 86400))
-                                                                           (specification
-                                                                            (name "packages")
-                                                                            (build '(channels mychannel))
-                                                                            (channels (list (channel
-                                                                                             (name 'guix)
-                                                                                             (url "https://git.savannah.gnu.org/git/guix.git")
-                                                                                             (introduction
-                                                                                              (make-channel-introduction
-                                                                                               "9edb3f66fd807b096b48283debdcddccfea34bad"
-                                                                                               (openpgp-fingerprint
-                                                                                                "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
-                                                                                            (channel
-                                                                                             (name 'mychannel)
-                                                                                             (url "https://codeberg.org/jamartin9/guix-channel")
-                                                                                             (introduction
-                                                                                              (make-channel-introduction
-                                                                                               "a8de09ac62260319e6376f21c995f713c1b09279"
-                                                                                               (openpgp-fingerprint
-                                                                                                "34AF BE87 8193 580F F441  AB3F 95AF 699C 293E 302B"))))))
-                                                                            (period 86400))))
-                                                   (ttl 172800); two days before clearing gc roots
-                                                   (host "0.0.0.0")))
-                   (service postgresql-service-type
-                            (postgresql-configuration
-                             (postgresql (@ (gnu packages databases) postgresql-15))))
+              (service zfs-service-type ; maybe snapshot sync from existing when on root?
+                       (zfs-configuration
+                        (kernel my-kernel)
+                        (base-zfs pyzfs)))
+              ;(service cuirass-service-type
+              ;              (cuirass-configuration (specifications #~(list (specification
+              ;                                                              (name "binary")
+              ;                                                              (build '(custom (jam ci)))
+              ;                                                              (channels (list (channel ;; custom guix override
+              ;                                                                               (name 'guix)
+              ;                                                                               (url "https://git.savannah.gnu.org/git/guix.git")
+              ;                                                                               (introduction
+              ;                                                                                (make-channel-introduction
+              ;                                                                                 "9edb3f66fd807b096b48283debdcddccfea34bad"
+              ;                                                                                 (openpgp-fingerprint
+              ;                                                                                  "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
+              ;                                                                              (channel ;; GUIX_PACKAGE_PATH and (url "file:///home/.../guix-channel")
+              ;                                                                               (name 'mychannel)
+              ;                                                                               (url "https://codeberg.org/jamartin9/guix-channel")
+              ;                                                                               (introduction
+              ;                                                                                (make-channel-introduction
+              ;                                                                                 "a8de09ac62260319e6376f21c995f713c1b09279"
+              ;                                                                                 (openpgp-fingerprint
+              ;                                                                                  "34AF BE87 8193 580F F441  AB3F 95AF 699C 293E 302B"))))))
+              ;                                                              ;(notifications (list (rss-feed))); add import for (cuirass rss) for https://127.0.0.1/events/rss/?specification=my-channel-packages
+              ;                                                              (build-outputs (list
+              ;                                                                              (build-output
+              ;                                                                               (job "binary*")
+              ;                                                                               (type "archive")
+              ;                                                                               (output "out")
+              ;                                                                               (path ""))))
+              ;                                                              (period 86400))
+              ;                                                             (specification
+              ;                                                              (name "packages")
+              ;                                                              (build '(channels mychannel))
+              ;                                                              (channels (list (channel
+              ;                                                                               (name 'guix)
+              ;                                                                               (url "https://git.savannah.gnu.org/git/guix.git")
+              ;                                                                               (introduction
+              ;                                                                                (make-channel-introduction
+              ;                                                                                 "9edb3f66fd807b096b48283debdcddccfea34bad"
+              ;                                                                                 (openpgp-fingerprint
+              ;                                                                                  "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
+              ;                                                                              (channel
+              ;                                                                               (name 'mychannel)
+              ;                                                                               (url "https://codeberg.org/jamartin9/guix-channel")
+              ;                                                                               (introduction
+              ;                                                                                (make-channel-introduction
+              ;                                                                                 "a8de09ac62260319e6376f21c995f713c1b09279"
+              ;                                                                                 (openpgp-fingerprint
+              ;                                                                                  "34AF BE87 8193 580F F441  AB3F 95AF 699C 293E 302B"))))))
+              ;                                                               (period 86400))))
+              ;                                     (ttl 172800); two days before clearing gc roots
+              ;                                     (host "0.0.0.0")))
+              ;     (service postgresql-service-type
+              ;              (postgresql-configuration
+              ;               (postgresql (@ (gnu packages databases) postgresql-15))))
                    (service dhcpcd-service-type) ;; Use the DHCP client service rather than NetworkManager.
                    (service ntp-service-type); time without %desktop-services
 
@@ -312,7 +329,7 @@
                                                           (inherit config)
                                                           (channels %jam-channels)
                                                           ;(log-compression 'none); use btrfs compression
-                                                          (guix (current-guix))
+                                                          (guix guix/zfs)
                                                           (privileged? #t); https://issues.guix.gnu.org/77862 overflow id causes test suites to fail
                                                           (substitute-urls
                                                            (append (list "https://substitutes.nonguix.org/" "https://cuirass.genenetwork.org/"); 4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
