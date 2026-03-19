@@ -1,6 +1,15 @@
 (channel
  (version 0)
  (dependencies
+   (channel
+   (name guix)
+   (url "https://codeberg.org/guix/guix")
+   (branch "master")
+   (introduction
+    (channel-introduction
+     (version 0)
+     (commit "b416322c05d769d637979ad4ef7287aefbccb4bd"); before remove texinfo-4 needed by guix-science on pull
+     (signer "CCB8 1842 F9D7 058E CD67  377A BF5C DF4D F6BF 6682")))) ; csantosb
   (channel
    (name nonguix)
    (url "https://gitlab.com/nonguix/nonguix")
