@@ -6,9 +6,9 @@
   #:use-module (guix utils) ; package-keyword-arguments
   #:use-module (gnu packages machine-learning); llama-cpp
   #:use-module (jam packages) ; for search-patches
+  #:use-module (nongnu packages nvidia)
   #:use-module (guix-science-nonfree packages cuda) ; cuda-12 for the 580 driver series (13 requires cc 7.5+)
   #:use-module ((guix licenses) #:prefix license:))
-
 
 (define-public ik-llama
   (package
@@ -34,30 +34,23 @@
                    (delete "ggml"))) ; use ggml fork
    (home-page "https://github.com/ikawrakow/ik_llama.cpp")))
 
-(define-public ik-llama-cu ; maybe switch to 'cuda-enabled-package' from guix-science-nonfree
-  (package
-   (inherit llama-cpp)
-   (name "ik-llama-cpp-cu")
-   (version "git-54bcafe") ; bug: forward compatibility was attempted on non supported HW
-   (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ikawrakow/ik_llama.cpp")
-             (commit "54bcafee1682847ea8884319e752803ea8ff17d7")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "00ylj8nzhdl6f6avzbbq7afnlshy5ma80wxzdif3haj1v66wxw0x"))))
-   (arguments
-    (substitute-keyword-arguments (package-arguments llama-cpp) ; maybe add wrapper for LD_LIBRARY_PATH for cuda lib
-                                  ((#:validate-runpath? _ #t) #f); RUNPATH validation fails cuda libs are stubs. patchelf populate DT_RPATH not DT_RUNPATH.
-                                  ((#:configure-flags flags) ''("-DGGML_IQK_FA_ALL_QUANTS=ON" "-DGGML_NATIVE=ON" "-DGGML_CUDA=ON"))
-                                  ((#:tests? _ #t) #f)
-                                  ((#:phases phases) #~(modify-phases #$phases (delete 'patch-paths)))))
-   (inputs
-    (modify-inputs (package-inputs llama-cpp)
-                   (append cuda-12); maybe add NCCL with -DGGML_USE_NCCL=ON ? maybe shorten compile for only arch(s) needed -DCMAKE_CUDA_ARCHITECTURES=52
-                   (delete "ggml"))) ; use ggml fork
-   (home-page "https://github.com/ikawrakow/ik_llama.cpp")))
+(define-public ik-llama-cuda ; maybe add NCCL with -DGGML_USE_NCCL=ON, add wrapper for LD_LIBRARY_PATH for cuda lib
+  (cuda-enabled-package ik-llama #:cuda-package cuda-12 #:extra-configure-flags ''("-DGGML_CUDA=ON" "-DCMAKE_CUDA_ARCHITECTURES=52"))) ;shorten compile for only arch(s) needed
 
-ik-llama-cu; tune for cpu when builder is different(we removed the portable binary configure flags). guix package --tune=native -f ./jam/packages/llama.scm
+(define-public nvidia-settings-580.119.02
+  (package
+   (inherit nvidia-settings)
+   (name "nvida-settings-580.119.02")
+   (version "580.119.02")
+   (source ((@@ (nongnu packages nvidia) nvidia-source) version "1hkr2d54s85a94fzg1pl6yvsqi5f3d1mlmli84s4qs8dm35yb3xh"))))
+
+(define-public nvidia-driver-580.119.02
+  (package
+   (inherit nvidia-driver)
+   (name "nvida-driver-580.119.02")
+   (version "580.119.02")
+   (source ((@@ (nongnu packages nvidia) nvidia-source) version "1mzc700ngsnpmngblw51x58lgrdgsb1x1449lgksx27fsggza840"))))
+
+
+;nvidia-driver-580.119.02;nvidia-settings-580.119.02; cuda-toolkit
+ik-llama-cuda; tune for cpu when builder is different(we removed the portable binary configure flags). guix package --tune=native -f ./jam/packages/llama.scm

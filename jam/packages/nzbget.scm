@@ -88,8 +88,7 @@
        (sha256
         (base32 "03ij15afzkwqmi9di90cf2m7v6c288wixf9f8i46kkmii0ykp7d8"))))
    (arguments
-    (append (list #:configure-flags `(list "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H -DPARPAR_INVERT_SUPPORT -DPARPAR_SLIM_GF16" "-DENABLE_TESTS=1")); cmake/par2-turbo.cmake: add_compile_definitions(HAVE_CONFIG_H PARPAR_ENABLE_HASHER_MD5CRC PARPAR_INVERT_SUPPORT PARPAR_SLIM_GF16) RAPIDYENC_VERSION
-
+    (append (list #:configure-flags `(list "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H -DPARPAR_INVERT_SUPPORT -DPARPAR_SLIM_GF16" "-DENABLE_TESTS=1")) ; add par2turbo definitions and enable tests
             (list #:phases
                   #~(modify-phases %standard-phases
                                    (add-after 'unpack 'unbundle-par2-rapidyenc
@@ -99,9 +98,9 @@
                                                              (("include\\(\\$\\{CMAKE_SOURCE_DIR}/cmake/rapidyenc.cmake)") "set(LIBS ${LIBS} librapidyenc.a)\n")
                                                              (("list\\(APPEND EXTERNAL_DEPS par2-turbo)") "\n")
                                                              (("list\\(APPEND EXTERNAL_DEPS rapidyenc)") "\n"))))))))
-   (inputs `(("par2cmdline-turbo" ,par2cmdline-turbo)
-             ("rapidyenc" ,rapidyenc)
-             ,@(package-inputs nzbget)))
+   (inputs (modify-inputs (package-inputs nzbget)
+                          (append par2cmdline-turbo)
+                          (append rapidyenc)))
    (home-page "https://github.com/nzbgetcom/nzbget")))
 
 

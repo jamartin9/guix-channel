@@ -14,34 +14,28 @@ Change-Id: I6579a36d66fcd0a487fe262c9a7c36e51532cb70
  5 files changed, 58 insertions(+), 22 deletions(-)
 
 diff --git a/gnu/build/file-systems.scm b/gnu/build/file-systems.scm
-index c506a4911ff..05d0cb819ae 100644
+index 33b035aa96..930b663ef2 100644
 --- a/gnu/build/file-systems.scm
 +++ b/gnu/build/file-systems.scm
-@@ -1173,13 +1173,20 @@ (define (canonicalize-device-spec spec)
+@@ -1226,10 +1226,17 @@ (define (device-exists? device)
  
    (match spec
      ((? string?)
--     (if (or (string-contains spec ":/") ;nfs
--             (and (>= (string-length spec) 2)
--                  (equal? (string-take spec 2) "//")) ;cifs
--             (string=? spec "none"))
--         spec                  ; do not resolve NFS / CIFS / tmpfs devices
+-     (if (string-prefix? "/dev/" spec)
 -         ;; Nothing to do, but wait until SPEC shows up.
--         (resolve identity spec identity)))
+-         (resolve device-exists? spec identity)
+-         spec)) ; do not resolve NFS / CIFS / tmpfs devices
 +     (cond
-+      ((or (string-contains spec ":/") ;nfs
-+           (and (>= (string-length spec) 2)
-+                (equal? (string-take spec 2) "//")) ;cifs
-+           (string=? spec "none"))
-+       ;; Do not resolve NFS / CIFS / tmpfs devices.
-+       spec)
-+      ((and (>= (string-length spec) 4)
-+            (string=? (string-take spec 4) "zfs:"))
-+       ;; "zfs:zpool/dataset" => "zpool/dataset"
-+       (string-drop spec 4))
-+      (else
-+       ;; Nothing to do, but wait until SPEC shows up.
-+       (resolve identity spec identity))))
++      ((or (string-prefix? "/dev/" spec))
++           spec)
++       ((and (>= (string-length spec) 4)
++             (string=? (string-take spec 4) "zfs:"))
++        ;; "zfs:zpool/dataset" => "zpool/dataset"
++        (string-drop spec 4))
++       (else
++        ;; Nothing to do, but wait until SPEC shows up.
++        (resolve identity spec identity)
++        spec)))
      ((? file-system-label?)
       ;; Resolve the label.
       (resolve find-partition-by-label
