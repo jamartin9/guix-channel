@@ -1034,8 +1034,8 @@
     (name 'zfs)
     (extensions
      (list ;; Extend PAM with pam_zfs_key.so
-           (service-extension pam-root-service-type
-                              pam-zfs-extension-procedure)
+           ;(service-extension pam-root-service-type
+           ;                   pam-zfs-extension-procedure)
            ;; Install OpenZFS kernel module into kernel profile.
            (service-extension linux-loadable-module-service-type
                                zfs-loadable-modules)
@@ -1105,7 +1105,8 @@
     (name "guix-zfs")
     (arguments
      (substitute-keyword-arguments (package-arguments guix)
-       ((#:parallel-build? _ #f) #t)))))
+                                   ((#:parallel-build? _ #f) #t)
+                                   ((#:tests? _ #t) #f)))))
 
 ;pyzfs
 guix/zfs

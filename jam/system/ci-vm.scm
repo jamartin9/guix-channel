@@ -80,14 +80,15 @@
     ;(firmware (list linux-firmware))
 
     (bootloader (bootloader-configuration
-                 (bootloader limine-efi-removable-bootloader);(terminal-outputs '(console))
-                 (targets '("/efi"))))
+                 (bootloader limine-efi-removable-bootloader); creates a UKI bootable efi kernel with initrd. does not support ext4 (use xfs/zfs)
+                 (targets '("/efi")))) ; requires 'guix system image -t qcow2-gpt'
     (file-systems (cons* (file-system
                            (mount-point "/efi")
                            (device (file-system-label "boot"))
                            (type "vfat")
                            (flags '(no-exec no-suid no-dev))
-                           (options "fmask=0177,dmask=0077"))
+                           (options "fmask=0177,dmask=0077")
+                           (create-mount-point? #t))
                         (file-system
                           (device "zfs:jam/system/root")
                           (mount-point "/")

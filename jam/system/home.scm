@@ -76,7 +76,7 @@
   # Guix parts
   alias guixPack=\"guix pack -S /bin=bin -RR\"
   alias guixPackDock=\"guix pack -S /bin=bin -f docker\"
-  alias guixPackVm=\"guix system image -t qcow2\" # qemu-img resize x.qcow +10G boot then growpart and resize2fs
+  alias guixPackVm=\"guix system image -t qcow2-gpt\" # qemu-img resize x.qcow +10G boot then growpart and resize2fs
   _guix_run_vm(){
       local vmOpts=()
       local qOpts=()
