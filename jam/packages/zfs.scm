@@ -1010,25 +1010,6 @@
               (zfs-mcron-auto-scrub-jobs conf)
               '())))
 
-
-(define (pam-zfs-extension-procedure config)
-  "Return an extension for PAM-ROOT-SERVICE"
-  (define pam-zfs-key-pam-entry
-    (pam-entry
-      (control "optional")
-      (module "pam_zfs_key.so")
-      (arguments '("homes=jam/system/home"
-                   "runstatedir=/run/pam_zfs_key")))); TODO take from config/args
-  (list (pam-extension
-          (transformer
-           (lambda (pam)
-             (pam-service
-               (inherit pam);(name "zfs-pam-login")
-               (auth (append pam-zfs-key-pam-entry (pam-service-auth pam)))
-               (session (append pam-zfs-key-pam-entry (pam-service-session pam)))
-               (password (append pam-zfs-key-pam-entry (pam-service-password pam))))))))
-  )
-
 (define zfs-service-type
   (service-type
     (name 'zfs)
@@ -1095,19 +1076,5 @@
                                                                            (string-append "--with-udevdir=" out "/lib/udev")
                                                                            (string-append "--with-mounthelperdir=" out "/sbin")
                                                                            (string-append "--with-linux=" (search-input-directory inputs "lib/modules/build")))))))))))))
-
-(define-public guix/zfs
-  (package
-    (inherit
-     (package-with-extra-patches guix ;(current-guix)
-       (jam-patches "guix-allow-out-of-tree-modules-in-initrd.patch"
-                    "guix-wip-zfs-boot-support.patch")))
-    (name "guix-zfs")
-    (arguments
-     (substitute-keyword-arguments (package-arguments guix)
-                                   ((#:parallel-build? _ #f) #t)
-                                   ((#:tests? _ #t) #f)))))
-
 ;pyzfs
-guix/zfs
 

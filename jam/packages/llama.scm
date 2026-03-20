@@ -7,7 +7,7 @@
   #:use-module (gnu packages machine-learning); llama-cpp
   #:use-module (jam packages) ; for search-patches
   #:use-module (nongnu packages nvidia)
-  #:use-module (guix-science-nonfree packages cuda) ; cuda-12 for the 580 driver series (13 requires cc 7.5+)
+;  #:use-module (guix-science-nonfree packages cuda) ; cuda-12 for the 580 driver series (13 requires cc 7.5+)
   #:use-module ((guix licenses) #:prefix license:))
 
 (define-public ik-llama
@@ -34,8 +34,8 @@
                    (delete "ggml"))) ; use ggml fork
    (home-page "https://github.com/ikawrakow/ik_llama.cpp")))
 
-(define-public ik-llama-cuda ; maybe add NCCL with -DGGML_USE_NCCL=ON, add wrapper for LD_LIBRARY_PATH for cuda lib
-  (cuda-enabled-package ik-llama #:cuda-package cuda-12 #:extra-configure-flags ''("-DGGML_CUDA=ON" "-DCMAKE_CUDA_ARCHITECTURES=52"))) ;shorten compile for only arch(s) needed
+;(define-public ik-llama-cuda ; maybe add NCCL with -DGGML_USE_NCCL=ON, add wrapper for LD_LIBRARY_PATH for cuda lib
+;  (cuda-enabled-package ik-llama #:cuda-package cuda-12 #:extra-configure-flags ''("-DGGML_CUDA=ON" "-DCMAKE_CUDA_ARCHITECTURES=52"))) ;shorten compile for only arch(s) needed
 
 (define-public nvidia-settings-580.119.02
   (package
@@ -53,4 +53,4 @@
 
 
 ;nvidia-driver-580.119.02;nvidia-settings-580.119.02; cuda-toolkit
-ik-llama-cuda; tune for cpu when builder is different(we removed the portable binary configure flags). guix package --tune=native -f ./jam/packages/llama.scm
+ik-llama; tune for cpu when builder is different(we removed the portable binary configure flags). guix package --tune=native -f ./jam/packages/llama.scm

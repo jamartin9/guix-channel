@@ -1,15 +1,6 @@
 (channel
  (version 0)
  (dependencies
-   (channel
-   (name guix)
-   (url "https://codeberg.org/guix/guix")
-   (branch "master")
-   (introduction
-    (channel-introduction
-     (version 0)
-     (commit "b416322c05d769d637979ad4ef7287aefbccb4bd"); before remove texinfo-4 needed by guix-science on pull
-     (signer "CCB8 1842 F9D7 058E CD67  377A BF5C DF4D F6BF 6682")))) ; csantosb
   (channel
    (name nonguix)
    (url "https://gitlab.com/nonguix/nonguix")
@@ -19,38 +10,4 @@
      (version 0)
      (commit "7d14e819fc7b2681240023b9e4c001fc3f5cba04")
      (signer "E31D 9DDE EBA5 4A14 8A20  4550 DA45 97F9 47B4 1025")))) ; gpg key of commit signer (jlicht)
-  (channel
-   (name rosenthal)
-   (url "https://codeberg.org/hako/Rosenthal")
-   (branch "trunk")
-   (introduction
-    (channel-introduction
-     (version 0)
-     (commit "0168423b50fc047e186cc35780bd20bb9f0721ff")
-     (signer "F4C2 D1DF 3FDE EA63 D1D3  0776 ACC6 6D09 CA52 8292")))); hako
-  (channel
-   (name guix-science-nonfree)
-   (url "https://codeberg.org/guix-science/guix-science-nonfree")
-   (branch "master")
-   (introduction
-    (channel-introduction
-     (version 0)
-     (commit "268e6d26c3e7cd4d0137dc04fe1b0298a4aa2536")
-     (signer "B46D F948 B731 3402 FBCF  9021 2934 03FE 476B 7D63")))); rgarbage
-  (channel
-   (name guix-science) ; keep sync'd with guix-science-nonfree above
-   (url "https://codeberg.org/guix-science/guix-science.git")
-   (introduction
-	(channel-introduction
-     (version 0)
-	 (commit "b1fe5aaff3ab48e798a4cce02f0212bc91f423dc")
-	 (signer "CA4F 8CF4 37D7 478F DA05  5FD4 4213 7701 1A37 8446"))))
-  (channel
-   (name guix-past)
-   (url "https://codeberg.org/guix-science/guix-past.git")
-   (introduction
-    (channel-introduction
-     (version 0)
-     (commit "0c119db2ea86a389769f4d2b9c6f5c41c027e336")
-     (signer "3CE4 6455 8A84 FDC6 9DB4  0CFB 090B 1199 3D9A EBB5"))))
   ))

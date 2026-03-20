@@ -7,7 +7,7 @@
   (list (channel ;; custom guix override
          (name 'guix)
          (url "https://codeberg.org/guix/guix.git")
-         (commit "b416322c05d769d637979ad4ef7287aefbccb4bd")
+         ;(commit "b416322c05d769d637979ad4ef7287aefbccb4bd")
          (introduction
           (make-channel-introduction
            "9edb3f66fd807b096b48283debdcddccfea34bad"

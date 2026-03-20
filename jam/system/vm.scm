@@ -129,8 +129,7 @@
                                    (list `("home.scm" ,(local-file "home.scm"))))
                    (simple-service 'channel-file etc-service-type ; link to ~/.config/guix/channels.scm
                                    (list `("channels.scm" ,(local-file "channels.scm"))))
-                   (simple-service 'channel-pub etc-service-type
-                                   (list `("nonguix.pub" ,(local-file "nonguix.pub"))))
+                   ;(simple-service 'channel-pub etc-service-type (list `("nonguix.pub" ,(local-file "nonguix.pub"))))
                    (simple-service 'gene-channel-pub etc-service-type
                                    (list `("gene.pub" ,(local-file "gene.pub"))))
                    (simple-service 'guest-home-service guix-home-service-type
@@ -213,9 +212,9 @@
                                                           (guix (current-guix))
                                                           (privileged? #t)
                                                           (substitute-urls
-                                                           (append (list "https://substitutes.nonguix.org/" "https://cuirass.genenetwork.org/"); 4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
+                                                           (append (list "https://cuirass.genenetwork.org/");"https://substitutes.nonguix.org/" ; 4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
                                                                    %default-substitute-urls)) ;(http-proxy) with tor config HTTPTunnelPort
                                                           (authorized-keys
-                                                           (append (list (local-file "./nonguix.pub") (local-file "./gene.pub"))
+                                                           (append (list (local-file "./gene.pub")); (local-file "./nonguix.pub")
                                                                    %default-authorized-guix-keys))))))))))
 %jam-vm
