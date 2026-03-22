@@ -37,20 +37,13 @@
 ;(define-public ik-llama-cuda ; maybe add NCCL with -DGGML_USE_NCCL=ON, add wrapper for LD_LIBRARY_PATH for cuda lib
 ;  (cuda-enabled-package ik-llama #:cuda-package cuda-12 #:extra-configure-flags ''("-DGGML_CUDA=ON" "-DCMAKE_CUDA_ARCHITECTURES=52"))) ;shorten compile for only arch(s) needed
 
-(define-public nvidia-settings-580.119.02
-  (package
-   (inherit nvidia-settings)
-   (name "nvida-settings-580.119.02")
-   (version "580.119.02")
-   (source ((@@ (nongnu packages nvidia) nvidia-source) version "1hkr2d54s85a94fzg1pl6yvsqi5f3d1mlmli84s4qs8dm35yb3xh"))))
-
-(define-public nvidia-driver-580.119.02
+(define-public nvidia-driver-575.64.05
   (package
    (inherit nvidia-driver)
-   (name "nvida-driver-580.119.02")
-   (version "580.119.02")
-   (source ((@@ (nongnu packages nvidia) nvidia-source) version "1mzc700ngsnpmngblw51x58lgrdgsb1x1449lgksx27fsggza840"))))
+   (name "nvida-driver-575.64.05")
+   (version "575.64.05")
+   (source ((@@ (nongnu packages nvidia) nvidia-source) version "0bah9mvkymnmyh4z5h7x138gyfklz7hzfb0bga8w2q92j47vbwl5"))))
 
 
-;nvidia-driver-580.119.02;nvidia-settings-580.119.02; cuda-toolkit
-ik-llama; tune for cpu when builder is different(we removed the portable binary configure flags). guix package --tune=native -f ./jam/packages/llama.scm
+;ik-llama; tune for cpu when builder is different(we removed the portable binary configure flags). guix package --tune=native -f ./jam/packages/llama.scm
+nvidia-driver-575.64.05;nvidia-settings-580.119.02; cuda-toolkit
