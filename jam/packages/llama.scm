@@ -7,6 +7,7 @@
   #:use-module (gnu packages machine-learning); llama-cpp
   #:use-module (jam packages) ; for search-patches
   #:use-module (nongnu packages nvidia)
+  #:use-module (gnu packages emacs)
 ;  #:use-module (guix-science-nonfree packages cuda) ; cuda-12 for the 580 driver series (13 requires cc 7.5+)
   #:use-module ((guix licenses) #:prefix license:))
 
@@ -40,10 +41,13 @@
 (define-public nvidia-driver-575.64.05
   (package
    (inherit nvidia-driver)
-   (name "nvida-driver-575.64.05")
    (version "575.64.05")
    (source ((@@ (nongnu packages nvidia) nvidia-source) version "0bah9mvkymnmyh4z5h7x138gyfklz7hzfb0bga8w2q92j47vbwl5"))))
 
+(define-public emacs-nvda
+  (replace-mesa emacs-next-pgtk #:driver nvidia-driver-575.64.05))
 
-;ik-llama; tune for cpu when builder is different(we removed the portable binary configure flags). guix package --tune=native -f ./jam/packages/llama.scm
-nvidia-driver-575.64.05;nvidia-settings-580.119.02; cuda-toolkit
+;ik-llama
+;nvidia-driver-575.64.05
+emacs-nvda
+
