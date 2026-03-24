@@ -17,7 +17,7 @@
 (define-public par2cmdline-turbo
   (package
     (name "par2cmdline-turbo")
-    (version "1.4.0-20260310")
+    (version "1.4.0-20260323")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26,7 +26,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bdb526gcc7ac9dn5g85bq7h7jyhm7cfkz1d31bi1zhmzds9m3w7"))))
+                "08n4p56v9s58apw6nd9cwsmmyniwq2c2wh522aqljs34cbn1ir51"))))
     (arguments
      (append (list #:configure-flags '(list "-DBUILD_LIB=ON" "-DBUILD_TOOL=ON" "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H -DPARPAR_INVERT_SUPPORT -DPARPAR_SLIM_GF16"))
              (list #:phases #~(modify-phases %standard-phases

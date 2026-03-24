@@ -6,8 +6,6 @@
   #:use-module (guix utils) ; package-keyword-arguments
   #:use-module (gnu packages machine-learning); llama-cpp
   #:use-module (jam packages) ; for search-patches
-  #:use-module (nongnu packages nvidia)
-  #:use-module (gnu packages emacs)
 ;  #:use-module (guix-science-nonfree packages cuda) ; cuda-12 for the 580 driver series (13 requires cc 7.5+)
   #:use-module ((guix licenses) #:prefix license:))
 
@@ -38,16 +36,5 @@
 ;(define-public ik-llama-cuda ; maybe add NCCL with -DGGML_USE_NCCL=ON, add wrapper for LD_LIBRARY_PATH for cuda lib
 ;  (cuda-enabled-package ik-llama #:cuda-package cuda-12 #:extra-configure-flags ''("-DGGML_CUDA=ON" "-DCMAKE_CUDA_ARCHITECTURES=52"))) ;shorten compile for only arch(s) needed
 
-(define-public nvidia-driver-575.64.05
-  (package
-   (inherit nvidia-driver)
-   (version "575.64.05")
-   (source ((@@ (nongnu packages nvidia) nvidia-source) version "0bah9mvkymnmyh4z5h7x138gyfklz7hzfb0bga8w2q92j47vbwl5"))))
-
-(define-public emacs-nvda
-  (replace-mesa emacs-next-pgtk #:driver nvidia-driver-575.64.05))
-
-;ik-llama
-;nvidia-driver-575.64.05
-emacs-nvda
+ik-llama
 
