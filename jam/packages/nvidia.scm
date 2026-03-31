@@ -13,14 +13,14 @@
   #:use-module (gnu packages chromium)
   #:use-module ((guix licenses) #:prefix license:))
 
-(define-public nvidia-driver-575.64.05
-  (package
-   (inherit nvidia-driver)
-   (version "575.64.05")
-   (source ((@@ (nongnu packages nvidia) nvidia-source) version "0bah9mvkymnmyh4z5h7x138gyfklz7hzfb0bga8w2q92j47vbwl5"))))
+;(define-public nvidia-driver-575.64.05
+;  (package
+;   (inherit nvidia-driver)
+;   (version "575.64.05")
+;   (source ((@@ (nongnu packages nvidia) nvidia-source) version "0bah9mvkymnmyh4z5h7x138gyfklz7hzfb0bga8w2q92j47vbwl5"))))
 
-(define-public emacs-nvda
-  (replace-mesa emacs-next-pgtk #:driver nvidia-driver-575.64.05))
+;(define-public emacs-nvda
+;  (replace-mesa emacs-next-pgtk #:driver nvidia-driver-575.64.05))
 
 
 (define ff-nvda
@@ -36,10 +36,10 @@
    (replacement ungoogled-chromium)))
 
 (define-public firefox-nvda
-  (replace-mesa ff-nvda #:driver nvidia-driver-575.64.05))
+  (replace-mesa ff-nvda ));#:driver nvidia-driver-575.64.05))
 
 (define-public chromeium-nvda
-  (replace-mesa chrome-nvda #:driver nvidia-driver-575.64.05))
+  (replace-mesa chrome-nvda ));#:driver nvidia-driver-575.64.05))
 
 ;nvidia-driver-575.64.05
-emacs-nvda
+;emacs-nvda
