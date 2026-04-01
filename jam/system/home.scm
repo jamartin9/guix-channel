@@ -38,7 +38,7 @@
                                               "aspell" "aspell-dict-en"
                                               "gnupg"
                                               "curl"; emacs-osm needs for CA's
-                                              "emacs-mcp" "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv")));)
+                                              "emacs-mcp" "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))););"emacs-reka"
    (services
     (append
      (list
