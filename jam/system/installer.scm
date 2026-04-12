@@ -2,8 +2,8 @@
   #:use-module (gnu services)
   #:use-module (gnu system)
   #:use-module (gnu system install)
-  #:use-module (gnu system image) ; image
-  #:use-module (gnu ci) ; image
+  #:use-module (gnu system image) ;image
+  #:use-module (gnu ci) ;image
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages emacs)
@@ -33,26 +33,30 @@
     (kernel-arguments '("quiet" "modprobe.blacklist=radeon" "net.ifnames=0"))
 
     (services
-     (append
-      (list
-       (simple-service 'channel-file etc-service-type ;; Include the channel file so that it can be used during installation
-                       (list `("channels.scm" ,(local-file "channels.scm")))))
+     (append (list (simple-service 'channel-file etc-service-type ;Include the channel file so that it can be used during installation
+                                   (list `("channels.scm" ,(local-file
+                                                            "channels.scm")))))
 
-      (modify-services (operating-system-user-services installation-os)
-                        (guix-service-type config =>
-                                           (guix-configuration
-                                            (inherit config)
-                                            (guix (current-guix))
-                                            (channels %jam-channels)
-                                            (substitute-urls
-                                             (append (list "https://substitutes.nonguix.org/" "https://cuirass.genenetwork.org/")
-                                                     %default-substitute-urls))
-                                            (authorized-keys
-                                             (append (list (local-file "./nonguix.pub") (local-file "./gene.pub"))
-                                                     %default-authorized-guix-keys)))))))
+             (modify-services (operating-system-user-services installation-os)
+               (guix-service-type config =>
+                                  (guix-configuration (inherit config)
+                                                      (guix (current-guix))
+                                                      (channels %jam-channels)
+                                                      (substitute-urls (append
+                                                                        (list
+                                                                         "https://substitutes.nonguix.org/"
+                                                                         "https://cuirass.genenetwork.org/")
+                                                                        %default-substitute-urls))
+                                                      (authorized-keys (append
+                                                                        (list (local-file
+                                                                               "./nonguix.pub")
+                                                                              
+                                                                              (local-file
+                                                                               "./gene.pub"))
+                                                                        %default-authorized-guix-keys)))))))
 
-    (packages ;; Add some extra packages useful for the installation process
-     (append (list git curl emacs-no-x-toolkit ntp)
-             (operating-system-packages installation-os)))))
+    (packages ;Add some extra packages useful for the installation process
+              (append (list git curl emacs-no-x-toolkit ntp)
+                      (operating-system-packages installation-os)))))
 
 installation-os-nonfree

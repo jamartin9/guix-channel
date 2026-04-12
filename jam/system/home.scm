@@ -4,7 +4,7 @@
   #:use-module (gnu home services guix)
   #:use-module (gnu home services shells)
   #:use-module (gnu home services shepherd)
-;  #:use-module (gnu home services sound)
+  ;; #:use-module (gnu home services sound)
   #:use-module (gnu services)
   #:use-module (gnu services ssh)
   #:use-module (gnu services shepherd)
@@ -15,44 +15,60 @@
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages emacs)
   #:use-module (jam packages emacs)
-;  #:use-module (jam packages tree-sitter)
+  ;; #:use-module (jam packages tree-sitter)
   #:use-module (jam system services)
   #:use-module (jam system channels)
   #:use-module (guix gexp)
   #:export (%jam-home))
 
-(define emacs-service ; MAYBE add activation service script to clone config
-  (shepherd-service
-   (provision '(emacs))
-   (start #~(make-system-constructor "emacs --daemon"))
-   (stop #~(make-system-destructor "emacsclient --eval '(kill-emacs)'"))
-   (auto-start? #f)))
+(define emacs-service
+   ;MAYBE add activation service script to clone config
+  (shepherd-service (provision '(emacs))
+                    (start #~(make-system-constructor "emacs --daemon"))
+                    (stop #~(make-system-destructor
+                             "emacsclient --eval '(kill-emacs)'"))
+                    (auto-start? #f)))
 
 (define %jam-home
   (home-environment
-   (packages ;(append ;(map transform-emacs-configure (list emacs-next-pgtk))
-            (map specification->package (list "guile"
-                                              "emacs-next-pgtk" ; managed by default profile
-                                              "git"
-                                              "nss-certs"
-                                              "aspell" "aspell-dict-en"
-                                              "gnupg"
-                                              "curl"; emacs-osm needs for CA's
-                                              "emacs-mcp" "emacs-gptel" "emacs-eat" "emacs-org-roam" "emacs-guix" "emacs-osm" "emacs-minions" "emacs-dape" "emacs-macrostep-geiser" "emacs-geiser-guile" "emacs-flymake-guile" "emacs-pyvenv"))););"emacs-reka"
-   (services
-    (append
-     (list
-     (simple-service 'my-channel-services home-channels-service-type %jam-channels )
-     (service home-shepherd-service-type (home-shepherd-configuration
-                                          (shepherd (specification->package "shepherd")) ;(auto-start? #f)
-                                          (services (list emacs-service))))
+    (packages ;(append ;(map transform-emacs-configure (list emacs-next-pgtk))
+              (map specification->package
+                   (list "guile"
+                         "emacs-next-pgtk" ;managed by default profile
+                         "git"
+                         "nss-certs"
+                         "aspell"
+                         "aspell-dict-en"
+                         "gnupg"
+                         "curl" ;emacs-osm needs for CA's
+                         "emacs-mcp"
+                         "emacs-gptel"
+                         "emacs-eat"
+                         "emacs-org-roam"
+                         "emacs-guix"
+                         "emacs-osm"
+                         "emacs-minions"
+                         "emacs-dape"
+                         "emacs-macrostep-geiser"
+                         "emacs-geiser-guile"
+                         "emacs-flymake-guile"
+                         "emacs-pyvenv"))) ;);"emacs-reka"
+    (services
+     (append (list (simple-service 'my-channel-services
+                                   home-channels-service-type %jam-channels)
+                   (service home-shepherd-service-type
+                            (home-shepherd-configuration (shepherd (specification->package
+                                                                    "shepherd")) ;(auto-start? #f)
+                                                         (services (list
+                                                                    emacs-service))))
 
-     (service home-bash-service-type
-              (home-bash-configuration
-               (package (specification->package "bash"))
-               (guix-defaults? #f);(environment-variables (list '("EDITOR" . "emacs")))
-               (bashrc (list (plain-file "guix.alias" "\
-  #!/usr/bin/env bash
+                   (service home-bash-service-type
+                            (home-bash-configuration
+                             (package
+                               (specification->package "bash"))
+                             (guix-defaults? #f) ;(environment-variables (list '("EDITOR" . "emacs")))
+                             (bashrc (list (plain-file "guix.alias"
+                                            "  #!/usr/bin/env bash
   # shellcheck disable=SC2155,SC2076,SC2068,SC1090,SC1091
   export TMPDIR=\"/tmp\"
   export HISTFILE=\"${XDG_STATE_HOME}\"/bash/history
@@ -102,8 +118,10 @@
                   shift 2
                   ;;
               *)
-                  printf 'Invalid option %s \n' \"${1}\"
-                  printf 'Valid options are: -t OS.scm -qo QEMU-OPTS -vo GUIXVM-OPTS --default \n'
+                  printf 'Invalid option %s 
+' \"${1}\"
+                  printf 'Valid options are: -t OS.scm -qo QEMU-OPTS -vo GUIXVM-OPTS --default 
+'
                   shift
                   ;;
           esac
@@ -126,21 +144,27 @@
       fi
   }
   _guix_list_profiles(){
-      printf \"The following profiles are available: \n\"
+      printf \"The following profiles are available: 
+\"
       if [ -f ~/.guix-profile/etc/profile ]; then
-          printf \"default \n\"
+          printf \"default 
+\"
       fi
       if [ -f ~/.guix-home/profile/etc/profile ]; then
-          printf \"home \n\"
+          printf \"home 
+\"
       fi
       for manifest in \"${GUIX_MANIFEST_DIR}\"/*.scm; do
           if [ \"${manifest}\" != \"${GUIX_MANIFEST_DIR}/*.scm\" ]; then # no glob
-              printf '%s \n' \"$(basename \"${manifest%.*}\")\"
+              printf '%s 
+' \"$(basename \"${manifest%.*}\")\"
           fi
       done
-      printf \"The following profiles are active: \n\"
+      printf \"The following profiles are active: 
+\"
       for prof in ${GUIX_ACTIVE_PROFILES[@]}; do
-          printf '%s \n' \"${prof}\"
+          printf '%s 
+' \"${prof}\"
       done
   }
   _guix_update_profile(){
@@ -173,7 +197,8 @@
       elif [ -f \"${profile}\"/etc/profile ]; then
           unset GUIX_PROFILE && . \"${profile}\"/etc/profile
       else
-          printf 'The manifest for %s does not exist \n' \"${arg}\"
+          printf 'The manifest for %s does not exist 
+' \"${arg}\"
           return
       fi
       local stash=(\"${GUIX_PREV_ENV[@]}\") # hide prev envs from being saved in new GUIX_PREV_ENV_$manifest
@@ -253,7 +278,8 @@
           case \"${arg}\" in
               -a|--activate)
                   if [[ \" ${GUIX_ACTIVE_PROFILES[*]} \" =~ \" ${2} \" ]]; then
-                      printf '%s is already active \n' \"${2}\"
+                      printf '%s is already active 
+' \"${2}\"
                   else
                       _guix_activate_profile \"${2}\"
                   fi
@@ -264,7 +290,8 @@
                       _guix_deactivate_profile \"${2}\"
                       cd . # restore ps1 prompt dir/info
                   else
-                      printf '%s is not active \n' \"${2}\"
+                      printf '%s is not active 
+' \"${2}\"
                   fi
                   shift 2
                   ;;
@@ -282,7 +309,8 @@
                   ;;
               *)
                   if [[ \" ${GUIX_ACTIVE_PROFILES[*]} \" =~ \" ${1} \" ]]; then
-                      printf '%s is already active \n' \"${1}\"
+                      printf '%s is already active 
+' \"${1}\"
                   else
                       _guix_activate_profile \"${1}\"
                   fi
@@ -293,5 +321,5 @@
   }
   alias guixProf=_guix_opts
   _guix_opts default"))))))
-     %base-home-services))))
+             %base-home-services))))
 %jam-home

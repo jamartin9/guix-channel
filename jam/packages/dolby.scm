@@ -2,14 +2,15 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix download)
-  #:use-module (guix build-system cargo) ; rust-dolby-vision-3 for vs-placebo and vs-nlq
-  #:use-module (gnu packages rust) ; rust-cargo-c for rust-dolby-vision-3
-  #:use-module (gnu packages rust-apps) ; for vs-nlq
-;  #:use-module (gnu packages rust-crates) ; for vs-nlq
-;  #:use-module (gnu packages rust-sources) ; for vs-nlq (criterion)
-  #:use-module (gnu packages video) ; vapoursynth for vs-nlq
-  #:use-module (jam packages) ; for search-patches
-  #:use-module ((guix licenses) #:prefix license:))
+  #:use-module (guix build-system cargo) ;rust-dolby-vision-3 for vs-placebo and vs-nlq
+  #:use-module (gnu packages rust) ;rust-cargo-c for rust-dolby-vision-3
+  #:use-module (gnu packages rust-apps) ;for vs-nlq
+  ;; #:use-module (gnu packages rust-crates) ; for vs-nlq
+  ;; #:use-module (gnu packages rust-sources) ; for vs-nlq (criterion)
+  #:use-module (gnu packages video) ;vapoursynth for vs-nlq
+  #:use-module (jam packages) ;for search-patches
+  #:use-module ((guix licenses)
+                #:prefix license:))
 ;; guix import crate -f Cargo.lock dolby_vision
 (define rust-aho-corasick-1.1.3
   (crate-source "aho-corasick" "1.1.3"
@@ -373,106 +374,104 @@
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-                      (replace 'build
-                               (lambda* (#:key outputs #:allow-other-keys)
-                                 (let ((out (assoc-ref outputs "out")))
-                                   (invoke "cargo" "cinstall" "--release"
-                                           (string-append "--prefix=" out))))))
-       ))
-    (native-inputs `(("cargo-c" ,rust-cargo-c))) ;; guix import crate -f Cargo.lock dolby_vision | grep "(define" | grep -o " .*"
-    (inputs (list  rust-hermit-abi-0.5.2 rust-is-terminal-0.4.16
-                   rust-aho-corasick-1.1.3
-                   rust-anes-0.1.6
-                   rust-anstyle-1.0.11
-                   rust-anyhow-1.0.98
-                   rust-autocfg-1.5.0
-                   rust-bitstream-io-2.6.0
-                   rust-bitvec-1.0.1
-                   rust-bitvec-helpers-3.1.5
-                   rust-bumpalo-3.19.0
-                   rust-cast-0.3.0
-                   rust-cfg-if-1.0.1
-                   rust-ciborium-0.2.2
-                   rust-ciborium-io-0.2.2
-                   rust-ciborium-ll-0.2.2
-                   rust-clap-4.5.41
-                   rust-clap-builder-4.5.41
-                   rust-clap-lex-0.7.5
-                   rust-core2-0.4.0
-                   rust-crc-3.3.0
-                   rust-crc-catalog-2.4.0
-                   rust-criterion-0.5.1
-                   rust-criterion-plot-0.5.0
-                   rust-crossbeam-deque-0.8.6
-                   rust-crossbeam-epoch-0.9.18
-                   rust-crossbeam-utils-0.8.21
-                   rust-crunchy-0.2.4
-                   rust-either-1.15.0
-                   rust-equivalent-1.0.2
-                   rust-funty-2.0.0
-                   rust-half-2.6.0
-                   rust-hashbrown-0.15.4
-                   rust-indexmap-2.10.0
-                   rust-itertools-0.10.5
-                   rust-itertools-0.13.0
-                   rust-itoa-1.0.15
-                   rust-js-sys-0.3.77
-                   rust-libc-0.2.174
-                   rust-log-0.4.27
-                   rust-memchr-2.7.5
-                   rust-num-traits-0.2.19
-                   rust-once-cell-1.21.3
-                   rust-oorandom-11.1.5
-                   rust-plotters-0.3.7
-                   rust-plotters-backend-0.3.7
-                   rust-plotters-svg-0.3.7
-                   rust-proc-macro2-1.0.95
-                   rust-quote-1.0.40
-                   rust-radium-0.7.0
-                   rust-rayon-1.10.0
-                   rust-rayon-core-1.12.1
-                   rust-regex-1.11.1
-                   rust-regex-automata-0.4.9
-                   rust-regex-syntax-0.8.5
-                   rust-roxmltree-0.20.0
-                   rust-rustversion-1.0.21
-                   rust-ryu-1.0.20
-                   rust-same-file-1.0.6
-                   rust-serde-1.0.219
-                   rust-serde-derive-1.0.219
-                   rust-serde-json-1.0.140
-                   rust-syn-2.0.104
-                   rust-tap-1.0.1
-                   rust-tinytemplate-1.2.1
-                   rust-tinyvec-1.9.0
-                   rust-unicode-ident-1.0.18
-                   rust-walkdir-2.5.0
-                   rust-wasm-bindgen-0.2.100
-                   rust-wasm-bindgen-backend-0.2.100
-                   rust-wasm-bindgen-macro-0.2.100
-                   rust-wasm-bindgen-macro-support-0.2.100
-                   rust-wasm-bindgen-shared-0.2.100
-                   rust-web-sys-0.3.77
-                   rust-winapi-util-0.1.9
-                   rust-windows-sys-0.59.0
-                   rust-windows-targets-0.52.6
-                   rust-windows-aarch64-gnullvm-0.52.6
-                   rust-windows-aarch64-msvc-0.52.6
-                   rust-windows-i686-gnu-0.52.6
-                   rust-windows-i686-gnullvm-0.52.6
-                   rust-windows-i686-msvc-0.52.6
-                   rust-windows-x86-64-gnu-0.52.6
-                   rust-windows-x86-64-gnullvm-0.52.6
-                   rust-windows-x86-64-msvc-0.52.6
-                   rust-wyz-0.5.1))
+       #:phases (modify-phases %standard-phases
+                  (replace 'build
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (invoke "cargo" "cinstall" "--release"
+                                (string-append "--prefix=" out))))))))
+    (native-inputs `(("cargo-c" ,rust-cargo-c))) ;guix import crate -f Cargo.lock dolby_vision | grep "(define" | grep -o " .*"
+    (inputs (list rust-hermit-abi-0.5.2
+                  rust-is-terminal-0.4.16
+                  rust-aho-corasick-1.1.3
+                  rust-anes-0.1.6
+                  rust-anstyle-1.0.11
+                  rust-anyhow-1.0.98
+                  rust-autocfg-1.5.0
+                  rust-bitstream-io-2.6.0
+                  rust-bitvec-1.0.1
+                  rust-bitvec-helpers-3.1.5
+                  rust-bumpalo-3.19.0
+                  rust-cast-0.3.0
+                  rust-cfg-if-1.0.1
+                  rust-ciborium-0.2.2
+                  rust-ciborium-io-0.2.2
+                  rust-ciborium-ll-0.2.2
+                  rust-clap-4.5.41
+                  rust-clap-builder-4.5.41
+                  rust-clap-lex-0.7.5
+                  rust-core2-0.4.0
+                  rust-crc-3.3.0
+                  rust-crc-catalog-2.4.0
+                  rust-criterion-0.5.1
+                  rust-criterion-plot-0.5.0
+                  rust-crossbeam-deque-0.8.6
+                  rust-crossbeam-epoch-0.9.18
+                  rust-crossbeam-utils-0.8.21
+                  rust-crunchy-0.2.4
+                  rust-either-1.15.0
+                  rust-equivalent-1.0.2
+                  rust-funty-2.0.0
+                  rust-half-2.6.0
+                  rust-hashbrown-0.15.4
+                  rust-indexmap-2.10.0
+                  rust-itertools-0.10.5
+                  rust-itertools-0.13.0
+                  rust-itoa-1.0.15
+                  rust-js-sys-0.3.77
+                  rust-libc-0.2.174
+                  rust-log-0.4.27
+                  rust-memchr-2.7.5
+                  rust-num-traits-0.2.19
+                  rust-once-cell-1.21.3
+                  rust-oorandom-11.1.5
+                  rust-plotters-0.3.7
+                  rust-plotters-backend-0.3.7
+                  rust-plotters-svg-0.3.7
+                  rust-proc-macro2-1.0.95
+                  rust-quote-1.0.40
+                  rust-radium-0.7.0
+                  rust-rayon-1.10.0
+                  rust-rayon-core-1.12.1
+                  rust-regex-1.11.1
+                  rust-regex-automata-0.4.9
+                  rust-regex-syntax-0.8.5
+                  rust-roxmltree-0.20.0
+                  rust-rustversion-1.0.21
+                  rust-ryu-1.0.20
+                  rust-same-file-1.0.6
+                  rust-serde-1.0.219
+                  rust-serde-derive-1.0.219
+                  rust-serde-json-1.0.140
+                  rust-syn-2.0.104
+                  rust-tap-1.0.1
+                  rust-tinytemplate-1.2.1
+                  rust-tinyvec-1.9.0
+                  rust-unicode-ident-1.0.18
+                  rust-walkdir-2.5.0
+                  rust-wasm-bindgen-0.2.100
+                  rust-wasm-bindgen-backend-0.2.100
+                  rust-wasm-bindgen-macro-0.2.100
+                  rust-wasm-bindgen-macro-support-0.2.100
+                  rust-wasm-bindgen-shared-0.2.100
+                  rust-web-sys-0.3.77
+                  rust-winapi-util-0.1.9
+                  rust-windows-sys-0.59.0
+                  rust-windows-targets-0.52.6
+                  rust-windows-aarch64-gnullvm-0.52.6
+                  rust-windows-aarch64-msvc-0.52.6
+                  rust-windows-i686-gnu-0.52.6
+                  rust-windows-i686-gnullvm-0.52.6
+                  rust-windows-i686-msvc-0.52.6
+                  rust-windows-x86-64-gnu-0.52.6
+                  rust-windows-x86-64-gnullvm-0.52.6
+                  rust-windows-x86-64-msvc-0.52.6
+                  rust-wyz-0.5.1))
     (home-page "https://github.com/quietvoid/dovi_tool/tree/main/dolby_vision")
     (synopsis "Dolby Vision metadata parsing and writing")
     (description
      "This package provides Dolby Vision metadata parsing and writing.")
     (license license:expat)))
-
 
 (define rust-itertools-0.12.1
   (crate-source "itertools" "0.12.1"
@@ -506,115 +505,115 @@
   (crate-source "dolby_vision" "3.3.1"
                 "1q2707wxgbdc7ddsy8cip6yfqgy2xnhhpk99rcgpyxwh6wzz0x1h"))
 
- (define-public rust-vs-nlq
+(define-public rust-vs-nlq
   (package
     (name "rust-vs-nlq")
     (version "git")
     (source
      (origin
        (method git-fetch)
-       (uri (git-reference (url "https://github.com/quietvoid/vs-nlq")
-                           (commit "d23952bb66d28cf1f565c897181c20bc640fb7fd")))
+       (uri (git-reference
+             (url "https://github.com/quietvoid/vs-nlq")
+             (commit "d23952bb66d28cf1f565c897181c20bc640fb7fd")))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1f2gbwlrkflzq1v1kbmcmpziw2hpf3phc2nw7aahf9ikh26gq9aq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-                      (add-after 'install 'install-library
-                                 (lambda* (#:key outputs #:allow-other-keys)
-                                   (let ((out (assoc-ref outputs "out")))
-                                   (install-file
-                                    (car (find-files "." "^libvs_nlq\\.so$"))
-                                    (string-append out "/lib/vapoursynth"))))))))
-    (inputs (list  rust-hermit-abi-0.5.2 rust-is-terminal-0.4.16
-                   rust-aho-corasick-1.1.3
-                   rust-anes-0.1.6
-                   rust-anstyle-1.0.11
-                   rust-anyhow-1.0.98
-                   rust-autocfg-1.5.0
-                   rust-bitstream-io-2.6.0
-                   rust-bitvec-1.0.1
-                   rust-bitvec-helpers-3.1.5
-                   rust-bumpalo-3.19.0
-                   rust-cast-0.3.0
-                   rust-cfg-if-1.0.1
-                   rust-ciborium-0.2.2
-                   rust-ciborium-io-0.2.2
-                   rust-ciborium-ll-0.2.2
-                   rust-clap-4.5.41
-                   rust-clap-builder-4.5.41
-                   rust-clap-lex-0.7.5
-                   rust-core2-0.4.0
-                   rust-crc-3.3.0
-                   rust-crc-catalog-2.4.0
-                   rust-criterion-0.5.1
-                   rust-criterion-plot-0.5.0
-                   rust-crossbeam-deque-0.8.6
-                   rust-crossbeam-epoch-0.9.18
-                   rust-crossbeam-utils-0.8.21
-                   rust-crunchy-0.2.4
-                   rust-either-1.15.0
-                   rust-equivalent-1.0.2
-                   rust-funty-2.0.0
-                   rust-half-2.6.0
-                   rust-hashbrown-0.15.4
-                   rust-indexmap-2.10.0
-                   rust-itertools-0.10.5
-                   rust-itertools-0.13.0
-                   rust-itoa-1.0.15
-                   rust-js-sys-0.3.77
-                   rust-libc-0.2.174
-                   rust-log-0.4.27
-                   rust-memchr-2.7.5
-                   rust-num-traits-0.2.19
-                   rust-once-cell-1.21.3
-                   rust-oorandom-11.1.5
-                   rust-plotters-0.3.7
-                   rust-plotters-backend-0.3.7
-                   rust-plotters-svg-0.3.7
-                   rust-proc-macro2-1.0.95
-                   rust-quote-1.0.40
-                   rust-radium-0.7.0
-                   rust-rayon-1.10.0
-                   rust-rayon-core-1.12.1
-                   rust-regex-1.11.1
-                   rust-regex-automata-0.4.9
-                   rust-regex-syntax-0.8.5
-                   rust-roxmltree-0.20.0
-                   rust-rustversion-1.0.21
-                   rust-ryu-1.0.20
-                   rust-same-file-1.0.6
-                   rust-serde-1.0.219
-                   rust-serde-derive-1.0.219
-                   rust-serde-json-1.0.140
-                   rust-syn-2.0.104
-                   rust-tap-1.0.1
-                   rust-tinytemplate-1.2.1
-                   rust-tinyvec-1.9.0
-                   rust-unicode-ident-1.0.18
-                   rust-walkdir-2.5.0
-                   rust-wasm-bindgen-0.2.100
-                   rust-wasm-bindgen-backend-0.2.100
-                   rust-wasm-bindgen-macro-0.2.100
-                   rust-wasm-bindgen-macro-support-0.2.100
-                   rust-wasm-bindgen-shared-0.2.100
-                   rust-web-sys-0.3.77
-                   rust-winapi-util-0.1.9
-                   rust-windows-sys-0.59.0
-                   rust-windows-targets-0.52.6
-                   rust-windows-aarch64-gnullvm-0.52.6
-                   rust-windows-aarch64-msvc-0.52.6
-                   rust-windows-i686-gnu-0.52.6
-                   rust-windows-i686-gnullvm-0.52.6
-                   rust-windows-i686-msvc-0.52.6
-                   rust-windows-x86-64-gnu-0.52.6
-                   rust-windows-x86-64-gnullvm-0.52.6
-                   rust-windows-x86-64-msvc-0.52.6
-                   rust-wyz-0.5.1
-                  rust-dolby-vision-3.3.1; above are dolby-vision-deps
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'install-library
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (install-file (car (find-files "." "^libvs_nlq\\.so$"))
+                                      (string-append out "/lib/vapoursynth"))))))))
+    (inputs (list rust-hermit-abi-0.5.2
+                  rust-is-terminal-0.4.16
+                  rust-aho-corasick-1.1.3
+                  rust-anes-0.1.6
+                  rust-anstyle-1.0.11
+                  rust-anyhow-1.0.98
+                  rust-autocfg-1.5.0
+                  rust-bitstream-io-2.6.0
+                  rust-bitvec-1.0.1
+                  rust-bitvec-helpers-3.1.5
+                  rust-bumpalo-3.19.0
+                  rust-cast-0.3.0
+                  rust-cfg-if-1.0.1
+                  rust-ciborium-0.2.2
+                  rust-ciborium-io-0.2.2
+                  rust-ciborium-ll-0.2.2
+                  rust-clap-4.5.41
+                  rust-clap-builder-4.5.41
+                  rust-clap-lex-0.7.5
+                  rust-core2-0.4.0
+                  rust-crc-3.3.0
+                  rust-crc-catalog-2.4.0
+                  rust-criterion-0.5.1
+                  rust-criterion-plot-0.5.0
+                  rust-crossbeam-deque-0.8.6
+                  rust-crossbeam-epoch-0.9.18
+                  rust-crossbeam-utils-0.8.21
+                  rust-crunchy-0.2.4
+                  rust-either-1.15.0
+                  rust-equivalent-1.0.2
+                  rust-funty-2.0.0
+                  rust-half-2.6.0
+                  rust-hashbrown-0.15.4
+                  rust-indexmap-2.10.0
+                  rust-itertools-0.10.5
+                  rust-itertools-0.13.0
+                  rust-itoa-1.0.15
+                  rust-js-sys-0.3.77
+                  rust-libc-0.2.174
+                  rust-log-0.4.27
+                  rust-memchr-2.7.5
+                  rust-num-traits-0.2.19
+                  rust-once-cell-1.21.3
+                  rust-oorandom-11.1.5
+                  rust-plotters-0.3.7
+                  rust-plotters-backend-0.3.7
+                  rust-plotters-svg-0.3.7
+                  rust-proc-macro2-1.0.95
+                  rust-quote-1.0.40
+                  rust-radium-0.7.0
+                  rust-rayon-1.10.0
+                  rust-rayon-core-1.12.1
+                  rust-regex-1.11.1
+                  rust-regex-automata-0.4.9
+                  rust-regex-syntax-0.8.5
+                  rust-roxmltree-0.20.0
+                  rust-rustversion-1.0.21
+                  rust-ryu-1.0.20
+                  rust-same-file-1.0.6
+                  rust-serde-1.0.219
+                  rust-serde-derive-1.0.219
+                  rust-serde-json-1.0.140
+                  rust-syn-2.0.104
+                  rust-tap-1.0.1
+                  rust-tinytemplate-1.2.1
+                  rust-tinyvec-1.9.0
+                  rust-unicode-ident-1.0.18
+                  rust-walkdir-2.5.0
+                  rust-wasm-bindgen-0.2.100
+                  rust-wasm-bindgen-backend-0.2.100
+                  rust-wasm-bindgen-macro-0.2.100
+                  rust-wasm-bindgen-macro-support-0.2.100
+                  rust-wasm-bindgen-shared-0.2.100
+                  rust-web-sys-0.3.77
+                  rust-winapi-util-0.1.9
+                  rust-windows-sys-0.59.0
+                  rust-windows-targets-0.52.6
+                  rust-windows-aarch64-gnullvm-0.52.6
+                  rust-windows-aarch64-msvc-0.52.6
+                  rust-windows-i686-gnu-0.52.6
+                  rust-windows-i686-gnullvm-0.52.6
+                  rust-windows-i686-msvc-0.52.6
+                  rust-windows-x86-64-gnu-0.52.6
+                  rust-windows-x86-64-gnullvm-0.52.6
+                  rust-windows-x86-64-msvc-0.52.6
+                  rust-wyz-0.5.1
+                  rust-dolby-vision-3.3.1 ;above are dolby-vision-deps
                   rust-cfg-if-1.0.1
                   rust-vapoursynth-sys-0.4.0
                   rust-bitflags-1.3.2

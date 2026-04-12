@@ -6,7 +6,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system emacs)
-  ; for reka
+  ;; for reka
   #:use-module (gnu packages zig-xyz)
   #:use-module (guix utils)
   #:use-module (guix download)
@@ -15,9 +15,9 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rust-apps)
-  #:use-module (jam packages) ; for search-patches
-  #:use-module ((guix licenses) #:prefix license:)
-  )
+  #:use-module (jam packages) ;for search-patches
+  #:use-module ((guix licenses)
+                #:prefix license:))
 
 ;; aot compile transformation for packages
 (define-public transform-emacs-build
@@ -25,13 +25,20 @@
 
 ;; create a procedure that applies transformations options "with-branch=master" to an emacs package
 (define-public (transform-emacs-build-git pkg)
-  (define xform (options->transformation `((with-branch . ,(string-append (package-name pkg) "=master"))
-                                           (with-input . "emacs-minimal=emacs"))))
+  (define xform
+    (options->transformation `((with-branch unquote
+                                            (string-append (package-name pkg)
+                                                           "=master"))
+                               (with-input . "emacs-minimal=emacs"))))
   (xform pkg))
 
 ;; transform emacs package configure flags for ~5% perf in emacs-30+
 (define-public (transform-emacs-configure pkg)
-  (define xform (options->transformation `((with-configure-flag . ,(string-append (package-name pkg) "=--disable-gc-mark-trace")))))
+  (define xform
+    (options->transformation `((with-configure-flag unquote
+                                                    (string-append (package-name
+                                                                    pkg)
+                                                     "=--disable-gc-mark-trace")))))
   (xform pkg))
 
 ;; rust deps for emacs-reka native module
@@ -314,7 +321,6 @@
   (crate-source "xkeysym" "0.2.1"
                 "0mksx670cszyd7jln6s7dhkw11hdfv7blwwr3isq98k22ljh1k5r"))
 
-
 (define libreka
   (package
     (name "libreka")
@@ -322,24 +328,22 @@
     (source
      (origin
        (method git-fetch)
-       (uri (git-reference (url "https://codeberg.org/tazjin/reka")
-                           (commit "70aa8d95d96ff6ad4563fc29ed6d6ab0e9b486a1")))
+       (uri (git-reference
+             (url "https://codeberg.org/tazjin/reka")
+             (commit "70aa8d95d96ff6ad4563fc29ed6d6ab0e9b486a1")))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1ww4jnksfpgrr9q9di1w3b43y3qi5xg9kmypbnqzyfrqv7zvxfbf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-                      (add-after 'install 'install-library
-                                 (lambda* (#:key outputs #:allow-other-keys)
-                                   (let ((out (assoc-ref outputs "out")))
-                                   (install-file
-                                    (car (find-files "." "^libreka\\.so$"))
-                                    (string-append out "/lib"))))))
-       ))
-    (inputs (list libxkbcommon ; guix import crate -f Cargo.lock reka | grep "(define" | grep -o " .*"
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'install-library
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (install-file (car (find-files "." "^libreka\\.so$"))
+                                      (string-append out "/lib"))))))))
+    (inputs (list libxkbcommon ;guix import crate -f Cargo.lock reka | grep "(define" | grep -o " .*"
                   rust-aho-corasick-1.1.4
                   rust-anstream-0.6.21
                   rust-anstyle-1.0.13
@@ -408,13 +412,13 @@
                   rust-windows-link-0.2.1
                   rust-windows-sys-0.61.2
                   rust-xkbcommon-0.9.0
-                  rust-xkeysym-0.2.1
-                  ))
-      (native-inputs (list pkg-config))
-      (home-page "https://codeberg.org/tazjin/reka")
-      (synopsis "Emacs river WM integration")
-      (description "This package implements a window manger to @code{river} to manage wayland windows as Emacs buffers.")
-      (license license:gpl3+)))
+                  rust-xkeysym-0.2.1))
+    (native-inputs (list pkg-config))
+    (home-page "https://codeberg.org/tazjin/reka")
+    (synopsis "Emacs river WM integration")
+    (description
+     "This package implements a window manger to @code{river} to manage wayland windows as Emacs buffers.")
+    (license license:gpl3+)))
 
 (define-public emacs-reka
   (let ((commit "70aa8d95d96ff6ad4563fc29ed6d6ab0e9b486a1")
@@ -422,36 +426,41 @@
     (package
       (name "emacs-reka")
       (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://codeberg.org/tazjin/reka")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1ww4jnksfpgrr9q9di1w3b43y3qi5xg9kmypbnqzyfrqv7zvxfbf"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/tazjin/reka")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ww4jnksfpgrr9q9di1w3b43y3qi5xg9kmypbnqzyfrqv7zvxfbf"))))
       (build-system emacs-build-system)
       (arguments
        `(#:modules ((guix build emacs-build-system)
                     (guix build emacs-utils)
                     (guix build utils))
          #:include (cons "^lisp/" %default-include)
-         #:phases
-         (modify-phases %standard-phases
-               (add-before 'build 'install-library
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (lib-dir (string-append (elpa-directory out) "/lisp")); add to load-path
-                          (rust-lib (assoc-ref inputs "libreka"))
-                          (source-lib (string-append rust-lib "/lib/libreka.so")))
-                     (setenv "EMACSLOADPATH" (string-append lib-dir ":" (getenv "EMACSLOADPATH")))
-                     (mkdir-p lib-dir)
-                     (install-file source-lib lib-dir)))))))
+         #:phases (modify-phases %standard-phases
+                    (add-before 'build 'install-library
+                      (lambda* (#:key inputs outputs #:allow-other-keys)
+                        (let* ((out (assoc-ref outputs "out"))
+                               (lib-dir (string-append (elpa-directory out)
+                                                       "/lisp")) ;add to load-path
+                               (rust-lib (assoc-ref inputs "libreka"))
+                               (source-lib (string-append rust-lib
+                                                          "/lib/libreka.so")))
+                          (setenv "EMACSLOADPATH"
+                                  (string-append lib-dir ":"
+                                                 (getenv "EMACSLOADPATH")))
+                          (mkdir-p lib-dir)
+                          (install-file source-lib lib-dir)))))))
       (inputs (list libreka))
       (home-page "https://codeberg.org/tazjin/reka")
       (synopsis "Emacs river WM integration")
-      (description "This package implements a window manger to @code{river} to manage wayland windows as Emacs buffers.")
+      (description
+       "This package implements a window manger to @code{river} to manage wayland windows as Emacs buffers.")
       (license license:gpl3+))))
 
-emacs-reka; river-0.4.1
+emacs-reka
+ ; river-0.4.1

@@ -20,7 +20,7 @@
   #:use-module (gnu services cuirass)
   #:use-module (gnu services ssh)
   #:use-module (gnu services base)
-  #:use-module (gnu services guix) ; guix-home-service-type
+  #:use-module (gnu services guix) ;guix-home-service-type
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages fonts)
@@ -43,13 +43,13 @@
   #:use-module (guix channels)
   #:use-module (srfi srfi-1)
   #:use-module (jam packages nzbget)
-  #:use-module (nongnu packages compression) ; unrar-free fails unpacking with multipart issue(.r00)/crc issues and --cpu host needs to support instructions
+  #:use-module (nongnu packages compression) ;unrar-free fails unpacking with multipart issue(.r00)/crc issues and --cpu host needs to support instructions
   #:use-module (jam system channels)
-  #:use-module (jam system services) ; kicksecure sysctl and kernel args
-  #:use-module (jam system home)
-  )
+  #:use-module (jam system services) ;kicksecure sysctl and kernel args
+  #:use-module (jam system home))
 
-(define my-kernel linux-libre)
+(define my-kernel
+  linux-libre)
 
 (define-public %jam-vm
   (operating-system
@@ -61,83 +61,93 @@
     (kernel my-kernel)
     (kernel-arguments %kicksecure-kernel-arguments)
 
-    (label (string-append "GNU Guix " (package-version guix)))
-
+    (label (string-append "GNU Guix "
+                          (package-version guix)))
 
     (bootloader (bootloader-configuration
-                 (bootloader grub-bootloader)
-                 (targets '("/dev/vda"))))
+                  (bootloader grub-bootloader)
+                  (targets '("/dev/vda"))))
 
     (file-systems (cons (file-system
                           (mount-point "/")
                           (device "/dev/vda2")
-                          (type "ext4"))
-                        %base-file-systems))
+                          (type "ext4")) %base-file-systems))
 
     (users (cons (user-account
-                  (name "guest")
-                  (comment "GNU Guix Live")
-                  (password "") ; no password
-                  (group "users")
-                  (supplementary-groups '("wheel" "netdev" "audio" "video")))
+                   (name "guest")
+                   (comment "GNU Guix Live")
+                   (password "") ;no password
+                   (group "users")
+                   (supplementary-groups '("wheel" "netdev" "audio" "video")))
                  %base-user-accounts))
 
-    (sudoers-file (plain-file "sudoers" "\
-  root ALL=(ALL) ALL
-  %wheel ALL=NOPASSWD: ALL\n"))
+    (sudoers-file (plain-file "sudoers" "  root ALL=(ALL) ALL
+  %wheel ALL=NOPASSWD: ALL
+"))
 
-    (packages (append (list
-                       isc-dhcp nss-certs iproute curl; curl/iproute for debugging
-                       sudo
-                       cloud-utils
-                       nzbget-next unrar) ; p7zip python3
-                      %base-packages-utils
-                      %base-packages-linux))
+    (packages (append (list isc-dhcp
+                            nss-certs
+                            iproute
+                            curl ;curl/iproute for debugging
+                            sudo
+                            cloud-utils
+                            nzbget-next
+                            unrar) ;p7zip python3
+                      %base-packages-utils %base-packages-linux))
     (services
-     (append (list (service dhcpcd-service-type) ;; Use the DHCP client service rather than NetworkManager.
+     (append (list (service dhcpcd-service-type) ;Use the DHCP client service rather than NetworkManager.
                    (service ntp-service-type
-                            (ntp-configuration (servers (list
-                                                        (ntp-server
-                                                         (type 'pool)
-                                                         (address "1.guix.pool.ntp.org") ; default 2.guix.pool.ntp.org includes ipv6
-                                                         (options '("iburst"))))))); time without %desktop-services
-
+                            (ntp-configuration (servers (list (ntp-server (type 'pool)
+                                                                          (address
+                                                                           "1.guix.pool.ntp.org") ;default 2.guix.pool.ntp.org includes ipv6
+                                                                          (options '
+                                                                           ("iburst"))))))) ;time without %desktop-services
+                   
                    (service openssh-service-type
                             (openssh-configuration (openssh openssh-sans-x)
                                                    (port-number 8080)
-                                                   (password-authentication? #f)
-                                                   (authorized-keys `(("guest" ,(plain-file "jam.pub" "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILjfouQY9m8opK3Sq5G81FuqlMEa5no1Jy1UywweZY3u jam@jam-pc"))
-                                                                      ("guest" ,(plain-file "jaming.pub" "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK+JSxpOM9X8rM6bS0VEfmBeOaQi98o0+aDzYaWIhTBp jam@jam-workstation"))))))
+                                                   (password-authentication?
+                                                                             #f)
+                                                   (authorized-keys `(("guest" ,
+                                                                       (plain-file
+                                                                        "jam.pub"
+                                                                        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILjfouQY9m8opK3Sq5G81FuqlMEa5no1Jy1UywweZY3u jam@jam-pc"))
+                                                                      ("guest" ,
+                                                                       (plain-file
+                                                                        "jaming.pub"
+                                                                        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK+JSxpOM9X8rM6bS0VEfmBeOaQi98o0+aDzYaWIhTBp jam@jam-workstation"))))))
 
-                   ;(simple-service 'vpn-key-file etc-service-type
-                   ;                (list `("openvpn/client.key" ,(local-file "riseup.key")))); https://api.black.riseup.net/3/cert (first half is key second is cert)
-                   ;(simple-service 'vpn-cert-file etc-service-type
-                   ;                (list `("openvpn/client.crt" ,(local-file "riseup.cert")))); TODO startup activation script to download
-                   ;(simple-service 'vpn-ca-file etc-service-type
-                   ;                (list `("openvpn/ca.crt" ,(local-file "riseup.ca")))) ; CA: https://black.riseup.net/ca.crt
-
-                   ;(service openvpn-client-service-type; 'redirect-gateway def1'/'dhcp-option DNS 1.1.1.1' are not needed; test with curl https://checkip.amazonaws.com
-                   ;         (openvpn-client-configuration
-                   ;           (comp-lzo? #f) ; remove 'comp-lzo'
-                   ;           (remote (list (openvpn-remote-configuration
-                   ;                          (name "185.220.103.11"); curl https://api.black.riseup.net/3/config/eip-service.json | python -m json.tool
-                   ;                          (port 1194))))))
-
+                   ;; (simple-service 'vpn-key-file etc-service-type
+                   ;; (list `("openvpn/client.key" ,(local-file "riseup.key")))); https://api.black.riseup.net/3/cert (first half is key second is cert)
+                   ;; (simple-service 'vpn-cert-file etc-service-type
+                   ;; (list `("openvpn/client.crt" ,(local-file "riseup.cert")))); TODO startup activation script to download
+                   ;; (simple-service 'vpn-ca-file etc-service-type
+                   ;; (list `("openvpn/ca.crt" ,(local-file "riseup.ca")))) ; CA: https://black.riseup.net/ca.crt
+                   
+                   ;; (service openvpn-client-service-type; 'redirect-gateway def1'/'dhcp-option DNS 1.1.1.1' are not needed; test with curl https://checkip.amazonaws.com
+                   ;; (openvpn-client-configuration
+                   ;; (comp-lzo? #f) ; remove 'comp-lzo'
+                   ;; (remote (list (openvpn-remote-configuration
+                   ;; (name "185.220.103.11"); curl https://api.black.riseup.net/3/config/eip-service.json | python -m json.tool
+                   ;; (port 1194))))))
+                   
                    (simple-service 'vm-file etc-service-type
                                    (list `("vm.scm" ,(local-file "vm.scm"))))
                    (simple-service 'home-file etc-service-type
                                    (list `("home.scm" ,(local-file "home.scm"))))
-                   (simple-service 'channel-file etc-service-type ; link to ~/.config/guix/channels.scm
-                                   (list `("channels.scm" ,(local-file "channels.scm"))))
-                   ;(simple-service 'channel-pub etc-service-type (list `("nonguix.pub" ,(local-file "nonguix.pub"))))
+                   (simple-service 'channel-file etc-service-type ;link to ~/.config/guix/channels.scm
+                                   (list `("channels.scm" ,(local-file
+                                                            "channels.scm"))))
+                   ;; (simple-service 'channel-pub etc-service-type (list `("nonguix.pub" ,(local-file "nonguix.pub"))))
                    (simple-service 'gene-channel-pub etc-service-type
                                    (list `("gene.pub" ,(local-file "gene.pub"))))
                    (simple-service 'guest-home-service guix-home-service-type
-                                  `(("guest" ,%jam-home)))
+                                   `(("guest" ,%jam-home)))
 
                    (service nftables-service-type
-                            (nftables-configuration
-                             (ruleset (plain-file "nftables.conf" "
+                            (nftables-configuration (ruleset (plain-file
+                                                              "nftables.conf"
+                                                              "
                    # flush all the rules.
                    flush ruleset
                    # Define vars.
@@ -189,7 +199,8 @@
                        counter drop
                      }
                    }")))))
-             (remove (lambda (service) ;; Remove services
+             (remove (lambda (service)
+                        ;Remove services
                        (let ((type (service-kind service)))
                          (or (memq type
                                    (list gdm-service-type
@@ -201,20 +212,22 @@
                              (eq? 'network-manager-applet
                                   (service-type-name type)))))
                      (modify-services %base-services
-                                      (sysctl-service-type config =>
-                                                           (sysctl-configuration
-                                                            (settings (append `(,@%kicksecure-sysctl-rules)
-                                                                              %default-sysctl-settings))))
-                                      (guix-service-type config =>
-                                                         (guix-configuration
-                                                          (inherit config)
-                                                          (channels %jam-channels)
-                                                          (guix (current-guix))
-                                                          (privileged? #t)
-                                                          (substitute-urls
-                                                           (append (list "https://cuirass.genenetwork.org/");"https://substitutes.nonguix.org/" ; 4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
-                                                                   %default-substitute-urls)) ;(http-proxy) with tor config HTTPTunnelPort
-                                                          (authorized-keys
-                                                           (append (list (local-file "./gene.pub")); (local-file "./nonguix.pub")
-                                                                   %default-authorized-guix-keys))))))))))
+                       (sysctl-service-type config =>
+                                            (sysctl-configuration (settings (append `
+                                                                             (,@%kicksecure-sysctl-rules)
+                                                                             %default-sysctl-settings))))
+                       (guix-service-type config =>
+                                          (guix-configuration (inherit config)
+                                                              (channels
+                                                               %jam-channels)
+                                                              (guix (current-guix))
+                                                              (privileged? #t)
+                                                              (substitute-urls
+                                                               (append (list
+                                                                        "https://cuirass.genenetwork.org/") ;"https://substitutes.nonguix.org/" ; 4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
+                                                                %default-substitute-urls)) ;(http-proxy) with tor config HTTPTunnelPort
+                                                              (authorized-keys
+                                                               (append (list (local-file
+                                                                              "./gene.pub")) ;(local-file "./nonguix.pub")
+                                                                %default-authorized-guix-keys))))))))))
 %jam-vm

@@ -1,13 +1,13 @@
 (channel
- (version 0)
- (dependencies
-  (channel
-   (name nonguix)
-   (url "https://gitlab.com/nonguix/nonguix")
-   (branch "master")
-   (introduction
-    (channel-introduction
-     (version 0)
-     (commit "aa0aa03c84f0f5e36a3de60f9c356a25d4519e79")
-     (signer "F4C2 D1DF 3FDE EA63 D1D3  0776 ACC6 6D09 CA52 8292")))) ; gpg key of commit signer (hako - Hilton Chan)
-  ))
+  (version 0)
+  (dependencies (channel
+                  (name nonguix)
+                  (url "https://gitlab.com/nonguix/nonguix")
+                  (branch "master")
+                  (introduction
+                   (channel-introduction (version 0)
+                                         (commit
+                                          "aa0aa03c84f0f5e36a3de60f9c356a25d4519e79")
+                                         (signer
+                                          "F4C2 D1DF 3FDE EA63 D1D3  0776 ACC6 6D09 CA52 8292")))) ;gpg key of commit signer (hako - Hilton Chan)
+                ))

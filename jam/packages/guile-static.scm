@@ -9,103 +9,112 @@
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages bdw-gc)
-  #:use-module (srfi srfi-1)
-  )
-
+  #:use-module (srfi srfi-1))
 
 ;;  "enable flags in libunistring for PIC"
 (define-public libunistring-pic
   (package
-   (inherit libunistring)
-   (name "libunistring-pic")
-   (arguments
-    (substitute-keyword-arguments (package-arguments libunistring)
-                                  ((#:make-flags flags '("CFLAGS=-fPIC")) ''("CFLAGS=-fPIC"))
-                                  ((#:configure-flags flags '("CFLAGS=-fPIC")) ''("CFLAGS=-fPIC"))))))
+    (inherit libunistring)
+    (name "libunistring-pic")
+    (arguments
+     (substitute-keyword-arguments (package-arguments libunistring)
+       ((#:make-flags flags
+         '("CFLAGS=-fPIC"))
+        ''("CFLAGS=-fPIC"))
+       ((#:configure-flags flags
+         '("CFLAGS=-fPIC"))
+        ''("CFLAGS=-fPIC"))))))
 
 ;; static libatomic-ops for libgc
 (define-public libatomic-ops-static
   (package
-   (inherit libatomic-ops)
-   (arguments (substitute-keyword-arguments (package-arguments libatomic-ops)
-                                            ((#:configure-flags flags ''()) `(cons "--enable-static" ,flags))))))
+    (inherit libatomic-ops)
+    (arguments
+     (substitute-keyword-arguments (package-arguments libatomic-ops)
+       ((#:configure-flags flags
+         ''())
+        `(cons "--enable-static"
+               ,flags))))))
 ;; static gc until 'rebuild'
 (define-public libgc-static
   (package
-   (inherit libgc)
-   (propagated-inputs
-    (if (%current-target-system)
-        ;; The build system refuses to check for compiler intrinsics when
-        ;; cross-compiling, and demands using libatomic-ops instead.
-        `(("libatomic-ops" ,libatomic-ops-static))
-        '())
-   )
-   (arguments (substitute-keyword-arguments (package-arguments libgc)
-                                            ((#:configure-flags flags ''()) #~(cons "--enable-static" #$flags))))
-   ))
-
+    (inherit libgc)
+    (propagated-inputs (if (%current-target-system)
+                           ;; The build system refuses to check for compiler intrinsics when
+                           ;; cross-compiling, and demands using libatomic-ops instead.
+                           `(("libatomic-ops" ,libatomic-ops-static))
+                           '()))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libgc)
+       ((#:configure-flags flags
+         ''())
+        #~(cons "--enable-static"
+                #$flags))))))
 
 ;;  "relocatable statically linked guile-3.0 with libs"
 (define-public guile-next-static
   (package
-   (inherit guile-3.0)
-   (name "guile-next-static")
-   (source (origin (inherit (package-source guile-3.0))
-                   (patches (cons*
-                                  (search-patch "guile-3.0-relocatable.patch")
-                                  (search-patch "guile-2.2-default-utf8.patch")
-                                  (search-patch "guile-3.0-linux-syscalls.patch")
-                                  (origin-patches (package-source guile-3.0))))))
-   (outputs (delete "debug" (package-outputs guile-3.0))) ;; repro see make-bootstrap
-   (inputs ;; build libs
-    `(("gcc-toolchain" ,gcc-glibc-pie-toolchain)
-      ("gcc-toolchain:static" ,gcc-glibc-pie-toolchain "static")
-      ("libunistring:static" ,libunistring-pic "static") ;; regular libunistring will be rewrote
-      ("glibc:static" ,glibc-pie "static")
-      ("glibc" ,glibc-pie)
-      ,@(package-inputs guile-3.0)))
-   (native-inputs ;; build tools
-    `(
-      ,@(package-native-inputs guile-3.0)
-      ))
-   (propagated-inputs ;; propagated needed libs
-    `(("libunistring:static" ,libunistring-pic "static")
-      ("libunistring" ,libunistring-pic)
-      ("glibc:static" ,glibc-pie "static")
-      ("glibc" ,glibc-pie)
-      ("libffi" ,libffi)
-      ("libgc" ,libgc-static) ;; add static gc and remove old
-      ,@(alist-delete "libgc" (package-propagated-inputs guile-3.0)))
-    )
-   (arguments
-    (substitute-keyword-arguments (package-arguments guile-3.0)
-                                  ((#:strip-flags flags) ''()) ; remove strip flags
-                                  ((#:configure-flags flags) ''("CFLAGS=-ffat-lto-objects" "LDFLAGS=-ldl" "--enable-mini-gmp")) ; remove config flags
-                                  ((#:phases phases '%standard-phases) ; remove static phase
-                                   #~(modify-phases #$phases
-                                                   (delete 'pre-configure)
-                                                   (add-before 'configure 'static-guile
-                                                               (lambda _
-                                                                 (substitute* "libguile/Makefile.in"
-                                                                              ;; Create a statically-linked `guile'
-                                                                              ;; executable.
-                                                                              (("^guile_LDFLAGS =")
-                                                                               "guile_LDFLAGS = -all-static")
+    (inherit guile-3.0)
+    (name "guile-next-static")
+    (source
+     (origin
+       (inherit (package-source guile-3.0))
+       (patches (cons* (search-patch "guile-3.0-relocatable.patch")
+                       (search-patch "guile-2.2-default-utf8.patch")
+                       (search-patch "guile-3.0-linux-syscalls.patch")
+                       (origin-patches (package-source guile-3.0))))))
+    (outputs (delete "debug"
+                     (package-outputs guile-3.0))) ;repro see make-bootstrap
+    (inputs ;build libs
+            `(("gcc-toolchain" ,gcc-glibc-pie-toolchain)
+              ("gcc-toolchain:static" ,gcc-glibc-pie-toolchain "static")
+              ("libunistring:static" ,libunistring-pic "static") ;regular libunistring will be rewrote
+              ("glibc:static" ,glibc-pie "static")
+              ("glibc" ,glibc-pie)
+              ,@(package-inputs guile-3.0)))
+    (native-inputs ;build tools
+                   `(,@(package-native-inputs guile-3.0)))
+    (propagated-inputs ;propagated needed libs
+                       `(("libunistring:static" ,libunistring-pic "static")
+                         ("libunistring" ,libunistring-pic)
+                         ("glibc:static" ,glibc-pie "static")
+                         ("glibc" ,glibc-pie)
+                         ("libffi" ,libffi)
+                         ("libgc" ,libgc-static) ;add static gc and remove old
+                         ,@(alist-delete "libgc"
+                                         (package-propagated-inputs guile-3.0))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-3.0)
+       ((#:strip-flags flags)
+        ''()) ;remove strip flags
+       ((#:configure-flags flags)
+        ''("CFLAGS=-ffat-lto-objects" "LDFLAGS=-ldl" "--enable-mini-gmp")) ;remove config flags
+       ((#:phases phases
+         '%standard-phases)
+        ;; remove static phase
+        #~(modify-phases #$phases
+            (delete 'pre-configure)
+            (add-before 'configure 'static-guile
+              (lambda _
+                (substitute* "libguile/Makefile.in"
+                  ;; Create a statically-linked `guile'
+                  ;; executable.
+                  (("^guile_LDFLAGS =")
+                   "guile_LDFLAGS = -all-static")
 
-                                                                              ;; Add `-ldl' *after* libguile-*.la.
-                                                                              (("^guile_LDADD =(.*)$" _ ldadd)
-                                                                               (string-append "guile_LDADD = " (string-trim-right ldadd) " -ldl\n")))))
-                                                   ))
+                  ;; Add `-ldl' *after* libguile-*.la.
+                  (("^guile_LDADD =(.*)$" _ ldadd)
+                   (string-append "guile_LDADD = "
+                                  (string-trim-right ldadd) " -ldl\n")))))))
 
-
-                                  ((#:tests? flags #f)
-                                   ;; There are uses of `dynamic-link' in
-                                   ;; {foreign,coverage}.test that don't fly here.
-                                   #f)
-                                  ;;((#:parallel-build? _ #f)
-                                   ;; Work around the fact that the Guile build system is
-                                   ;; not deterministic when parallel-build is enabled.
-                                  ;;#f)
-                                  ))))
+       ((#:tests? flags #f)
+        ;; There are uses of `dynamic-link' in
+        ;; {foreign,coverage}.test that don't fly here.
+        #f)
+       ;; ((#:parallel-build? _ #f)
+       ;; Work around the fact that the Guile build system is
+       ;; not deterministic when parallel-build is enabled.
+       ;; #f)
+       ))))
 
 guile-next-static
