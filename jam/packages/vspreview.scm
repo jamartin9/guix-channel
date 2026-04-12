@@ -1866,7 +1866,7 @@
  (define-public vspreview-rs
   (package
     (name "vspreview-rs")
-    (version "git")
+    (version "git-b6b1099")
     (source
      (origin
        (method git-fetch)
