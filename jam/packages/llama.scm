@@ -13,16 +13,16 @@
   (package
    (inherit llama-cpp)
    (name "ik-llama-cpp")
-   (version "git-bc78a1e") ; add commit to version to avoid false base32 hash passing on reinstall
+   (version "git-08ae48c") ; add commit to version to avoid false base32 hash passing on reinstall w/o tag
    (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ikawrakow/ik_llama.cpp")
-             (commit "bc78a1e93b48bc659a7b851ad06eb70370bed8aa")))
+             (commit "08ae48c667e3dcd3025821a8585190b4a46c2f7c")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ar5drlg1n7hkf4h7i5gvdw10nl6vns5bkivi86nfdvhza8ixz2g"))))
+        (base32 "1lpsfh33wnm8c6y72zsrs6r0f2mqklbrk7xh2m7yv78kniy1d7yk"))))
    (arguments
     (substitute-keyword-arguments (package-arguments llama-cpp)
                                   ((#:configure-flags flags) ''("-DGGML_IQK_FA_ALL_QUANTS=ON" "-DGGML_NATIVE=ON"))
