@@ -1,0 +1,88 @@
+* Guix Channel
+** Install Package
+*** Instructions
+- ~guix package -L $PWD -f jam/packages/package.scm~ as each package has a value returned at the end
+- packages
+  - zfs : python and pam bindings for openzfs
+  - vspreview : vapoursynth frame viewer
+  - dolby
+    - vs-nlq : vapoursynth plugin for dolby vision FEL mapping
+  - emacs
+    - package transformation for build flags
+    - emacs-reka : reka native and elisp for river window manager
+  - gcc
+    - pie version of glibc and gcc toolchain for guile-static
+  - guile-static
+    - PIC packages for guile-next-static
+      - libatmoicops
+      - libunistring
+      - libgc
+    - guile-next-static : guile with relocatable patches
+  - llama : ik_llama.cpp fork for cpu only
+    - cuda integration would use guix-science-nonfree and nccl
+  - nvidia : grafts (replace-mesa) for emacs/browsers pinning driver version
+  - nzbget : usenet downloader with patches cmake build and vendored dependencies rapidyenc/par2cmdline-turbo
+  - pyrescene : rerar scene releases with python version patched
+    - run the .real script with the python from guix profile
+  - vs
+    - requires dependencies on python-numpy/python
+    - unused git version of vapoursynth pinned for cython
+    - ffms2 with hdr metadata support
+    - awsmfunc python wrapper for encoding configuration
+    - vapoursynth plugins
+      - vs-fillborders : fill cropped borders for aspect resolution
+      - vs-vivtc : decimate
+      - vs-rekt : cropping and stacking
+      - vs-eedi3m : deinterlace
+      - vs-placebo : tonemapping
+      - vsutil : resizing and misc
+      - vs-subtext: subtitles
+*** Patches
+- custom patches are located are ~jam/packages/patches/*.patch~ and use ~search-patches~ in ~jam/packages.scm~
+** Machines
+- Increase ext4 vm disk with: ~qemu-img resize img.qcow2 +30G~
+  - growpart and resize2fs after boot
+    - run with qemu ~qemu-system-x86_64 -smp 4 -cpu host -nic user,model=virtio-net-pci,hostfwd=tcp::8080-:8080 -enable-kvm -m 8192 -device virtio-blk,drive=myhd -drive if=none,file=MY-VM.qcow2,id=myhd~
+      - ~virt-viewer~ for spice viewer
+      - mount shared manually ~sudo mount -t 9p -o trans-virtio downloads /gnu/git/downloads -oversion=9p2000.L,posixacl,msize10485600~
+- Virtual machines built with EFI require qcow2-gpt for image builder type and ovmf for qemu to run
+- channels, keys and config under ~/etc~
+  - link channels before ~guix pull~. ~ln -s /etc/channels.scm ~/.config/guix/channels.scm~
+    - after update ~guix system reconfigure~
+*** Systems
+**** laptop
+- broadcom-sta and broacom-bluetooth for wireless
+**** netbook
+- EFI boot
+- bluetooth
+- xfce
+- genenetwork and nonguix substitutes
+**** CI VM
+- cuirass ci vm to build this channels packages and jobs defined in ~jam/ci.scm~
+  - jobs
+    - appimage
+    - static relocatable package
+    - binary tarball
+    - container
+    - vi cm
+    - test vm
+    - installer iso
+**** Test VM
+- nftable rules for specific output only
+- nzbget/unrar
+- wireguard forwarding
+** Guix Home
+- defines packages for ~jamartin9/emacs-config~
+- defines bash alias wrappers for guix operations
+  - Profile management with ~guixProf default~
+    - stores all profile environments in a env variables to restore and reset in order of activation for path overrides
+  - VM running with ~guixRunVm~
+  - VM building with ~guixPackVm~
+  - container bulding with ~guixPackDock~
+** Installer
+- boot in EFI mode for UEFI install as bios will error on the last install step
+** Third Party
+*** nonguix
+- nonguix repository pinned to commit in ~.guix-channel~
+  - provides nvidia and non free Linux definitions
+    - may need inferior to pin to guix for linux versions depending on revisions as guix is tracking master branch
