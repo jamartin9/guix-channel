@@ -61,10 +61,9 @@
                                (run-with-store store
                                                (mbegin %store-monad
                                                        (set-guile-for-build (default-guile))
-                                                       (>>= (return (call-with-input-file 
+                                                       (>>= (return (call-with-input-file
                                                                                           (string-trim-right
                                                                                            (with-output-to-string (lambda ()
-                                                                                                                    
                                                                                                                     (guix-pack
                                                                                                                      "--derivation"
                                                                                                                      "-S"
@@ -80,8 +79,7 @@
                                                (mbegin %store-monad
                                                        (set-guile-for-build (default-guile))
                                                        (>>= (profile-derivation
-                                                             (specifications->manifest '
-                                                              ("hello"))
+                                                             (specifications->manifest '("hello"))
                                                              #:relative-symlinks?
                                                              #t)
                                                             (lambda (profile)
@@ -102,8 +100,7 @@
                                                (mbegin %store-monad
                                                        (set-guile-for-build (default-guile))
                                                        (>>= (profile-derivation
-                                                             (specifications->manifest '
-                                                              ("qemu:static"))
+                                                             (specifications->manifest '("qemu:static"))
                                                              #:relative-symlinks?
                                                              #t)
                                                             (lambda (profile)

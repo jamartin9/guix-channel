@@ -1,7 +1,7 @@
 * Guix Channel
 ** Install Package
 *** Instructions
-- ~guix package -L $PWD -f jam/packages/package.scm~ as each package has a value returned at the end
+- ~guix package -L . -f jam/packages/package.scm~ as each package has a value returned at the end
 - packages
   - zfs : python and pam bindings for openzfs
   - vspreview : vapoursynth frame viewer
@@ -14,7 +14,7 @@
     - pie version of glibc and gcc toolchain for guile-static
   - guile-static
     - PIC packages for guile-next-static
-      - libatmoicops
+      - libatomicops
       - libunistring
       - libgc
     - guile-next-static : guile with relocatable patches
@@ -40,11 +40,14 @@
 *** Patches
 - custom patches are located are ~jam/packages/patches/*.patch~ and use ~search-patches~ in ~jam/packages.scm~
 ** Machines
-- Increase ext4 vm disk with: ~qemu-img resize img.qcow2 +30G~
-  - growpart and resize2fs after boot
-    - run with qemu ~qemu-system-x86_64 -smp 4 -cpu host -nic user,model=virtio-net-pci,hostfwd=tcp::8080-:8080 -enable-kvm -m 8192 -device virtio-blk,drive=myhd -drive if=none,file=MY-VM.qcow2,id=myhd~
-      - ~virt-viewer~ for spice viewer
-      - mount shared manually ~sudo mount -t 9p -o trans-virtio downloads /gnu/git/downloads -oversion=9p2000.L,posixacl,msize10485600~
+- build  ~guix system -L . image -t iso9660 ./jam/system/installer.scm~
+  - change type to ~qcow2~ or for efi ~qcow2-gpt~
+- run with qemu ~qemu-system-x86_64 -smp 4 -cpu host -nic user,model=virtio-net-pci,hostfwd=tcp::8080-:8080 -enable-kvm -m 8192 -device virtio-blk,drive=myhd -drive if=none,file=MY-VM.qcow2,id=myhd~
+  - Increase ext4 vm disk with: ~qemu-img resize img.qcow2 +30G~
+    - growpart and resize2fs after boot
+  - ~virt-viewer~ for spice viewer with ~-spice port=5930,disable-ticketing~
+  - mount shared manually ~sudo mount -t 9p -o trans-virtio downloads /gnu/git/downloads -oversion=9p2000.L,posixacl,msize10485600~
+  - boot installer with cdrom ~-drive file=installer.iso,media=cdrom~
 - Virtual machines built with EFI require qcow2-gpt for image builder type and ovmf for qemu to run
 - channels, keys and config under ~/etc~
   - link channels before ~guix pull~. ~ln -s /etc/channels.scm ~/.config/guix/channels.scm~
@@ -64,7 +67,7 @@
     - static relocatable package
     - binary tarball
     - container
-    - vi cm
+    - ci vm
     - test vm
     - installer iso
 **** Test VM
