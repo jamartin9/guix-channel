@@ -6,7 +6,7 @@
   #:use-module (guix utils) ;package-keyword-arguments
   #:use-module (jam packages) ;for search-patches
   #:use-module (jam packages emacs) ;for transform-emacs-configure
-  #:use-module (nongnu packages nvidia)
+  #:use-module (nongnu packages nvidia) ; use nonguix-transformation-nvidia with remove-nvenc-restriction? to apply keylase patches
   #:use-module (nongnu packages mozilla)
   #:use-module (gnu packages emacs) ;emacs-pgtk
   #:use-module (gnu packages)

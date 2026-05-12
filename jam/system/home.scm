@@ -47,7 +47,6 @@
                          "emacs-org-roam"
                          "emacs-guix"
                          "emacs-osm"
-                         "emacs-minions"
                          "emacs-dape"
                          "emacs-macrostep-geiser"
                          "emacs-geiser-guile"

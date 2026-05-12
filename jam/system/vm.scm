@@ -102,7 +102,7 @@
                                                                            "1.guix.pool.ntp.org") ;default 2.guix.pool.ntp.org includes ipv6
                                                                           (options '
                                                                            ("iburst"))))))) ;time without %desktop-services
-                   
+
                    (service openssh-service-type
                             (openssh-configuration (openssh openssh-sans-x)
                                                    (port-number 8080)
@@ -123,14 +123,14 @@
                    ;; (list `("openvpn/client.crt" ,(local-file "riseup.cert")))); TODO startup activation script to download
                    ;; (simple-service 'vpn-ca-file etc-service-type
                    ;; (list `("openvpn/ca.crt" ,(local-file "riseup.ca")))) ; CA: https://black.riseup.net/ca.crt
-                   
+
                    ;; (service openvpn-client-service-type; 'redirect-gateway def1'/'dhcp-option DNS 1.1.1.1' are not needed; test with curl https://checkip.amazonaws.com
                    ;; (openvpn-client-configuration
                    ;; (comp-lzo? #f) ; remove 'comp-lzo'
                    ;; (remote (list (openvpn-remote-configuration
                    ;; (name "185.220.103.11"); curl https://api.black.riseup.net/3/config/eip-service.json | python -m json.tool
                    ;; (port 1194))))))
-                   
+
                    (simple-service 'vm-file etc-service-type
                                    (list `("vm.scm" ,(local-file "vm.scm"))))
                    (simple-service 'home-file etc-service-type

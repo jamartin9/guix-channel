@@ -65,11 +65,11 @@
 ;; cat etc/default/grub.d/* | sed -e 's/#\+/;;/g' -e 's/GRUB.*DEFAULT /\"/g' -e 's/GRUB.*LINUX /\"/g' -e '/GRUB/d' -e 's/\(\".*[a-z0-9]\)\ \([a-z].*\"\)/\1\"\n\"\2/g' -e '/dpkg/d'
 (define-public %kicksecure-kernel-arguments
   '( ;Enables all known mitigations for CPU vulnerabilities.
-    
+
     ;;
     ;; https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/index.html
     ;; https://forums.whonix.org/t/should-all-kernel-patches-for-cpu-bugs-be-unconditionally-enabled-vs-performance-vs-applicability/7647
-    
+
     ;; Enable mitigations for Spectre variant 2 (indirect branch speculation).
     ;;
     ;; https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/spectre.html
@@ -107,14 +107,14 @@
     ;;
     ;; https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/special-register-buffer-data-sampling.html
     ;; https://access.redhat.com/solutions/5142691
-    
+
     ;; Force disable SMT as it has caused numerous CPU vulnerabilities.
     ;; The only full mitigation of cross-HT attacks is to disable SMT.
     ;;
     ;; https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/core-scheduling.html
     ;; https://forums.whonix.org/t/should-all-kernel-patches-for-cpu-bugs-be-unconditionally-enabled-vs-performance-vs-applicability/7647/17
     "nosmt=force" ;MAYBE disable for perf
-    
+
     ;; Enables the prctl interface to prevent leaks from L1D on context switches.
     ;;
     ;; https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1d_flush.html
@@ -126,14 +126,14 @@
     "mmio_stale_data=full,nosmt"
     ;; Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
     ;; See the file COPYING for copying conditions.
-    
+
     ;; Distrusts the bootloader for initial entropy at boot.
     ;;
     ;; https://lkml.org/lkml/2022/6/5/271
     "random.trust_bootloader=off"
     ;; Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
     ;; See the file COPYING for copying conditions.
-    
+
     ;; Distrusts the CPU for initial entropy at boot as it is not possible to
     ;; audit, may contain weaknesses or a backdoor.
     ;;
@@ -145,7 +145,7 @@
     "random.trust_cpu=off"
     ;; Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
     ;; See the file COPYING for copying conditions.
-    
+
     ;; Enables IOMMU to prevent DMA attacks.
     "intel_iommu=on"
     "amd_iommu=on"
@@ -164,9 +164,9 @@
     "iommu.strict=1"
     ;; Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
     ;; See the file COPYING for copying conditions.
-    
+
     ;; echo ";; kver: $kver"
-    
+
     ;; Disables the merging of slabs of similar sizes.
     ;; Sometimes a slab can be used in a vulnerable way which an attacker can exploit.
     "slab_nomerge"
@@ -175,7 +175,7 @@
     ;; Disabled due to kernel deciding to implicitly disable kernel pointer hashing
     ;; https://github.com/torvalds/linux/commit/792702911f581f7793962fbeb99d5c3a1b28f4c3
     ;; "slub_debug=FZ"
-    
+
     ;; Zero memory at allocation and free time.
     "init_on_alloc=1"
     "init_on_free=1"
@@ -183,7 +183,7 @@
     ;; Machine check exception handler decides whether the system should panic or not based on the exception that happened.
     ;; https://forums.whonix.org/t/kernel-hardening/7296/494
     ;; "mce=0"
-    
+
     ;; Enables Kernel Page Table Isolation which mitigates Meltdown and improves KASLR.
     "pti=on"
 
@@ -205,7 +205,7 @@
     ;;
     ;; "lockdown=confidentiality"
     ;; fi
-    
+
     ;; Gather more entropy during boot.
     ;;
     ;; Requires linux-hardened kernel patch.
@@ -216,7 +216,7 @@
     ;; https://lkml.org/lkml/2020/7/16/122
     ;; https://github.com/torvalds/linux/blob/fb1201aececc59990b75ef59fca93ae4aa1e1444/Documentation/admin-guide/kernel-parameters.txt;;L835-L848
     ;; "debugfs=off";; MAYBE disable as guix has debugfs on by default
-    
+
     ;; Force the kernel to panic on "oopses" (which may be due to false positives)
     ;; https://forums.whonix.org/t/set-oops-panic-kernel-parameter-or-kernel-panic-on-oops-1-sysctl-for-better-security/7713
     ;; Implemented differently:
@@ -226,16 +226,16 @@
     ;; "oops=panic"
     ;; Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
     ;; See the file COPYING for copying conditions.
-    
+
     ;; Prevent kernel info leaks in console during boot.
     ;; https://phabricator.whonix.org/T950
-    
+
     ;; LANG=C str_replace is provided by package helper-scripts.
-    
+
     ;; The following command actually removed "quiet" from the kernel command line.
     ;; If verbosity is desired, the user might want to keep this line.
     ;; Remove "quiet" from "because "quiet" must be first.
-    
+
     ;; If verbosity is desired, the user might want to out-comment the following line.
     "quiet"
     "loglevel=0"
@@ -258,9 +258,9 @@
 ;; cat etc/sysctl.d/* | sed -e 's/#\+/;;/g' -e 's/ = /=/g' -e 's/;;\(.*\..*\)=\(.*\)/;; ("\1" . "\2")/g' -e 's/\(.*\..*\)=\(.*\)/("\1" . "\2")/g' -e 's@/bin\|/usr/bin@/run/current-system/profile/bin@g'
 (define-public %kicksecure-sysctl-rules
   '( ;Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
-    
+
     ;; See the file COPYING for copying conditions.
-    
+
     ;; Disables coredumps. This setting may be overwritten by systemd so this may not be useful.
     ;; security-misc also disables coredumps in other ways.
     ("kernel.core_pattern" . "|/run/current-system/profile/bin/false")
@@ -315,7 +315,7 @@
     ;; category networking and security
     ;; description
     ;; TCP/IP stack hardening
-    
+
     ;; Protects against time-wait assassination.
     ;; It drops RST packets for sockets in the time-wait state.
     ("net.ipv4.tcp_rfc1337" . "1")
@@ -355,23 +355,23 @@
     ("net.ipv4.conf.all.rp_filter" . "1")
 
     ;; meta end
-    
+
     ;; Previously disabled SACK, DSACK, and FACK.
     ;; https://forums.whonix.org/t/disabling-tcp-sack-dsack-fack/8109
     ;; ("net.ipv4.tcp_sack" . "0")
     ;; ("net.ipv4.tcp_dsack" . "0")
     ;; ("net.ipv4.tcp_fack" . "0")
-    
+
     ;; meta start
     ;; project Kicksecure
     ;; category networking and security
     ;; description
     ;; disable IPv4 TCP Timestamps
-    
+
     ("net.ipv4.tcp_timestamps" . "0")
 
     ;; meta end
-    
+
     ;; Only allow the SysRq key to be used for shutdowns and the
     ;; Secure Attention Key (SAK).
     ;;
@@ -407,7 +407,7 @@
     ("net.ipv6.conf.default.accept_ra" . "0")
     ;; Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
     ;; See the file COPYING for copying conditions.
-    
+
     ;; Quote https://www.kernel.org/doc/html/latest/admin-guide/sysctl/kernel.html
     ;;
     ;; kexec_load_disabled:
@@ -423,7 +423,7 @@
     ;; it cannot be undone without reboot. This is a upstream Linux security feature.
     ;; Copyright (C) 2019 - 2023 ENCRYPTED SUPPORT LP <adrelanos@whonix.org>
     ;; See the file COPYING for copying conditions.
-    
+
     ;; Prevent kernel info leaks in console during boot.
     ;; https://phabricator.whonix.org/T950
     ("kernel.printk" . "3 3 3 3")
