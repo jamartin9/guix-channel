@@ -18,7 +18,7 @@
   #:use-module (guix)
   #:use-module (guix ci)
   #:use-module (guix channels)
-  #:use-module (jam system channels)
+  #:use-module (jam system services)
   #:export (installation-os-nonfree))
 
 (define-public installation-os-nonfree

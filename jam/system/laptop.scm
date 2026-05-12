@@ -38,8 +38,7 @@
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
   #:use-module (jam system home)
-  #:use-module (jam system services)
-  #:use-module (jam system channels))
+  #:use-module (jam system services))
 
 (define-public %jam-laptop
   (operating-system

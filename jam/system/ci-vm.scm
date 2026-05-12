@@ -53,7 +53,6 @@
   ;; #:use-module (nongnu packages linux)
   ;; #:use-module (nongnu system linux-initrd)
   ;; #:use-module (jam packages zfs) ; zfs kernel-loadable-modules
-  #:use-module (jam system channels)
   #:use-module (jam system home)
   #:use-module (jam system services) ;kicksecure sysctl and kernel args
   #:export (%ci-vm))

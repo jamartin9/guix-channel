@@ -34,8 +34,8 @@
   #:use-module (guix channels)
   #:use-module (srfi srfi-1)
   #:use-module (nongnu packages linux)
-  #:use-module (jam system home)
-  #:use-module (jam system channels))
+  #:use-module (jam system services)
+  #:use-module (jam system home))
 
 (define-public %jam-netbook
   (operating-system

@@ -17,7 +17,6 @@
   #:use-module (jam packages emacs)
   ;; #:use-module (jam packages tree-sitter)
   #:use-module (jam system services)
-  #:use-module (jam system channels)
   #:use-module (guix gexp)
   #:export (%jam-home))
 
