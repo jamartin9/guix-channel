@@ -462,5 +462,5 @@
        "This package implements a window manger to @code{river} to manage wayland windows as Emacs buffers.")
       (license license:gpl3+))))
 
-emacs-reka
+emacs-reka ; guix package --with-graft=mesa=nvda@580 -i emacs-reka
  ; river-0.4.1

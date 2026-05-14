@@ -112,32 +112,22 @@
                                                                        (channels
                                                                         (list (channel
                                                                                  ;custom guix override
-                                                                                
                                                                                 (name 'guix)
-                                                                                
                                                                                 (url
                                                                                  "https://codeberg.org/guix/guix.git")
-                                                                                
                                                                                 (introduction
-                                                                                 
                                                                                  (make-channel-introduction
                                                                                   "9edb3f66fd807b096b48283debdcddccfea34bad"
-                                                                                  
                                                                                   (openpgp-fingerprint
                                                                                    "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
                                                                               (channel
                                                                                  ;GUIX_PACKAGE_PATH and (url "file:///home/.../guix-channel")
-                                                                                
                                                                                 (name 'mychannel)
-                                                                                
                                                                                 (url
                                                                                  "https://codeberg.org/jamartin9/guix-channel")
-                                                                                
                                                                                 (introduction
-                                                                                 
                                                                                  (make-channel-introduction
                                                                                   "a8de09ac62260319e6376f21c995f713c1b09279"
-                                                                                  
                                                                                   (openpgp-fingerprint
                                                                                    "34AF BE87 8193 580F F441  AB3F 95AF 699C 293E 302B"))))))
                                                                        ;; (notifications (list (rss-feed))); add import for (cuirass rss) for https://127.0.0.1/events/rss/?specification=my-channel-packages
@@ -145,13 +135,10 @@
                                                                         (list (build-output
                                                                                (job
                                                                                 "binary*")
-                                                                               
                                                                                (type
                                                                                 "archive")
-                                                                               
                                                                                (output
                                                                                 "out")
-                                                                               
                                                                                (path
                                                                                 ""))))
                                                                        (period
@@ -159,48 +146,37 @@
                                                                       (specification
                                                                        (name
                                                                         "packages")
-                                                                       (build '
-                                                                              (channels
+                                                                       (build '(channels
                                                                                mychannel))
                                                                        (channels
                                                                         (list (channel
-                                                                                
                                                                                 (name 'guix)
-                                                                                
                                                                                 (url
                                                                                  "https://codeberg.org/guix/guix.git")
-                                                                                
                                                                                 (introduction
-                                                                                 
                                                                                  (make-channel-introduction
                                                                                   "9edb3f66fd807b096b48283debdcddccfea34bad"
-                                                                                  
                                                                                   (openpgp-fingerprint
                                                                                    "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
                                                                               (channel
-                                                                                
                                                                                 (name 'mychannel)
-                                                                                
                                                                                 (url
                                                                                  "https://codeberg.org/jamartin9/guix-channel")
-                                                                                
                                                                                 (introduction
-                                                                                 
                                                                                  (make-channel-introduction
                                                                                   "a8de09ac62260319e6376f21c995f713c1b09279"
-                                                                                  
                                                                                   (openpgp-fingerprint
                                                                                    "34AF BE87 8193 580F F441  AB3F 95AF 699C 293E 302B"))))))
                                                                        (period
                                                                         86400))))
                                               (ttl 172800) ;two days before clearing gc roots
                                               (host "0.0.0.0")))
-              ;; (service postgresql-service-type
-              ;; (postgresql-configuration
-              ;; (postgresql (@ (gnu packages databases) postgresql-15))))
+               (service postgresql-service-type
+                        (postgresql-configuration
+                         (postgresql (@ (gnu packages databases) postgresql-15))))
               (service dhcpcd-service-type) ;Use the DHCP client service rather than NetworkManager.
               (service ntp-service-type) ;time without %desktop-services
-              
+
               (service openssh-service-type
                        (openssh-configuration ;(%auto-start? #f)
                                               (openssh openssh-sans-x)
@@ -334,17 +310,34 @@
                        (guix-service-type config =>
                                           (guix-configuration (inherit config)
                                                               (channels
-                                                               %jam-channels)
-                                                              (guix guix/zfs)
+                                                                 (list (channel
+                                                                        ;custom guix override
+                                                                        (name 'guix)
+                                                                        (url "https://codeberg.org/guix/guix.git")
+                                                                        ;; (commit "b416322c05d769d637979ad4ef7287aefbccb4bd")
+                                                                        (introduction
+                                                                         (make-channel-introduction
+                                                                          "9edb3f66fd807b096b48283debdcddccfea34bad"
+                                                                          (openpgp-fingerprint
+                                                                           "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
+                                                                       (channel
+                                                                       ;GUIX_PACKAGE_PATH and (url "file:///home/.../guix-channel")
+                                                                        (name 'mychannel)
+                                                                        (url "https://codeberg.org/jamartin9/guix-channel")
+                                                                        (introduction
+                                                                         (make-channel-introduction
+                                                                          "a8de09ac62260319e6376f21c995f713c1b09279"
+                                                                          (openpgp-fingerprint
+                                                                           "34AF BE87 8193 580F F441  AB3F 95AF 699C 293E 302B"))))))
                                                               (privileged? #t) ;https://issues.guix.gnu.org/77862 overflow id causes test suites to fail
                                                               (substitute-urls
                                                                (append (list
                                                                         "https://cuirass.genenetwork.org/") ;"https://substitutes.nonguix.org/" ; 4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
-                                                                %default-substitute-urls)) ;(http-proxy) with tor config HTTPTunnelPort
+                                                                       %default-substitute-urls)) ;(http-proxy) with tor config HTTPTunnelPort
                                                               (authorized-keys
                                                                (append (list (local-file
                                                                               "./gene.pub")) ;(local-file "./jam.pub") (local-file "./nonguix.pub")
-                                                                %default-authorized-guix-keys))))))))))
+                                                                       %default-authorized-guix-keys))))))))))
 
 ; Deploy config
 ;(list (machine
