@@ -30,7 +30,7 @@
 
 (define %jam-home
   (home-environment
-    (packages ;(append ;(map transform-emacs-configure (list emacs-next-pgtk))
+    (packages ;(append (list emacs-reka) ;(map transform-emacs-configure (list emacs-next-pgtk))
               (map specification->package
                    (list "guile"
                          "emacs-next-pgtk" ;managed by default profile
@@ -50,7 +50,7 @@
                          "emacs-macrostep-geiser"
                          "emacs-geiser-guile"
                          "emacs-flymake-guile"
-                         "emacs-pyvenv"))) ;);"emacs-reka"
+                         "emacs-pyvenv"))); )
     (services
      (append (list (simple-service 'my-channel-services
                                    home-channels-service-type   (list (channel
@@ -83,8 +83,9 @@
                              (package
                                (specification->package "bash"))
                              (guix-defaults? #f) ;(environment-variables (list '("EDITOR" . "emacs")))
+                             (aliases '())
                              (bashrc (list (plain-file "guix.alias"
-                                            "  #!/usr/bin/env bash
+                                            "#!/usr/bin/env bash
   # shellcheck disable=SC2155,SC2076,SC2068,SC1090,SC1091
   export TMPDIR=\"/tmp\"
   export HISTFILE=\"${XDG_STATE_HOME}\"/bash/history
