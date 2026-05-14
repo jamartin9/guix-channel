@@ -138,7 +138,7 @@
                         (image->job store
                                     (os->image %ci-vm
                                                #:type qcow2-image-type)
-                                    #:name "binary-vm"
+                                    #:name "binary-ci-vm"
                                     #:system system) ;qemu-image
                         (image->job store
                                     (os->image %jam-vm
