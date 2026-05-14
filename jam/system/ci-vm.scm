@@ -105,10 +105,7 @@
                        (cuirass-configuration (specifications #~(list (specification
                                                                        (name
                                                                         "binary")
-                                                                       (build '
-                                                                              (custom
-                                                                               (jam
-                                                                                ci)))
+                                                                       (build '(custom (jam ci)))
                                                                        (channels
                                                                         (list (channel
                                                                                  ;custom guix override
@@ -146,8 +143,7 @@
                                                                       (specification
                                                                        (name
                                                                         "packages")
-                                                                       (build '(channels
-                                                                               mychannel))
+                                                                       (build '(channels mychannel))
                                                                        (channels
                                                                         (list (channel
                                                                                 (name 'guix)
