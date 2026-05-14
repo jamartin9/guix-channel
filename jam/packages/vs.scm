@@ -177,7 +177,7 @@ be reused in modules and scripts.")
         (base32 "1j4rk04pwvvdnsqanhb4n6ag6a6ny90w9qhd3fm6n9x7qgm1z19h"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth zimg opencl-icd-loader opencl-headers boost))
+    (inputs (list vapoursynth zimg opencl-icd-loader opencl-headers boost-1.83))
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
@@ -209,10 +209,10 @@ be reused in modules and scripts.")
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/vapoursynth/subtext")
-             (commit "ee915bcaa31d2106d5156e602a470d0b4964321f")))
+             (commit "d03b9131aacd2f541be6440dca728773fe8a53e3")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wax8wj4rwgy3kbrfc23y1vicfs5pf9dra3fk2w46zxc3p4sr0jk"))))
+        (base32 "00jyfn6qq1riv1lxh8mb8igia395bhdyqcascpfl4r6k1zxwhkdp"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list vapoursynth zimg libass ffmpeg))
@@ -409,13 +409,13 @@ the programmer.")
 ;;; vendored zimg, cython
 ;vs-fillborders
 ;vs-vivtc
-;vs-subtext
-;vs-eedi3m
 ;vs-rekt
 ;vs-placebo
+;vs-subtext ; updating requires python 3.12
 ;vsutil
 ;awsmfunc
 ;ffms2-git
 ;vapoursynth ;vapoursynth-git
 ;python-numpy
 ;python
+;vs-eedi3m; failing due to missing boost (new). old version 1.83 gives errors. updating requires python 3.12 (guix is 3.11)
