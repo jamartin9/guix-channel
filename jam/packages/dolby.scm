@@ -494,7 +494,7 @@
                 "1zk6dqqni0193xg6iijh7i3i44sryglwgvx20spdvwk3r6sbrlmv"))
 
 (define rust-vapoursynth-sys-0.4.0
-  (crate-source "vapoursynth_sys" "0.4.0"
+  (crate-source "vapoursynth-sys" "0.4.0"
                 "171ack82jv44why2f73v9cbaq9xz2viv7iavwkn23kl0g6xrpi9g"))
 
 (define rust-vapoursynth-0.4.0
@@ -508,7 +508,7 @@
 (define-public rust-vs-nlq
   (package
     (name "rust-vs-nlq")
-    (version "git")
+    (version "git-d23952b")
     (source
      (origin
        (method git-fetch)
@@ -630,4 +630,4 @@
     (description "Dolby Vision FEL mapping plugin for vapoursynth")
     (license license:expat)))
 
-;rust-vs-nlq
+rust-vs-nlq ;; TODO update dolby_vision to 3.3.2 and vs-nlq requires rust 1.88 (guix uses 1.85 atm)
