@@ -164,28 +164,31 @@ be reused in modules and scripts.")
 (define-public vs-eedi3m
   (package
     (name "vs-eedi3m")
-    (version "R4-git")
+    (version "R8")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url
               "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-EEDI3")
-             (commit "d11bdb37c7a7118cd095b53d9f8fbbac02a06ac0")))
+             (commit "b2fb04cfcbb6c9aab090a389e7369f677d5d32ab")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j4rk04pwvvdnsqanhb4n6ag6a6ny90w9qhd3fm6n9x7qgm1z19h"))))
+        (base32 "1b8is59xlblnh5ymig2ial52zkm260153h2fi8dmhqh5ragaqb21"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth zimg opencl-icd-loader opencl-headers boost-1.83))
+    (inputs (list vapoursynth zimg opencl-icd-loader opencl-headers boost)) ;-1.83
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'remove-install-dir
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "meson.build"
-                        ((".*install_dir.*'vapoursynth'),")
-                         "\n"))))
+                        ((".*install_dir.*'vapoursynth'") ; maybe patch clang path too?
+                         "\n")
+                        ((".*install_dir.*install_dir,")
+                         "\n")
+                        )))
                   (add-after 'install 'move-library
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
@@ -412,10 +415,10 @@ the programmer.")
 ;vs-rekt
 ;vs-placebo
 ;vs-subtext ; updating requires python 3.12
+;vs-eedi3m ; updating requires python 3.12 (guix is 3.11)
 ;vsutil
 ;awsmfunc
 ;ffms2-git
 ;vapoursynth ;vapoursynth-git
 ;python-numpy
 ;python
-;vs-eedi3m; failing due to missing boost (new). old version 1.83 gives errors. updating requires python 3.12 (guix is 3.11)
