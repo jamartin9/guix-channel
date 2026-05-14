@@ -230,8 +230,7 @@
                                   (service-type-name type)))))
                      (modify-services %base-services
                        (sysctl-service-type config =>
-                                            (sysctl-configuration (settings (append `
-                                                                             (,@%kicksecure-sysctl-rules)
+                                            (sysctl-configuration (settings (append `(,@%kicksecure-sysctl-rules)
                                                                              %default-sysctl-settings))))
                        (guix-service-type config =>
                                           (guix-configuration (inherit config)

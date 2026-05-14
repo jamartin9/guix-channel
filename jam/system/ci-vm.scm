@@ -310,8 +310,7 @@
                      (modify-services %base-services
                         ;%desktop-services
                        (sysctl-service-type config =>
-                                            (sysctl-configuration (settings (append `
-                                                                             (,@%kicksecure-sysctl-rules ;("net.ipv6.conf.all.forwarding" . "1")
+                                            (sysctl-configuration (settings (append `(,@%kicksecure-sysctl-rules ;("net.ipv6.conf.all.forwarding" . "1")
                                                                               ("net.ipv4.ip_forward" . "1"))
                                                                              %default-sysctl-settings))))
                        (guix-service-type config =>
