@@ -4,9 +4,13 @@
 - ~guix package -L . -f jam/packages/package.scm~ as each package has a value returned at the end
 - packages
   - zfs : python and pam bindings for openzfs
+    - not upstream as needs pam service
   - vspreview : vapoursynth frame viewer
+    - not upstream as no published crate and should have recommended native target flags tunable
   - dolby
     - vs-nlq : vapoursynth plugin for dolby vision FEL mapping
+    - not upstream as no precedence for wrapping vapoursynth plugins with versioning and needs some unbundling of deps
+      - add ~UserPluginDir=~/.guix-profile/lib/vapoursynth~ to ~$XDG_CONFIG/vapoursynth/vapoursynth.conf~ to auto load plugin from directory
   - emacs
     - package transformation for build flags
     - emacs-reka : reka native and elisp for river window manager
@@ -18,14 +22,19 @@
       - libunistring
       - libgc
     - guile-next-static : guile with relocatable patches
+      - not upstream as specific build of guile for custom embedding
   - llama : ik_llama.cpp fork for cpu only
     - cuda integration would use guix-science-nonfree and nccl
+    - not upstream as changes too often without stable releases, lacking gpu features, not a standalone package(derived from llama-cpp)
   - nvidia : grafts (replace-mesa) for emacs/browsers pinning driver version
   - nzbget : usenet downloader with patches cmake build and vendored dependencies rapidyenc/par2cmdline-turbo
+    - not upstream as would need tune for ~BUILD_NATIVE~ and flatpak alternative exists
   - pyrescene : rerar scene releases with python version patched
     - run the .real script with the python from guix profile
+      - not upstream as newer versions need python 3.12/3.13 or patches
   - vs
     - requires dependencies on python-numpy/python
+      - not upstream as newer versions of plugins require newer vapoursynth or python versions
     - unused git version of vapoursynth pinned for cython
     - ffms2 with hdr metadata support
     - awsmfunc python wrapper for encoding configuration

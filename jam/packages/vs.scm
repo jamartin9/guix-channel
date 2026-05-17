@@ -85,13 +85,13 @@ be reused in modules and scripts.")
 (define-public awsmfunc
   (package
     (name "awsmfunc")
-    (version "1.3.4")
+    (version "1.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "awsmfunc" version))
        (sha256
-        (base32 "0mbj2ps158b2pp271pk02hvlwknwn6cl9clh80mk4628bhpk6c43"))))
+        (base32 "1f0id0bswjf9l0warlkp13lpdsh6ixcb0k307j5w5p56w8l946w5"))))
     (build-system python-build-system)
     (inputs (list python-numpy vapoursynth vs-rekt vsutil))
     (native-inputs (list python-pylint python-toml python-yapf))
@@ -109,17 +109,17 @@ be reused in modules and scripts.")
 (define-public vs-placebo
   (package
     (name "vs-placebo")
-    (version "1.4.4-git")
+    (version "2.0.0-git"); r73 for newer versions
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/Lypheo/vs-placebo")
-             (commit "701d72126b58ccfb64f81ed19cacac93bd7fb2a0")
-             (recursive? #t)))
+             (commit "c51c432bd996d5ad953477bef1f754794e9ab6cb")
+             (recursive? #t))) ; MAYBE unbundle libp2p
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s31gs8l0hh4h2ic2y4jxq7qdc8xx11hqpx0m6g3w7cdpl6i6pml"))))
+        (base32 "1gi22qmvc8l3s7qqbf87ng9nbx5xv14x9zilph4m6ya3fzgv1qdp"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list vapoursynth
@@ -164,39 +164,49 @@ be reused in modules and scripts.")
 (define-public vs-eedi3m
   (package
     (name "vs-eedi3m")
-    (version "R8")
+    (version "R10")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url
               "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-EEDI3")
-             (commit "b2fb04cfcbb6c9aab090a389e7369f677d5d32ab")))
+             (commit "11bb8f7eca7769ff3417c9d0be574f73e4b03426")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b8is59xlblnh5ymig2ial52zkm260153h2fi8dmhqh5ragaqb21"))))
+        (base32 "1mkdipvv5w3q83hizrcnvngfxj3hqsda6k81pgq0951kn402aa3y"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth zimg opencl-icd-loader opencl-headers boost)) ;-1.83
+    (inputs (list vapoursynth zimg opencl-icd-loader opencl-headers boost))
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'remove-install-dir
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "meson.build"
-                        ((".*install_dir.*'vapoursynth'") ; maybe patch clang path too?
-                         "\n")
-                        ((".*install_dir.*install_dir,")
-                         "\n")
-                        )))
+                        (("py.*false)") ; remove include dirs from python execution
+                         "vapoursynth_dep = dependency\('vapoursynth', version: '>=55').partial_dependency\(compile_args : true, includes : true)\nmessy = '''\n"))
+                      (substitute* "meson.build"
+                        ((".*libs.*]")
+                         "'''\nlibs = []\n"))
+                      (substitute* "meson.build"
+                        ((".*include_directories: incdir,")
+                         "        dependencies: [vapoursynth_dep],\n"))
+                      (substitute* "meson.build"
+                        ((".*include_directories.*incdir,")
+                         "    dependencies: [vapoursynth_dep],\n"))
+                      (substitute* "meson.build"
+                        ((".*install_dir.*'vapoursynth/plugins',")
+                         "\n"))
+                        ))
                   (add-after 'install 'move-library
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
                              (lib (string-append out "/lib"))
                              (vs-lib (string-append lib "/vapoursynth")))
                         (mkdir-p vs-lib)
-                        (rename-file (string-append lib "/libeedi3m.so")
-                                     (string-append vs-lib "/libeedi3m.so"))))))))
+                        (rename-file (string-append lib "/eedi3m.so")
+                                     (string-append vs-lib "/eedi3m.so"))))))))
     (home-page
      "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-EEDI3")
     (synopsis "eedi3 vapoursynth plugin")
@@ -206,16 +216,16 @@ be reused in modules and scripts.")
 (define-public vs-subtext
   (package
     (name "vs-subtext")
-    (version "R5-git")
+    (version "R6-git")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/vapoursynth/subtext")
-             (commit "d03b9131aacd2f541be6440dca728773fe8a53e3")))
+             (commit "ef0e4c54f27ce2a427ac5096c403bce3354dc3a4")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00jyfn6qq1riv1lxh8mb8igia395bhdyqcascpfl4r6k1zxwhkdp"))))
+        (base32 "1ycc6a4yfgl0x81bbn7b266qixfnj04d0cd6r3iiv7g1ydjdpc29"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list vapoursynth zimg libass ffmpeg))
@@ -225,16 +235,26 @@ be reused in modules and scripts.")
                   (add-after 'unpack 'remove-install-dir
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "meson.build"
-                        ((".*install_dir.*'vapoursynth'),")
-                         "\n"))))
+                        (("py.*false)") ; remove include dirs from python execution
+                         "vapoursynth_dep = dependency\('vapoursynth', version: '>=55').partial_dependency\(compile_args : true, includes : true)\ndeps += vapoursynth_dep\nmessy = '''\n"))
+                      (substitute* "meson.build"
+                        (("link_args.*]")
+                         "'''\nlink_args = []\n"))
+                      (substitute* "meson.build"
+                        ((".*include_directories: incdir,")
+                         "\n"))
+                      (substitute* "meson.build"
+                        ((".*install_dir.*'vapoursynth/plugins',")
+                         "\n"))
+                      ))
                   (add-after 'install 'move-library
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
                              (lib (string-append out "/lib"))
                              (vs-lib (string-append lib "/vapoursynth")))
                         (mkdir-p vs-lib)
-                        (rename-file (string-append lib "/libsubtext.so")
-                                     (string-append vs-lib "/libsubtext.so"))))))))
+                        (rename-file (string-append lib "/subtext.so")
+                                     (string-append vs-lib "/subtext.so"))))))))
     (home-page "https://github.com/vapoursynth/subtext")
     (synopsis "subtext vapoursynth plugin")
     (description "Subtitle plugin for VapourSynth based on libass")
@@ -243,49 +263,16 @@ be reused in modules and scripts.")
 (define-public vs-fillborders
   (package
     (name "vs-fillborders")
-    (version "2-git")
+    (version "3-git")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dubhater/vapoursynth-fillborders")
-             (commit "78fe68044fe3414ce8061bf811a235e29c8f7d9d")))
+             (commit "60adc9774dd715e1a11d348354f4cb468309a6d7")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qpaks4sf5librcbxlckg6sm31r49546lpdlp44b12scdxa8a1wq"))))
-    (build-system meson-build-system)
-    (native-inputs (list pkg-config))
-    (inputs (list vapoursynth zimg))
-    (arguments
-     `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'move-library
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (lib (string-append out "/lib"))
-                             (vs-lib (string-append lib "/vapoursynth")))
-                        (mkdir-p vs-lib)
-                        (rename-file (string-append lib "/libfillborders.so")
-                                     (string-append vs-lib
-                                                    "/libfillborders.so"))))))))
-    (home-page "https://github.com/dubhater/vapoursynth-fillborders")
-    (synopsis "fillborders vapoursynth plugin")
-    (description "Fills the borders of a clip")
-    (license license:lgpl2.1+)))
-
-(define-public vs-vivtc
-  (package
-    (name "vs-vivtc")
-    (version "R1-git")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/vapoursynth/vivtc")
-             (commit "4ac661d78eaf8b5ab7c5dd2d05c81234fe9aaca8")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1w8psk51cxr3c9y13bdrvxglhjy0zq1sa4rmdyfp32zs0s6wlkpc"))))
+        (base32 "0s3ss6yjrc0dppbp6jxfr4s59ivqgwgc58g7yp6yrwfhgjm6nrfc"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list vapoursynth zimg))
@@ -295,16 +282,74 @@ be reused in modules and scripts.")
                   (add-after 'unpack 'remove-install-dir
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "meson.build"
-                        ((".*install_dir.*'vapoursynth'),")
-                         "\n"))))
+                        ((".*install_dir.*'vapoursynth/plugins',")
+                         "\n"))
+                      (substitute* "meson.build"; remove include dirs from python execution
+                        (("incdir = include_directories")
+                         "messy = '''\n"))
+                      (substitute* "meson.build"
+                        (("py.*false)")
+                         "'''\nvapoursynth_dep = dependency\('vapoursynth', version: '>=55').partial_dependency\(compile_args : true, includes : true)\n"))
+                      (substitute* "meson.build"
+                        ((".*include_directories.*incdir,")
+                         "    dependencies: [vapoursynth_dep],\n"))
+                      ))
                   (add-after 'install 'move-library
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
                              (lib (string-append out "/lib"))
                              (vs-lib (string-append lib "/vapoursynth")))
                         (mkdir-p vs-lib)
-                        (rename-file (string-append lib "/libvivtc.so")
-                                     (string-append vs-lib "/libvivtc.so"))))))))
+                        (rename-file (string-append lib "/fillborders.so")
+                                     (string-append vs-lib
+                                                    "/fillborders.so"))))))))
+    (home-page "https://github.com/dubhater/vapoursynth-fillborders")
+    (synopsis "fillborders vapoursynth plugin")
+    (description "Fills the borders of a clip")
+    (license license:lgpl2.1+)))
+
+(define-public vs-vivtc
+  (package
+    (name "vs-vivtc")
+    (version "R2-git")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vapoursynth/vivtc")
+             (commit "4734c8b8526998b11bb2f313dfd0b4ecf760cfae")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yd7lc6c90ha72fhv5jzlaz59ckz5yngc64v30kdlm49946cyc9f"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list vapoursynth zimg))
+    (arguments
+     `(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'remove-install-dir
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "meson.build"
+                        ((".*install_dir.*'vapoursynth/plugins',")
+                         "\n"))
+                      (substitute* "meson.build"; remove include dirs from python execution
+                        (("incdir = include_directories")
+                         "messy = '''\n"))
+                      (substitute* "meson.build"
+                        (("py.*false)")
+                         "'''\nvapoursynth_dep = dependency\('vapoursynth', version: '>=55').partial_dependency\(compile_args : true, includes : true)\n"))
+                      (substitute* "meson.build"
+                        ((".*include_directories.*incdir,")
+                         "    dependencies: [vapoursynth_dep],\n"))
+                      ))
+                  (add-after 'install 'move-library
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (lib (string-append out "/lib"))
+                             (vs-lib (string-append lib "/vapoursynth")))
+                        (mkdir-p vs-lib)
+                        (rename-file (string-append lib "/vivtc.so")
+                                     (string-append vs-lib "/vivtc.so"))))))))
     (home-page "https://github.com/vapoursynth/vivtc")
     (synopsis "vivtc vapoursynth plugin")
     (description
@@ -315,16 +360,16 @@ be reused in modules and scripts.")
   (package
     (inherit ffms2)
     (name "ffms2-git")
-    (version "5.0")
+    (version "5.12-3af2ef2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/FFMS/ffms2")
-             (commit version)))
+             (commit "3af2ef2ae47bc30b64597c9e419e5b19c4bda7d8")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10fbhs3205phfj6d9x23wsn070xr7kljn0f5w2hm2j6a2vr6amr2"))))
+        (base32 "1gib85jpk714pn024zd0pfxs2vqiwg578xlwmskxyh0wkj8qfz1v"))))
     (arguments
      '(#:configure-flags (list "--enable-avresample")
        #:phases (modify-phases %standard-phases
@@ -410,15 +455,15 @@ the programmer.")
                          yasm))))
 
 ;;; vendored zimg, cython
-;vs-fillborders
-;vs-vivtc
-;vs-rekt
-;vs-placebo
-;vs-subtext ; updating requires python 3.12
-;vs-eedi3m ; updating requires python 3.12 (guix is 3.11)
 ;vsutil
+;vs-rekt
+;vs-vivtc; pypi package requires vapoursynth 74+
+;vs-fillborders; pypi package requires vapoursynth 74+
+;vs-eedi3m ; pypi package requires  vapoursynth 74+
+;vs-subtext ; pypi package requires  vapoursynth 74+
 ;awsmfunc
 ;ffms2-git
 ;vapoursynth ;vapoursynth-git
 ;python-numpy
 ;python
+;vs-placebo; ; pypi package require vapoursynth 74+
