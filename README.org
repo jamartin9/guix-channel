@@ -5,8 +5,6 @@
 - packages
   - zfs : python and pam bindings for openzfs
     - not upstream as needs pam service
-  - vspreview : vapoursynth frame viewer
-    - not upstream as no published crate and should have recommended native target flags tunable
   - dolby
     - vs-nlq : vapoursynth plugin for dolby vision FEL mapping
     - not upstream as no precedence for wrapping vapoursynth plugins with versioning and needs some unbundling of deps
