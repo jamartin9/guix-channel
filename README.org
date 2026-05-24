@@ -9,7 +9,7 @@
     - vs-nlq : vapoursynth plugin for dolby vision FEL mapping
     - not upstream as no precedence for wrapping vapoursynth plugins with versioning and needs some unbundling of deps
       - add ~UserPluginDir=~/.guix-profile/lib/vapoursynth~ to ~$XDG_CONFIG/vapoursynth/vapoursynth.conf~ to auto load plugin from directory
-  - emacs
+      - set ~LD_LIBRARY_PATH=~/.guix-profile/lib/~ and use guix's ~python3~
     - package transformation for build flags
     - emacs-reka : reka native and elisp for river window manager
   - gcc
@@ -88,7 +88,7 @@
     - stores all profile environments in a env variables to restore and reset in order of activation for path overrides
   - VM running with ~guixRunVm~
   - VM building with ~guixPackVm~
-  - container bulding with ~guixPackDock~
+  - container building with ~guixPackDock~
 ** Installer
 - boot in EFI mode for UEFI install as bios will error on the last install step
 ** Third Party
