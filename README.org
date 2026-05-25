@@ -44,6 +44,14 @@
       - vs-placebo : tonemapping
       - vsutil : resizing and misc
       - vs-subtext: subtitles
+  - vspreview
+    - requires dependencies:
+      - libxkbcommon
+        - WAYLAND: ~wayland~, ~wayland-protocols~, ~egl-wayland~, ~vulkan-loader~
+        - X11: ~libx11~, ~libxcursor~, ~libxi~, ~libxrandr~
+          - set ~WAYLAND_DISPLAY=""~
+    - set ~LD_LIBRARY_PATH=$HOME/.guix-profile/lib~ for guix on foreign distro
+    - graft nvidia for driver version ~--with-graft=mesa=nvda@580~
 *** Patches
 - custom patches are located are ~jam/packages/patches/*.patch~ and use ~search-patches~ in ~jam/packages.scm~
 ** Machines
