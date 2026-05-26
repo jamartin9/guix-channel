@@ -7,7 +7,7 @@
     - not upstream as needs pam service
   - dolby
     - vs-nlq : vapoursynth plugin for dolby vision FEL mapping
-    - not upstream as no precedence for wrapping vapoursynth plugins with versioning and needs some unbundling of deps
+    - not upstream as no precedence for wrapping vapoursynth plugins with versioning(meson.build's are heavily modified)
       - add ~UserPluginDir=~/.guix-profile/lib/vapoursynth~ to ~$XDG_CONFIG/vapoursynth/vapoursynth.conf~ to auto load plugin from directory
       - set ~LD_LIBRARY_PATH=~/.guix-profile/lib/~ and use guix's ~python3~
     - package transformation for build flags
@@ -32,7 +32,7 @@
       - not upstream as newer versions need python 3.12/3.13 or patches
   - vs
     - requires dependencies on python-numpy/python
-      - not upstream as newer versions of plugins require newer vapoursynth or python versions
+      - not upstream as newer versions of plugins require newer vapoursynth or python versions for pypi packages
     - unused git version of vapoursynth pinned for cython
     - ffms2 with hdr metadata support
     - awsmfunc python wrapper for encoding configuration
@@ -69,7 +69,7 @@
     - after update ~guix system reconfigure~
 *** Systems
 **** laptop
-- broadcom-sta and broacom-bluetooth for wireless
+- broadcom-sta and broadcom-bluetooth for wireless
 **** netbook
 - EFI boot
 - bluetooth
@@ -89,6 +89,22 @@
 - nftable rules for specific output only
 - nzbget/unrar
 - wireguard forwarding
+*** Deploy
+- Example deploy config
+  - append to end of machine config
+#+NAME: guix-deploy-config
+#+BEGIN_SRC text :tangle no
+(list (machine
+       (operating-system %ci-vm)
+       (environment managed-host-environment-type)
+       (configuration (machine-ssh-configuration
+                       (system "x86_64-linux")
+                       (host-name "127.0.0.1")
+                       (user "guest")
+                       (identity "./id_ed25519")
+                       (port 8080)))))
+#+END_SRC
+
 ** Guix Home
 - defines packages for ~jamartin9/emacs-config~
 - defines bash alias wrappers for guix operations

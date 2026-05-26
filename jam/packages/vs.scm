@@ -106,23 +106,52 @@ be reused in modules and scripts.")
     (description "awesome @code{VapourSynth} functions")
     (license license:expat)))
 
+(define-public libp2p
+  (package
+    (name "libp2p")
+    (version "git-f50288")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sekrit-twc/libp2p")
+             (commit "f50288b0c8db2cb14bb98fc25a5f056609d03652")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ah4mi3gcmm4kqjml2rzyjigyk0mglsqzdm6xk3jff1v8v14pffv"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                               (delete 'configure)
+                               (delete 'check)
+                               (replace 'install
+                                  (lambda* (#:key outputs #:allow-other-keys)
+                                    (let ((out (assoc-ref outputs "out")))
+                                      (invoke "make" "all")
+                                      (install-file "libp2p.a" (string-append out "/lib")); install lib/headers
+                                      (install-file "p2p_api.h" (string-append out "/include"))))))))
+    (home-page "https://github.com/sekrit-twc/libp2p")
+    (synopsis "Pack/unpack pixels.")
+    (description "Pack/unpack pixels.")
+    (license license:lgpl2.1+)))
+
 (define-public vs-placebo
   (package
     (name "vs-placebo")
-    (version "2.0.0-git"); r73 for newer versions
+    (version "2.0.2-git")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/Lypheo/vs-placebo")
-             (commit "c51c432bd996d5ad953477bef1f754794e9ab6cb")
-             (recursive? #t))) ; MAYBE unbundle libp2p
+             (commit "ccb4beac9080510f2eb830d948449392e2e5c34a")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gi22qmvc8l3s7qqbf87ng9nbx5xv14x9zilph4m6ya3fzgv1qdp"))))
+        (base32 "0nbvbb55wjzhgfhpr47l5hsylk5w9d8srpkzr0hm969r8j44dh6k"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list vapoursynth
+                  libp2p
                   zimg
                   libplacebo
                   shaderc
@@ -136,8 +165,27 @@ be reused in modules and scripts.")
                   (add-after 'unpack 'remove-install-dir
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "meson.build"
-                        ((".*install_dir.*'vapoursynth'),")
-                         "\n"))))
+                        (("py.*false)") ; remove include dirs from python execution
+                         "vapoursynth_dep = dependency\('vapoursynth', version: '>=55').partial_dependency\(compile_args : true, includes : true)\n  messy = '''\n"))
+                      (substitute* "meson.build"
+                        ((".*install_dir.*'vapoursynth/plugins'")
+                         "'''\n  deps += vapoursynth_dep\n"))
+                      (substitute* "meson.build" ; add libp2p
+                        (("libp2p.*subproject.*libp2p')")
+                         "\nmyp2p = cc.find_library\('libp2p', static: true, has_headers: ['p2p_api.h'])\np2pdep = declare_dependency\(dependencies: [myp2p])\ndeps += p2pdep\nree = '''\n"))
+                      (substitute* "meson.build"
+                        (("sources.*]")
+                         "'''\nsources = []\n"))
+                      (substitute* "meson.build"
+                        (("link_with.*link_with_list,")
+                         ""))
+                      (substitute* "meson.build"
+                        ((".*include_directories.*p2p_inc_dirs],")
+                         ""))
+                      (substitute* "meson.build"
+                        ((".*install_dir.*install_dir,")
+                         ""))
+                        ))
                   (add-after 'install 'move-library
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
@@ -151,15 +199,6 @@ be reused in modules and scripts.")
     (description
      "libplacebo-based debanding, scaling and color mapping plugin for VapourSynth")
     (license license:lgpl2.1+)))
-
-(define vs-nvda
-  (package
-    (inherit vs-placebo)
-    (name "vs-placebo-nvda")))
-
-(define-public vs-placebo-nvda
-   ;graft nvda for mesa
-  (replace-mesa vs-nvda))
 
 (define-public vs-eedi3m
   (package
@@ -466,4 +505,4 @@ the programmer.")
 ;vapoursynth ;vapoursynth-git
 ;python-numpy
 ;python
-;vs-placebo; ; pypi package require vapoursynth 74+
+vs-placebo; ; pypi package require vapoursynth 74+;libp2p

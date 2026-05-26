@@ -27,7 +27,7 @@
     (arguments
      (substitute-keyword-arguments (package-arguments llama-cpp)
        ((#:configure-flags flags)
-        ''("-DGGML_IQK_FA_ALL_QUANTS=ON" "-DGGML_NATIVE=ON"))
+        ''("-DGGML_IQK_FA_ALL_QUANTS=ON" "-DGGML_NATIVE=ON" "-DCMAKE_BUILD_TYPE=Release"))
        ((#:tests? _ #t)
         #f)
        ((#:phases phases)
