@@ -1,9 +1,10 @@
 (define-module (jam packages pyrescene)
   #:use-module (guix packages)
   #:use-module (guix git-download)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (nongnu packages compression)
   #:use-module (gnu packages mp3)
+  #:use-module (gnu packages python-build)
   #:use-module (jam packages)
   #:use-module ((guix licenses)
                 #:prefix license:))
@@ -22,13 +23,14 @@
        (sha256
         (base32 "0v9j5jjffwym9n4ifg4kk53n14llpzpl21vbx3vb2ymz6w1pn3b0"))
        (patches (search-patches "pyrescene-locale.patch"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list unrar chromaprint))
     (arguments
-     `(#:tests? #f))
+     (list #:tests? #f))
     (home-page "https://github.com/srrDB/pyrescene")
     (synopsis "Backup and restore scene release metadata")
     (description "Backup and restore scene release metadata")
     (license license:expat)))
 
-;python-pyrescene
+python-pyrescene

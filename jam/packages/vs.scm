@@ -5,7 +5,7 @@
   #:use-module (nongnu packages nvidia) ;for mesa to nvda graft
   #:use-module (guix utils) ;substutite keyword cython
   #:use-module (guix build-system gnu) ;zimg for vapoursynth
-  #:use-module (guix build-system python) ;cython for vapoursynth
+;  #:use-module (guix build-system python) ;cython for vapoursynth
   #:use-module (guix build-system pyproject) ;for vs-rekt and awsmfunc
   #:use-module (gnu packages python-build) ;python-tomil for awsmfunc
   #:use-module (gnu packages python-xyz) ;cython for vapoursynth
@@ -43,8 +43,9 @@
        (uri (pypi-uri "vsutil" version))
        (sha256
         (base32 "0s47r623x9vw0nrlpjfypn33ckp0gxgbl7qhdbw3m77v7lh32670"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs (list vapoursynth))
+    (native-inputs (list python-setuptools))
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
@@ -69,7 +70,8 @@ be reused in modules and scripts.")
        (uri (pypi-uri "vs-rekt" version))
        (sha256
         (base32 "0cdf16hnn3akx9yx6xijf1f1m368n9x2pl67h0dq8kh7fysw1yr4"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools))
     (inputs (list vapoursynth vsutil))
     (arguments
      `(#:tests? #f
@@ -92,9 +94,9 @@ be reused in modules and scripts.")
        (uri (pypi-uri "awsmfunc" version))
        (sha256
         (base32 "1f0id0bswjf9l0warlkp13lpdsh6ixcb0k307j5w5p56w8l946w5"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs (list python-numpy vapoursynth vs-rekt vsutil))
-    (native-inputs (list python-pylint python-toml python-yapf))
+    (native-inputs (list python-pylint python-toml python-yapf python-setuptools))
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
@@ -494,15 +496,15 @@ the programmer.")
                          yasm))))
 
 ;;; vendored zimg, cython
-;vsutil
-;vs-rekt
 ;vs-vivtc; pypi package requires vapoursynth 74+
 ;vs-fillborders; pypi package requires vapoursynth 74+
 ;vs-eedi3m ; pypi package requires  vapoursynth 74+
 ;vs-subtext ; pypi package requires  vapoursynth 74+
-;awsmfunc
 ;ffms2-git
 ;vapoursynth ;vapoursynth-git
 ;python-numpy
 ;python
-vs-placebo; ; pypi package require vapoursynth 74+;libp2p
+;vs-placebo; ; pypi package require vapoursynth 74+;libp2p
+;vsutil
+;vs-rekt
+awsmfunc
