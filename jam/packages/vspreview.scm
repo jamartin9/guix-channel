@@ -7,6 +7,7 @@
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages video) ;vapoursynth
   #:use-module (jam packages) ;for search-patches
+  #:use-module (jam packages vs) ;for vapoursynth-git
   #:use-module ((guix licenses)
                 #:prefix license:))
 
@@ -1919,7 +1920,7 @@
        ;; (car (find-files "." "^libvs_nlq\\.so$"))
        ;; (string-append out "/lib/vapoursynth"))))))
        ))
-    (inputs (list vapoursynth ;guix import crate -f Cargo.lock vspreview-rs | grep "(define" | grep -o " .*"
+    (inputs (list vapoursynth-git ;guix import crate -f Cargo.lock vspreview-rs | grep "(define" | grep -o " .*"
                   ;wayland
                   ;wayland-protocols
  rust-ab-glyph-0.2.32

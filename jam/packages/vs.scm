@@ -44,7 +44,7 @@
        (sha256
         (base32 "0s47r623x9vw0nrlpjfypn33ckp0gxgbl7qhdbw3m77v7lh32670"))))
     (build-system pyproject-build-system)
-    (inputs (list vapoursynth))
+    (inputs (list vapoursynth-git))
     (native-inputs (list python-setuptools))
     (arguments
      `(#:tests? #f
@@ -72,7 +72,7 @@ be reused in modules and scripts.")
         (base32 "0cdf16hnn3akx9yx6xijf1f1m368n9x2pl67h0dq8kh7fysw1yr4"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools))
-    (inputs (list vapoursynth vsutil))
+    (inputs (list vapoursynth-git vsutil))
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
@@ -95,7 +95,7 @@ be reused in modules and scripts.")
        (sha256
         (base32 "1f0id0bswjf9l0warlkp13lpdsh6ixcb0k307j5w5p56w8l946w5"))))
     (build-system pyproject-build-system)
-    (inputs (list python-numpy vapoursynth vs-rekt vsutil))
+    (inputs (list python-numpy vapoursynth-git vs-rekt vsutil))
     (native-inputs (list python-pylint python-toml python-yapf python-setuptools))
     (arguments
      `(#:tests? #f
@@ -152,7 +152,7 @@ be reused in modules and scripts.")
         (base32 "0nbvbb55wjzhgfhpr47l5hsylk5w9d8srpkzr0hm969r8j44dh6k"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth
+    (inputs (list vapoursynth-git
                   libp2p
                   zimg
                   libplacebo
@@ -218,7 +218,7 @@ be reused in modules and scripts.")
         (base32 "1mkdipvv5w3q83hizrcnvngfxj3hqsda6k81pgq0951kn402aa3y"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth zimg opencl-icd-loader opencl-headers boost))
+    (inputs (list vapoursynth-git zimg opencl-icd-loader opencl-headers boost))
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
@@ -269,7 +269,7 @@ be reused in modules and scripts.")
         (base32 "1ycc6a4yfgl0x81bbn7b266qixfnj04d0cd6r3iiv7g1ydjdpc29"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth zimg libass ffmpeg))
+    (inputs (list vapoursynth-git zimg libass ffmpeg))
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
@@ -316,7 +316,7 @@ be reused in modules and scripts.")
         (base32 "0s3ss6yjrc0dppbp6jxfr4s59ivqgwgc58g7yp6yrwfhgjm6nrfc"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth zimg))
+    (inputs (list vapoursynth-git zimg))
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
@@ -364,7 +364,7 @@ be reused in modules and scripts.")
         (base32 "1yd7lc6c90ha72fhv5jzlaz59ckz5yngc64v30kdlm49946cyc9f"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
-    (inputs (list vapoursynth zimg))
+    (inputs (list vapoursynth-git zimg))
     (arguments
      `(#:tests? #f
        #:phases (modify-phases %standard-phases
@@ -475,7 +475,7 @@ the programmer.")
   ;; MAYBE add wrap-program from (guix build utils) to set the plugin directory
   (package
     (inherit vapoursynth)
-    (name "vapoursynth-git")
+    (name "vapoursynth")
     (version "68")
     (source
      (origin
@@ -501,10 +501,11 @@ the programmer.")
 ;vs-eedi3m ; pypi package requires  vapoursynth 74+
 ;vs-subtext ; pypi package requires  vapoursynth 74+
 ;ffms2-git
-;vapoursynth ;vapoursynth-git
 ;python-numpy
 ;python
 ;vs-placebo; ; pypi package require vapoursynth 74+;libp2p
 ;vsutil
 ;vs-rekt
-awsmfunc
+;awsmfunc
+;vapoursynth
+vapoursynth-git

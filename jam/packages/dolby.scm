@@ -9,6 +9,7 @@
   ;; #:use-module (gnu packages rust-sources) ; for vs-nlq (criterion)
   #:use-module (gnu packages video) ;vapoursynth for vs-nlq
   #:use-module (jam packages) ;for search-patches
+  #:use-module (jam packages vs) ;for vapoursynth-git
   #:use-module ((guix licenses)
                 #:prefix license:))
 ;; guix import crate -f Cargo.lock dolby_vision
@@ -654,7 +655,7 @@
                   rust-vapoursynth-0.5.4
                   rust-vapoursynth-sys-0.6.0
                   rust-windows-link-0.2.1
-                  vapoursynth))
+                  vapoursynth-git))
     (home-page "https://github.com/quietvoid/vs-nlq/")
     (synopsis "vs-nlq plugin for vapoursynth")
     (description "Dolby Vision FEL mapping plugin for vapoursynth")
