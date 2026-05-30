@@ -5,6 +5,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils) ;package-keyword-arguments
   #:use-module (gnu packages machine-learning) ;llama-cpp
+  #:use-module (gnu packages tls) ;openssl
   #:use-module (jam packages) ;for search-patches
   ;; #:use-module (guix-science-nonfree packages cuda) ; cuda-12 for the 580 driver series (13 requires cc 7.5+)
   #:use-module ((guix licenses)
@@ -14,16 +15,16 @@
   (package
     (inherit llama-cpp)
     (name "ik-llama-cpp")
-    (version "git-642c038") ;add commit to version to avoid false base32 hash passing on reinstall w/o tag
+    (version "git-8960c5") ;add commit to version to avoid false base32 hash passing on reinstall w/o tag
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ikawrakow/ik_llama.cpp")
-             (commit "642c038ccdf3dd08e6d9ac6fdc3b1c311ebd8a02")))
+             (commit "8960c5ba5ee9db30ba838304373aa4dbec9f7cbd")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s950mclbxrzl1mnd4ha1myld1m5a6lqaghyf6mp7k3sgjmkjc6p"))))
+        (base32 "1vqvxc62r7m7dlkawh6537sxz4aq85z2vybqg1p8ffrxv40h5ykj"))))
     (arguments
      (substitute-keyword-arguments (package-arguments llama-cpp)
        ((#:configure-flags flags)
@@ -32,9 +33,9 @@
         #f)
        ((#:phases phases)
         #~(modify-phases #$phases
+            (delete 'get-ui)
             (delete 'patch-paths)))))
-    (inputs (modify-inputs (package-inputs llama-cpp)
-              (delete "ggml"))) ;use ggml fork
+    (inputs (list openssl)) ;use ggml fork
     (home-page "https://github.com/ikawrakow/ik_llama.cpp")))
 
 ;(define-public ik-llama-cuda ; maybe add NCCL with -DGGML_USE_NCCL=ON, add wrapper for LD_LIBRARY_PATH for cuda lib
