@@ -10,7 +10,7 @@ index 5c8c2dca..723898d9 100644
 -        [vapoursynth],
 -        [http://www.vapoursynth.com/]
 -)
-+AC_INIT([vapoursynth], [68])
++AC_INIT([vapoursynth], [73])
  
  : ${CFLAGS=""}
  : ${CXXFLAGS=""}

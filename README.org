@@ -46,11 +46,13 @@
       - vs-subtext: subtitles
   - vspreview
     - requires dependencies:
-      - libxkbcommon
-        - WAYLAND: ~wayland~, ~wayland-protocols~, ~egl-wayland~, ~vulkan-loader~
-        - X11: ~libx11~, ~libxcursor~, ~libxi~, ~libxrandr~
+      - ~libxkbcommon~
+        - WAYLAND: ~wayland~, ~egl-wayland~, ~vulkan-loader~ (nvda driver/mesa)
+        - X11: ~libx11~, ~libxcursor~, ~libxi~
           - set ~WAYLAND_DISPLAY=""~
     - set ~LD_LIBRARY_PATH=$HOME/.guix-profile/lib~ for guix on foreign distro
+      - set ~PATH=""~ if non guix ~vapoursynth~ is in path (dynamic library path loading creates toml file in vapoursynth config folder)
+      - set ~VSSCRIPT_PATH=$HOME/.guix-profile/lib/libvapoursynth-script.so~ if script lib doesn't load
     - graft nvidia for driver version ~--with-graft=mesa=nvda@580~
 *** Patches
 - custom patches are located are ~jam/packages/patches/*.patch~ and use ~search-patches~ in ~jam/packages.scm~

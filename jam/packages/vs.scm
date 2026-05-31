@@ -471,12 +471,11 @@ the programmer.")
         #f)))
     (properties '())))
 
-(define-public vapoursynth-git
-  ;; MAYBE add wrap-program from (guix build utils) to set the plugin directory
+(define-public vapoursynth-git ;; MAYBE add wrap-program from (guix build utils) to set the plugin directory or compile flag
   (package
     (inherit vapoursynth)
     (name "vapoursynth")
-    (version "68")
+    (version "73")
     (source
      (origin
        (method git-fetch)
@@ -485,12 +484,12 @@ the programmer.")
              (commit (string-append "R" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "116pp88a1mld6ys7q8hdv0j3lscwb8w1yyj0fk8418vc99llmdrw"))
+        (base32 "017ys404hmly5dl5gz76kz5j6dhv8s4lrqk7ww0brmd2fc98rkvj"))
        (patches (search-patches "vs.patch"))))
     (inputs (list ffmpeg libass python-3.12 tesseract-ocr zimg-3.0.5))
     (native-inputs (list autoconf
                          automake
-                         python-cython-3.0.10 ;3+ after R63
+                         python-cython-next ;3+ after R63
                          libtool
                          pkg-config
                          yasm))))
