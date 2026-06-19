@@ -102,16 +102,16 @@
   (package
     (inherit nzbget)
     (name "nzbget-next")
-    (version "26.1")
+    (version "26.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/nzbgetcom/nzbget")
-             (commit "6ce2ee1d2fcd1fdd5536fa2609c586815032d2bf"))) ;(string-append "v" version)
+             (commit "5b872661bc546eccbed91e3468df7ab76a8052fa"))) ;(string-append "v" version)
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gdgghz899xa9h188fw0qhd98c1dxxlykcd3v0jwvam82j5i975i"))))
+        (base32 "0z64xyc8w4n9dqi8rl6pchxxfvy1rx1ya2fv61lxn3wpjq956wyh"))))
     (arguments
      (append (list #:configure-flags `(list
                                        "-DCMAKE_CXX_FLAGS=-DPARPAR_ENABLE_HASHER_MD5CRC -DHAVE_CONFIG_H -DPARPAR_INVERT_SUPPORT -DPARPAR_SLIM_GF16"
