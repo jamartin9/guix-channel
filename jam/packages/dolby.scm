@@ -2,14 +2,14 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix utils) ; version-major+minor
+  #:use-module (gnu packages python) ;python
   #:use-module (guix build-system cargo) ;rust-dolby-vision-3 for vs-placebo and vs-nlq
   #:use-module (gnu packages rust) ;rust-cargo-c for rust-dolby-vision-3
   #:use-module (gnu packages rust-apps) ;for vs-nlq
-  ;; #:use-module (gnu packages rust-crates) ; for vs-nlq
-  ;; #:use-module (gnu packages rust-sources) ; for vs-nlq (criterion)
   #:use-module (gnu packages video) ;vapoursynth for vs-nlq
   #:use-module (jam packages) ;for search-patches
-  #:use-module (jam packages vs) ;for vapoursynth-git
   #:use-module ((guix licenses)
                 #:prefix license:))
 ;; guix import crate -f Cargo.lock dolby_vision
@@ -548,13 +548,17 @@
         (base32 "0prvcxg9sla1r1cfap2q4k5gs6z4g13a9fq7fw2b1947k2ygqmr5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:phases (modify-phases %standard-phases
+     (let ((python-version (version-major+minor (package-version python))))
+      (append
+      (list #:install-source? `(list #f))
+      (list #:phases #~(modify-phases %standard-phases
                   (add-after 'install 'install-library
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out")))
                         (install-file (car (find-files "." "^libvs_nlq\\.so$"))
-                                      (string-append out "/lib/vapoursynth"))))))))
+                                      (string-append out "/lib/python" #$python-version "/site-packages/vapoursynth/plugins")))))))
+      ))
+     )
     (inputs (list rust-aho-corasick-1.1.3
                    rust-anes-0.1.6
                    rust-anstyle-1.0.10
@@ -655,7 +659,7 @@
                   rust-vapoursynth-0.5.4
                   rust-vapoursynth-sys-0.6.0
                   rust-windows-link-0.2.1
-                  vapoursynth-git))
+                  vapoursynth))
     (home-page "https://github.com/quietvoid/vs-nlq/")
     (synopsis "vs-nlq plugin for vapoursynth")
     (description "Dolby Vision FEL mapping plugin for vapoursynth")
