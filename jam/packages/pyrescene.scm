@@ -12,16 +12,16 @@
 (define-public python-pyrescene
   (package
     (name "python-pyrescene")
-    (version "0.7-git")
+    (version "0.7-git-04da2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/srrDB/pyrescene")
-             (commit "5a7cdda60020511927341165d8d4711c897a2246")))
+             (commit "04da213cef6765ed98e0d1735683822a41ea0103")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v9j5jjffwym9n4ifg4kk53n14llpzpl21vbx3vb2ymz6w1pn3b0"))
+        (base32 "193663rrq46ifai6nz225nhk67n9zi6k3hx9s0x5855y6s99l43n"))
        (patches (search-patches "pyrescene-locale.patch"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools))
